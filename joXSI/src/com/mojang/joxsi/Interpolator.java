@@ -229,12 +229,34 @@ public class Interpolator
                     val = prevVal + (nextVal - prevVal) * interp;
                     break;
                 case INTERPOLATION_CUBIC:
-                    float prevXa = curCurve.keyValues[pos - 1][3];
-                    float prevYa = curCurve.keyValues[pos - 1][4];
-                    float nextXa = curCurve.keyValues[pos][1];
-                    float nextYa = curCurve.keyValues[pos][2];
+                    float prevXa;
+                    float prevYa;
+                    float nextXa;
+                    float nextYa;
+                    try
+                    {
+                        prevXa = curCurve.keyValues[pos - 1][3];
+                        prevYa = curCurve.keyValues[pos - 1][4];
+                        // check added to prevent array out of bounds exception at end of animation
+                        if (pos < curCurve.keyValues.length)
+                        {
+                            nextXa = curCurve.keyValues[pos][1];
+                            nextYa = curCurve.keyValues[pos][2];
+                        } else
+                        {
+                            nextXa = curCurve.keyValues[0][1];
+                            nextYa = curCurve.keyValues[0][2];
+                        }
 
-                    val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
+                        val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
+                    } catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        val = prevVal;
+
+                        System.err.println("INTERPOLATION_CUBIC pos: " + pos);
+                        e.printStackTrace();
+                        throw e;
+                    }
                     break;
                 default:
                     val = prevVal;
