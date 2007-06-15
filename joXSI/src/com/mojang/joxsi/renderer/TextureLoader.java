@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,8 +60,15 @@ public class TextureLoader
             // Nope.. let's load the texture..
             try
             {
+                final InputStream lTextureAsStream = getClass().getResourceAsStream("/"+textureName);
+                if (lTextureAsStream == null)
+                {
+                    System.out.println("Could not read texture: " + textureName);
+                    loadedTextures.put(textureName, Integer.valueOf(-1));
+                    return -1;
+                }
                 // Load the texture image
-                BufferedImage img = ImageIO.read(getClass().getResourceAsStream("/"+textureName));
+                BufferedImage img = ImageIO.read(lTextureAsStream);
                 // Rip the bytes from the texture into a byte buffer
                 ByteBuffer buffer = ripImage(img);
 
@@ -88,14 +96,15 @@ public class TextureLoader
                 }
                 
                 // Put the texture object id in the map, and return it.
-                loadedTextures.put(textureName, new Integer(id));
+                loadedTextures.put(textureName, Integer.valueOf(id));
+                System.out.println("Loaded texture id: " + id + " - " + textureName);
                 return id;
             }
             catch (IOException e)
             {
                 // Something went wrong! Log and remember that the texture by that name can't be loaded.
                 e.printStackTrace();
-                loadedTextures.put(textureName, new Integer(-1));
+                loadedTextures.put(textureName, Integer.valueOf(-1));
                 return -1;
             }
         }
