@@ -26,10 +26,15 @@ import com.mojang.joxsi.loader.XSI_Material;
  */
 public class Scene
 {
+    /** Array of Models in the Scene. */
     public Model[] models;
+    /** The RootTemplate of the Scene. */
     public RootTemplate root;
+    /** Array of Envelopes in the Scene. */
     public Envelope[] envelopes;
+    /** Map of Materials in the Scene. */
     public Map materials = new HashMap();;
+    /** Map of Images in the Scene. */
     public Map images = new HashMap();
 
     /**
