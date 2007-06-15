@@ -22,4 +22,10 @@ public class SI_FileInfo extends Template
 		savedDateTime = (String)it.next();
 		originator = (String)it.next();
 	}
+
+    public String toString() {
+        return super.toString() + " - projectName: "
+            + projectName + ", userName: " + userName
+            + ", savedDateTime: " + savedDateTime + ", originator: " + originator;
+    }
 }
