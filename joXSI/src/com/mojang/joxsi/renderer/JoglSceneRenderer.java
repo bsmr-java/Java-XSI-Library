@@ -1,10 +1,13 @@
 package com.mojang.joxsi.renderer;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
 
-import com.mojang.joxsi.*;
+import com.mojang.joxsi.Envelope;
 import com.mojang.joxsi.Material;
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.Model;
+import com.mojang.joxsi.Scene;
+import com.mojang.joxsi.TriangleList;
+import com.mojang.joxsi.loader.SI_Transform;
 
 /**
  * A simple JOGL based renderer class.

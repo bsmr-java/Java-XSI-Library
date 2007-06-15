@@ -1,6 +1,8 @@
 package com.mojang.joxsi.loader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.

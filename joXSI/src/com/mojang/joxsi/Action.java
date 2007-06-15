@@ -1,8 +1,11 @@
 package com.mojang.joxsi;
 
-import java.util.*;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.SI_FCurve;
+import com.mojang.joxsi.loader.Template;
+import com.mojang.joxsi.loader.XSI_Action;
 
 
 /**

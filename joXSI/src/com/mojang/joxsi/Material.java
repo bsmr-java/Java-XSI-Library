@@ -3,7 +3,12 @@ package com.mojang.joxsi;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.SI_Material;
+import com.mojang.joxsi.loader.SI_Texture2D;
+import com.mojang.joxsi.loader.Template;
+import com.mojang.joxsi.loader.XSI_Image;
+import com.mojang.joxsi.loader.XSI_Material;
+import com.mojang.joxsi.loader.XSI_Shader;
 
 /**
  * A Material defines the properties for a mesh.

@@ -1,9 +1,10 @@
 package com.mojang.joxsi.demo;
 
-import javax.swing.*;
-import javax.swing.tree.*;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.Template;
 
 /**
  * A class that shows the contents of an XSI template as a JTree

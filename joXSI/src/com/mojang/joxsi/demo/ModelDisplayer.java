@@ -1,14 +1,21 @@
 package com.mojang.joxsi.demo;
 
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
-import com.mojang.joxsi.*;
 import com.mojang.joxsi.Action;
+import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
 

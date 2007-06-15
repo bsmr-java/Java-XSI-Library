@@ -2,7 +2,9 @@ package com.mojang.joxsi.renderer;
 
 import java.nio.FloatBuffer;
 
-import com.mojang.joxsi.*;
+import com.mojang.joxsi.Envelope;
+import com.mojang.joxsi.Shape;
+import com.mojang.joxsi.TriangleList;
 import com.sun.opengl.util.BufferUtil;
 
 

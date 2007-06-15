@@ -1,8 +1,19 @@
 package com.mojang.joxsi.demo;
 
-import java.awt.*;
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
+import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+
+import javax.media.opengl.AWTGraphicsConfiguration;
+import javax.media.opengl.AWTGraphicsDevice;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLCapabilitiesChooser;
+import javax.media.opengl.GLContext;
+import javax.media.opengl.GLDrawable;
+import javax.media.opengl.GLDrawableFactory;
+import javax.media.opengl.glu.GLU;
 
 /**
  * An abstract baseclass for a singlethreaded opengl canvas.

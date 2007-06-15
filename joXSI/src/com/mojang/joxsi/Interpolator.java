@@ -1,6 +1,7 @@
 package com.mojang.joxsi;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.SI_FCurve;
+import com.mojang.joxsi.loader.SI_Transform;
 
 /**
  * An Interpolator interpolates between the values in an SI_FCurve and applies them to a target model.

@@ -1,8 +1,13 @@
 package com.mojang.joxsi;
 
-import java.util.*;
+import java.util.List;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.SI_Mesh;
+import com.mojang.joxsi.loader.SI_Model;
+import com.mojang.joxsi.loader.SI_Transform;
+import com.mojang.joxsi.loader.Template;
+import com.mojang.joxsi.loader.XSI_Action;
+import com.mojang.joxsi.loader.XSI_Mixer;
 
 /**
  * A model is a container for any number of meshes, and any number of sub models.

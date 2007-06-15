@@ -1,9 +1,23 @@
 package com.mojang.joxsi;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.DotXSILoader;
+import com.mojang.joxsi.loader.RootTemplate;
+import com.mojang.joxsi.loader.SI_Envelope;
+import com.mojang.joxsi.loader.SI_EnvelopeList;
+import com.mojang.joxsi.loader.SI_Material;
+import com.mojang.joxsi.loader.SI_MaterialLibrary;
+import com.mojang.joxsi.loader.SI_Model;
+import com.mojang.joxsi.loader.Template;
+import com.mojang.joxsi.loader.XSI_Image;
+import com.mojang.joxsi.loader.XSI_ImageLibrary;
+import com.mojang.joxsi.loader.XSI_Material;
 
 /**
  * A Scene is result of any loaded XSI file.

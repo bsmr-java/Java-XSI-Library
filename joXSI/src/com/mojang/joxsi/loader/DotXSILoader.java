@@ -1,7 +1,12 @@
 package com.mojang.joxsi.loader;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Parses dotXSI file from an InputStream and returns a RootTemplate containing the entire scene.

@@ -1,14 +1,16 @@
 package com.mojang.joxsi.renderer;
 
-import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.imageio.*;
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
+import javax.imageio.ImageIO;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 
 import com.sun.opengl.util.BufferUtil;
 

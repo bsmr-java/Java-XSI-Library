@@ -1,8 +1,13 @@
 package com.mojang.joxsi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.SI_Mesh;
+import com.mojang.joxsi.loader.SI_PolygonList;
+import com.mojang.joxsi.loader.SI_Shape;
+import com.mojang.joxsi.loader.SI_TriangleList;
+import com.mojang.joxsi.loader.Template;
 import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
 
 /**
