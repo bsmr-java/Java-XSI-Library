@@ -145,12 +145,24 @@ public class Interpolator
 
     /**
      * Hermite interpolation. How does this work?
+     * 
+     * @param vPrev
+     * @param vNext
+     * @param in
+     * @param out
+     * @param t
+     *            How far along are we between last time and next time?
      * @return the interpolated value
+     * 
+     * TODO describe what is actually happening
      */
-    private float hermite(float v0, float v1, float in, float out, float t)
+    private float hermite(float vPrev, float vNext, float in, float out, float t)
     {
-        // TODO: Implement hermite interpolation
-        return v0;
+        float vPrevMultiplier = 2.0F * t * t * t - 3.0F * t * t + 1.0F;
+        float vNextMultiplier = -2.0F * t * t * t + 3.0F * t * t;
+        float inMultiplier = t * t * t - 2.0F * t * t + t;
+        float outMultiplier = t * t * t - t * t;
+        return vPrevMultiplier * vPrev + inMultiplier * in + vNextMultiplier * vNext + outMultiplier * out;
     }
 
     /**
@@ -163,7 +175,8 @@ public class Interpolator
      */
     public void setInterpolation(int interpolation)
     {
-        if (interpolation < 0 || interpolation > 3) throw new IllegalArgumentException("Bad interpolation type");
+        if (interpolation < 0 || interpolation > 3) 
+            throw new IllegalArgumentException("Bad interpolation type: " + interpolation);
         this.interpolation = interpolation;
     }
 
@@ -178,124 +191,127 @@ public class Interpolator
         SI_Transform result = model.animated;
         SI_FCurve.FCurve curCurve = curve.fcurves[0];
 
-        float val;
+        // Only apply the animation if there are frames in it
+		if (curCurve.frames.length != 0) {
+            float val;
 
-        // If we're before the start of the animation, just return the first value.
-        if (time <= curCurve.frames[0])
-        {
-            val = curCurve.keyValues[0][0];
-        }
-        else
-        {
-            int pos = 0;
-
-            // Find the current frame position.
-            while (pos < curCurve.frames.length && time > curCurve.frames[pos])
-                pos++;
-
-            // Set up last value, next value, last time, and next time.
-            float prevVal = curCurve.keyValues[pos - 1][0];
-            float nextVal = 0;
-
-            float prevTime = curCurve.frames[pos - 1];
-            float nextTime = 0;
-
-            if (pos < curCurve.frames.length)
+            // If we're before the start of the animation, just return the first value.
+            if (time <= curCurve.frames[0])
             {
-                nextVal = curCurve.keyValues[pos][0];
-                nextTime = curCurve.frames[pos];
+                val = curCurve.keyValues[0][0];
             }
-            else if (loop) // Loop back to the first frame if the animation is a loop. Is this needed?
+            else
             {
-                nextVal = curCurve.keyValues[0][0];
-                nextTime = curCurve.frames[0];
-            }
-
-            // How far along are we between last time and next time?
-            float interp = (time - prevTime) / (nextTime - prevTime);
-
-            // Apply interpolation. Inline the hermite and cubic methods?
-            switch (interpolation)
-            {
-                case INTERPOLATION_CONSTANT:
-                    val = prevVal;
-                    break;
-                case INTERPOLATION_HERMITE:
-                    float in = curCurve.keyValues[pos - 1][1];
-                    float out = curCurve.keyValues[pos - 1][2];
-                    val = hermite(prevVal, nextVal, in, out, interp);
-                    break;
-                case INTERPOLATION_LINEAR:
-                    val = prevVal + (nextVal - prevVal) * interp;
-                    break;
-                case INTERPOLATION_CUBIC:
-                    float prevXa;
-                    float prevYa;
-                    float nextXa;
-                    float nextYa;
-                    try
-                    {
-                        prevXa = curCurve.keyValues[pos - 1][3];
-                        prevYa = curCurve.keyValues[pos - 1][4];
-                        // check added to prevent array out of bounds exception at end of animation
-                        if (pos < curCurve.keyValues.length)
-                        {
-                            nextXa = curCurve.keyValues[pos][1];
-                            nextYa = curCurve.keyValues[pos][2];
-                        } else
-                        {
-                            nextXa = curCurve.keyValues[0][1];
-                            nextYa = curCurve.keyValues[0][2];
-                        }
-
-                        val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
-                    } catch (ArrayIndexOutOfBoundsException e)
-                    {
+                int pos = 0;
+    
+                // Find the current frame position.
+                while (pos < curCurve.frames.length && time > curCurve.frames[pos])
+                    pos++;
+    
+                // Set up last value, next value, last time, and next time.
+                float prevVal = curCurve.keyValues[pos - 1][0];
+                float nextVal = 0;
+    
+                float prevTime = curCurve.frames[pos - 1];
+                float nextTime = 0;
+    
+                if (pos < curCurve.frames.length)
+                {
+                    nextVal = curCurve.keyValues[pos][0];
+                    nextTime = curCurve.frames[pos];
+                }
+                else if (loop) // Loop back to the first frame if the animation is a loop. Is this needed?
+                {
+                    nextVal = curCurve.keyValues[0][0];
+                    nextTime = curCurve.frames[0];
+                }
+    
+                // How far along are we between last time and next time?
+                float interp = (time - prevTime) / (nextTime - prevTime);
+    
+                // Apply interpolation. Inline the hermite and cubic methods?
+                switch (interpolation)
+                {
+                    case INTERPOLATION_CONSTANT:
                         val = prevVal;
-
-                        System.err.println("INTERPOLATION_CUBIC pos: " + pos);
-                        e.printStackTrace();
-                        throw e;
-                    }
+                        break;
+                    case INTERPOLATION_HERMITE:
+                        float in = curCurve.keyValues[pos - 1][1];
+                        float out = curCurve.keyValues[pos - 1][2];
+                        val = hermite(prevVal, nextVal, in, out, interp);
+                        break;
+                    case INTERPOLATION_LINEAR:
+                        val = prevVal + (nextVal - prevVal) * interp;
+                        break;
+                    case INTERPOLATION_CUBIC:
+                        float prevXa;
+                        float prevYa;
+                        float nextXa;
+                        float nextYa;
+                        try
+                        {
+                            prevXa = curCurve.keyValues[pos - 1][3];
+                            prevYa = curCurve.keyValues[pos - 1][4];
+                            // check added to prevent array out of bounds exception at end of animation
+                            if (pos < curCurve.keyValues.length)
+                            {
+                                nextXa = curCurve.keyValues[pos][1];
+                                nextYa = curCurve.keyValues[pos][2];
+                            } else
+                            {
+                                nextXa = curCurve.keyValues[0][1];
+                                nextYa = curCurve.keyValues[0][2];
+                            }
+    
+                            val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
+                        } catch (ArrayIndexOutOfBoundsException e)
+                        {
+                            val = prevVal;
+    
+                            System.err.println("INTERPOLATION_CUBIC pos: " + pos);
+                            e.printStackTrace();
+                            throw e;
+                        }
+                        break;
+                    default:
+                        val = prevVal;
+                }
+            }
+    
+            // Copy the value to the correct value of the target transform
+            switch (target)
+            {
+                case SCALING_X:
+                    result.scalX = val;
+                    break;
+                case SCALING_Y:
+                    result.scalY = val;
+                    break;
+                case SCALING_Z:
+                    result.scalZ = val;
+                    break;
+                case TRANSLATION_X:
+                    result.transX = val;
+                    break;
+                case TRANSLATION_Y:
+                    result.transY = val;
+                    break;
+                case TRANSLATION_Z:
+                    result.transZ = val;
+                    break;
+                case ROTATION_X:
+                    result.rotX = val;
+                    break;
+                case ROTATION_Y:
+                    result.rotY = val;
+                    break;
+                case ROTATION_Z:
+                    result.rotZ = val;
                     break;
                 default:
-                    val = prevVal;
+                    // This really shouldn't happen since the constructor throws an exception if target is none of the above.
+                    System.out.println("Huh?");
             }
-        }
-
-        // Copy the value to the correct value of the target transform
-        switch (target)
-        {
-            case SCALING_X:
-                result.scalX = val;
-                break;
-            case SCALING_Y:
-                result.scalY = val;
-                break;
-            case SCALING_Z:
-                result.scalZ = val;
-                break;
-            case TRANSLATION_X:
-                result.transX = val;
-                break;
-            case TRANSLATION_Y:
-                result.transY = val;
-                break;
-            case TRANSLATION_Z:
-                result.transZ = val;
-                break;
-            case ROTATION_X:
-                result.rotX = val;
-                break;
-            case ROTATION_Y:
-                result.rotY = val;
-                break;
-            case ROTATION_Z:
-                result.rotZ = val;
-                break;
-            default:
-                // This really shouldn't happen since the constructor throws an exception if target is none of the above.
-                System.out.println("Huh?");
         }
     }
 }
