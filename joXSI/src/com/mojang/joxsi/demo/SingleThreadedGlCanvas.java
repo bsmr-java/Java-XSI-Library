@@ -130,19 +130,28 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             e.printStackTrace();
         }
 
-        // Create GL and GLU objects
-        GL gl = context.getGL();
-        GLU glu = new GLU();
+        try
+        {
+            // Create GL and GLU objects
+            GL gl = context.getGL();
+            GLU glu = new GLU();
 
-        // Call render loop
-        renderLoop(gl, glu);
-        
-        // Release and destroy the context
-        context.release();
-        context.destroy();
-        
-        // Shut down the jvm.. This probably shouldn't be here.
-        System.exit(0);
+            // Call render loop
+            renderLoop(gl, glu);
+        }
+        catch (RuntimeException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            // Release and destroy the context
+            context.release();
+            context.destroy();
+            
+            // Shut down the jvm.. This probably shouldn't be here.
+            System.exit(0);
+        }
     }
 
     /**
