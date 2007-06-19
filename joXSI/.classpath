@@ -8,5 +8,15 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="joXSI/lib/jogl-natives-windows-i586"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/base.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional1.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional2.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional3.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional4.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional5.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional6.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional7.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional8.jar"/>
+	<classpathentry kind="var" path="WURM_PACKS_DIR/optional9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
