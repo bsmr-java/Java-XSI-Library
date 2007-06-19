@@ -7,12 +7,17 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyEvent;
+
 import java.io.IOException;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JMenuBar;
 
 import com.mojang.joxsi.Action;
 import com.mojang.joxsi.Scene;
@@ -238,8 +243,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         frame1.setVisible(true);
 
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
-        JFrame frame = new JFrame("Model Displayer");
-
+        JFrame frame = new ModelDisplayerFrame("Model Display");
         ModelDisplayer canvas = new ModelDisplayer(scene);
         frame.add(canvas);
         new Thread(canvas).start();
@@ -257,4 +261,5 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             }
         });
     }
+
 }
