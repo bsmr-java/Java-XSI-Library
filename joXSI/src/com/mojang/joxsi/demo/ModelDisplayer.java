@@ -1,5 +1,6 @@
 package com.mojang.joxsi.demo;
 
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -7,20 +8,17 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.KeyEvent;
-
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
 
 import com.mojang.joxsi.Action;
 import com.mojang.joxsi.Scene;
+import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
 
@@ -73,10 +71,21 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     {
     }
 
+    /**
+     * Zoom in or out if the mousewheel is moved.
+     * Pressing the Ctrl key zooms at 1/10th of normal.
+     */
     public void mouseWheelMoved(MouseWheelEvent e)
     {
-        zoomDistance += e.getUnitsToScroll() * 0.1f;
-        if (zoomDistance < 0.5f) zoomDistance = 0.5f;
+        int modifiersEx = e.getModifiersEx();
+        if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) > 0)
+        {
+            zoomDistance += e.getUnitsToScroll() * 0.01f;
+        } else
+        {
+            zoomDistance += e.getUnitsToScroll() * 0.1f;
+        }
+        if (zoomDistance < 0.1f) zoomDistance = 0.1f;
     }
 
     public void mouseDragged(MouseEvent e)
@@ -96,8 +105,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             float xs = (float)Math.sin(xRot * Math.PI / 180.0f);
             float xc = (float)Math.cos(xRot * Math.PI / 180.0f);
-            float ys = (float)Math.sin(yRot * Math.PI / 180.0f);
-            float yc = (float)Math.cos(yRot * Math.PI / 180.0f);
+            // TODO Unused float ys = (float)Math.sin(yRot * Math.PI / 180.0f);
+            // TODO Unused float yc = (float)Math.cos(yRot * Math.PI / 180.0f);
             xCamera -= (xDrag * xc) * zoomDistance * zoomDistance / 100;
             zCamera -= (xDrag * xs) * zoomDistance * zoomDistance / 100;
 
@@ -113,7 +122,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
-     * This is where all the rendering magic happens
+     * This is where all the rendering magic happens.
+     * Only handles two actions at the moment.
      */
     protected void renderLoop(GL gl, GLU glu)
     {
@@ -121,14 +131,33 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         long start = System.currentTimeMillis();
 
         Action action = null;
+        // Log some details of the model
+        int lNumberOfModels = 0;
+        if (scene.models != null)
+        {
+            lNumberOfModels = scene.models.length;
+        }
+        System.out.println("Number of models: " + lNumberOfModels);
+        int lNumberOfEnvelopes = 0;
+        if (scene.envelopes != null)
+        {
+            lNumberOfEnvelopes = scene.envelopes.length;
+        }
+        System.out.println("Number of envelopes in the scene: " + lNumberOfEnvelopes);
+        System.out.println("Number of images in the scene: " + scene.images.size());
+        System.out.println("Number of maerials in the scene: " + scene.materials.size());
         // Find all actions in all models in the root of the scene, then store the first one in the 'action' object
         for (int i = 0; i < scene.models.length; i++)
         {
+            System.out.println("Number of actions in model " + i + ": " + scene.images.size());
             for (int j = 0; j < scene.models[i].actions.length; j++)
             {
                 Action a = scene.models[i].actions[j];
-                if (action == null) action = a;
-                System.out.println(a.getName() + ": " + a.getLength());
+                if (action == null)
+                {
+                	action = a;
+                }
+                System.out.println("Length of action: " + a.getName() + ": " + a.getLength());
             }
         }
 
@@ -222,18 +251,31 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      *  
      * @param args the arguments passed from the commandline
      * @throws IOException if the model can't be loaded.
+     * @throws ParseException if the parsing fails for any reason
      */
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws IOException, ParseException
     {
         Scene scene = null;
         if (args.length == 0)
         {
+            System.out.println("No arguments. We're probably run from webstart, so load the default model");
             // No arguments. We're probably run from webstart, so load the default model
             scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
         }
         else
         {
-            scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/"+args[0]));
+            System.out.println("Going to load '" + args[0] + "' as a model");
+            final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[0]);
+            if (lResourceAsStream != null)
+            {
+                System.out.println("Going to load '" + args[0] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[0]));
+                scene = Scene.load(lResourceAsStream);
+                
+            }
+            else
+            {
+                throw new IllegalArgumentException("Cannot load model from this location: " + args[0]);
+            }
         }
 
         // Set up a JFrame for a TemplateTree showing the entire scene
