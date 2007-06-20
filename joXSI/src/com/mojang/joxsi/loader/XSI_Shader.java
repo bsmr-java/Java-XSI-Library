@@ -17,6 +17,11 @@ public class XSI_Shader extends Template
 		public String name;
 		public String type;
 		public Object value;
+
+        public String toString()
+        {
+            return value + " (" + type + ")";
+        }
 	}
 	
 	public class Connection implements Serializable
@@ -24,6 +29,16 @@ public class XSI_Shader extends Template
 		public String name;
 		public String point;
 		public String type;
+
+        public String toString() {
+            if ((type == null || type.length() == 0) && (point == null || point.length() == 0))
+            {
+                return "";
+            } else
+            {
+                return point + " (" + type + ")";
+            }
+        }
 	}
 	
 	public String path;
@@ -70,5 +85,12 @@ public class XSI_Shader extends Template
     public Connection getConnection(String name)
     {
     	return (Connection)connectionMap.get(name);
+    }
+
+    public String toString()
+    {
+        return super.toString()
+                + " - path: " + path + ", output: " + output + ", param_number: " + param_number + ", cnx_number: " + cnx_number
+                + ", parameters± " + parameterMap + ", connections: " + connectionMap;
     }
 }

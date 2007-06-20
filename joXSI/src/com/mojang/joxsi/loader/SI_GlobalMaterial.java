@@ -18,4 +18,8 @@ public class SI_GlobalMaterial extends Template
         referencedMaterial = (String)it.next();
         propagation = (String)it.next();
     }
+
+    public String toString() {
+        return super.toString() + " - referencedMaterial: " + referencedMaterial + ", propagation: " + propagation;
+    }
 }

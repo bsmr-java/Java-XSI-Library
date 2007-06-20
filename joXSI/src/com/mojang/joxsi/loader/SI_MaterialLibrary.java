@@ -22,4 +22,9 @@ public class SI_MaterialLibrary extends Template
 			materials[i] = (Material)it.next();
 		}
     }
+
+    public String toString()
+    {
+        return super.toString() + ", Number of Materials: " + nbMaterials;
+    }
 }
