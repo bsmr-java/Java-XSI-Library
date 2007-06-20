@@ -4,9 +4,15 @@ import java.io.Serializable;
 import java.util.ListIterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Specifies the positions, normals, colors, and uv coordinates for 
+ * triangle vertices by indexing into the SI_Shape template that defines the mesh.
+ * 
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
+ * TODO identify if this is 3.5 and newer and then fill <code>newVersion</code> and parse <code>Material</code>.
  */
 public class SI_TriangleList extends Template
 {
@@ -15,9 +21,27 @@ public class SI_TriangleList extends Template
 	public static final String TEX_COORD_UV = "TEX_COORD_UV";
 
 	public boolean newVersion;
+    /** Number of triangles in the tessellation. */
 	public int nbTriangles;
+    /**
+     * Specifies what information is stored in the template. Can be one or more of the following:<br>
+     * • NORMAL = Template contains Normals information (see ni below).<br>
+     * • COLOR = Template contains Color information (see ci below).<br>
+     * • TEX_COORD_UV# = Template contains texture UV coordinates information (see uvi below).
+     * <p>The number sign (#) represents the number of the texture UV coordinates starting at 0.
+     * <p>Note: The TEX_COORD_UV# element is only available in v3.5 and beyond.
+     * <p>If more than one of these is present, use a vertical bar to separate the strings 
+     * (for example, "NORMAL|COLOR|TEX_COORD_UV0|TEX_COORD_UV1").
+     * <p>Note: Vertex positions are always present in a {@link SI_TriangleList } 
+     * template (see {@link Triangle#v } below).
+     */
 	public String elements;
+    /**
+     * Name of the material.
+     * <p>Note: This is only available in v3.5 and beyond.
+     */
 	public String material;
+    /** Array of triangles. */
 	public Triangle[] triangles;
 
     /**
@@ -25,11 +49,19 @@ public class SI_TriangleList extends Template
      */
 	public static class Triangle implements Serializable
 	{
+        /** Index of a vertex position in the POSITIONS section of the <code>SI_TriangleList</code> template for the mesh. */
 		public int[] v;
+        /** Index of a normal in the NORMAL section of the <code>SI_TriangleList</code> template for the mesh. */
 		public int[] n;
+        /** Index of a color in the COLOR section of the <code>SI_TriangleList</code> template for the mesh. */
 		public int[] c;
 
-		public int[][] uv;
+		/**
+         * Index of a UV coordinate in the TEX_COORD_UV section of the <code>SI_TriangleList</code> 
+         * template for the mesh.
+         * <p>Note: The uvi element is only available in v3.5 and beyond. 
+		 */
+        public int[][] uv;
 	}
 
 	public void parse(RawTemplate block)

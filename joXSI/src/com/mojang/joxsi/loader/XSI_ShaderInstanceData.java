@@ -6,7 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * When materials are shared, shaders with texture projections have shader instance data. 
+ * This instance data is stored in the <code>XSI_ShaderInstanceData</code> template.
+ * 
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * <pre>
  * XSI_ShaderInstanceData { 
    <sObjectName>, 
@@ -40,6 +43,8 @@ SI_MaterialLibrary MATLIB-tex_test {
 
  * </pre>
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
  */
 public class XSI_ShaderInstanceData extends Template
 {

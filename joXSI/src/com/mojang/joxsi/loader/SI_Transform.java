@@ -3,12 +3,27 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Specifies an SRT transformation as three vectors. Provides a default (or base) 
+ * transform for an object. SI_Transform can be used in place of the FrameTransformMatrix 
+ * (for example, to avoid having to extract the vectors from a transformation matrix).
+ * SOFTIMAGE|3D outputs a SI_Transform template when the Transforms option is set to SRT Values. 
+ * Otherwise, a FrameTransformMatrix template is exported.
+ * 
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
  */
 public class SI_Transform extends Template
 {
+    /** Scaling vector. */
+    public float scalX, scalY, scalZ;
+    /** Rotation vector. */
+    public float rotX, rotY, rotZ;
+    /** Translation vector. */
+    public float transX, transY, transZ;
+
 	public SI_Transform()
 	{
 	}
@@ -31,10 +46,6 @@ public class SI_Transform extends Template
 		transZ = trans.transZ;
 	}
     
-    public float scalX, scalY, scalZ;  
-	public float rotX, rotY, rotZ;  
-	public float transX, transY, transZ;
-
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();

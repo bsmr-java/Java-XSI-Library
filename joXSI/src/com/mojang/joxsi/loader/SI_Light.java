@@ -3,19 +3,35 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Describes a light. See also {@link SI_LightInfo }.
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * TODO Add constants for the light types.
+ * @author Notch
+ * @author Egal
  */
 public class SI_Light extends Template
 {
+    /**
+     * Specifies the light type:<br>
+     * 0 = point or spot<br>
+     * 1 = directional<br>
+     * 2 = spot<br>
+     * 3 = SOFTIMAGE|XSI infinite light
+     */
     public int type;
-
+    /** Color of the light. */
     public float red, green, blue;
+    /** Specifies the light position. */
     public float posx, posy, posz;
+    /** Orientation of the infinite light. */
     public float orix, oriy, oriz;
+    /** Position of the spotlight interest. */
     public float intx, inty, intz;
+    /** Cone Angle */
     public float coneAngle;
+    /** Spread Angle */
     public float spreadAngle;
 
     public void parse(RawTemplate block)

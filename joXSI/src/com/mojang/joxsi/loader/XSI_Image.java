@@ -3,24 +3,54 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Stores information about a specific image used in the scene. 
+ * All crop parameters are animatable. The fcurve names are:<br>
+ * <br>• CROP-MIN-X<br>
+ * • CROP-MAX-X<br>
+ * • CROP-MIN-Y<br>
+ * • CROP-MAX-Y
+ * 
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
+ * @see XSI_ImageLibrary
  */
 public class XSI_Image extends Template
 {
+    /** Name of source file. */
 	public String filename;
+    /** Image size in X. */
 	public int imageX;
+    /** Image size in Y. */
 	public int imageY;
-	public int channel_count; 								
-	public int bitsPerPixels; 								
+    /** Number of channels. Possible values are: 3 = RGB, 4 = RGBA. */
+	public int channel_count;
+    /** 
+     * Number of bits per pixel. Possible values:<br>
+     * • 24<br>
+     * • 32
+     */
+	public int bitsPerPixels;
+    /** Leftmost X of the cropping rectangle. */
 	public float minimumX;
+    /** Rightmost X of the cropping rectangle. */
 	public float maximumX;
+    /** Leftmost Y of the cropping rectangle. */
 	public float minimumY;
+    /** Rightmost Y of the cropping rectangle. */
 	public float maximumY;
-	public float frame_rate; 
+    /**
+     * Specifies frame rate to use. If this value is 0, 
+     * the scene frame rate is assumed; otherwise, this value is the new frame rate.
+     * */
+	public float frame_rate;
+    /** Number of frames for sequence. */
 	public int frame_count;
+    /** Specifies frame number for first frame in sequence. */
 	public int first;
+    /** Specifies frame number for last frame in sequence. */
 	public int last;
 	
 	public void parse(RawTemplate block)

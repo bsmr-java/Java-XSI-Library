@@ -8,6 +8,8 @@ import java.util.List;
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
  */
 public abstract class Template
 {

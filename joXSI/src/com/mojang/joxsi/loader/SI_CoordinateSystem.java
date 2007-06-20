@@ -3,9 +3,13 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
+ * Specifies the coordinate system in which transformations are expressed. 
+ * This template allows game developers to express data in any coordinate system.
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
  */
 public class SI_CoordinateSystem extends Template
 {
@@ -20,11 +24,53 @@ public class SI_CoordinateSystem extends Template
     public static final int V_DOWN = 0;
     public static final int V_UP = 1;
 
+    /**
+     * Specifies the coordinate system:<br>
+     * 0 = left-handed (D3D, PlayStation)<br>
+     * 1 = right-handed (SOFTIMAGE|3D, Nintendo)
+     */
     public int handRotation;
+    /**
+     * Orientation of the U axis for texture coordinates:<br>
+     * 0 = right (all)<br>
+     * 1 = left
+     */
     public int uAxis;
+    /**
+     * Orientation of the V axis for texture coordinates:<br>
+     * 0 = down (D3D, Nintendo, PlayStation)<br>
+     * 1 = up (SOFTIMAGE|3D)
+     */
     public int vAxis;
+    /**
+     * Orientation of the X axis:<br>
+     * 0 = right (all)<br>
+     * 1 = left<br>
+     * 2 = up<br>
+     * 3 = down<br>
+     * 4 = in<br>
+     * 5 = out
+     */
     public int xAxis;
+    /**
+     * Orientation of the Y axis:<br>
+     * 0 = right<br>
+     * 1 = left<br>
+     * 2 = up (SOFTIMAGE|3D, D3D, Nintendo)<br>
+     * 3 = down (PlayStation)<br>
+     * 4 = in<br>
+     * 5 = out
+     */
     public int yAxis;
+    /**
+     * Orientation of the Z axis:<br>
+     * 0 = right<br>
+     * 1 = left<br>
+     * 2 = up<br>
+     * 3 = down<br>
+     * 4 = in (D3D, PlayStation)<br>
+     * 5 = out (SOFTIMAGE|3D, Nintendo)
+     */
     public int zAxis;
 
     public void parse(RawTemplate block)
@@ -109,6 +155,10 @@ public class SI_CoordinateSystem extends Template
         return t;
     }
 
+    /**
+     * TODO convert(SI_Transform) is empty).
+     * @param transform
+     */
     public void convert(SI_Transform transform)
     {
 /*      float[] scale = new float[3];

@@ -3,14 +3,18 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Stores the names of the joints and effector of an IK chain.
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
  */
 public class SI_IK_Root extends Template
 {
+    /** number of joints. */
 	public int nbJoints;
+    /** Array of joint names. */
 	public String[] jointNames;
+    /** Effector name. */
 	public String effectorName;
 
 	public void parse(RawTemplate block)

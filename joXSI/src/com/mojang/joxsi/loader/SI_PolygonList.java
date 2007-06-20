@@ -4,9 +4,19 @@ import java.io.Serializable;
 import java.util.ListIterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * Specifies the positions, normals, colors, and uv coordinates for polygon 
+ * vertices by indexing into the SI_Shape template that defines the mesh.
+ * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * 
+ * <p>This template changed between version 3.0 and 3.5. 
+ * In v3.0, the template consisted of the number of UV indices and then the indices. 
+ * In v3.5 and beyond, the template now contains the number of indices, 
+ * UV space ("Texture_Projection"), and then the indices.
  * 
  * <p>It's very sparsely documented.
+ * @author Notch
+ * @author Egal
+ * TODO identify if this is 3.5 and newer and then fill <code>newVersion</code> and parse <code>Material</code>.
  */
 public class SI_PolygonList extends Template
 {
@@ -15,19 +25,43 @@ public class SI_PolygonList extends Template
     public static final String TEX_COORD_UV = "TEX_COORD_UV";
 
     public boolean newVersion;
+    /** Number of polygons in the mesh. */
     public int nbPolygons;
+    /**
+     * Specifies what information is stored in the template. Can be one or more of the following:<br>
+     * • NORMAL = Template contains Normals information (see ni below).<br>
+     * • COLOR = Template contains Color information (see ci below).<br>
+     * • TEX_COORD_UV# = Template contains texture UV coordinates information (see uvi below). 
+     * The number sign (#) represents the number of the texture UV coordinates starting at 0.
+     * 
+     * <p>Note: The TEX_COORD_UV# element is only available in v3.5 and beyond.
+     * <p>If more than one of these is present, use a vertical bar to separate the strings 
+     * (for example, "NORMAL|COLOR|TEX_COORD_UV0|TEX_COORD_UV1").
+     */
     public String elements;
+    /**
+     * Name of the material.
+     * <p>Note: This is only available in v3.5 and beyond.
+     */
     public String material;
+    /** Number of vertices in total for this mesh object. */
     public int nbTotalVertices;
     public Polygon[] polygons;
 
     public class Polygon implements Serializable
     {
+        /** Number of vertices for a specific polygon in the mesh. */
         public int nbVertices;
+        /** Index of a vertex position in the POSITIONS section of the SI_Shape template for the mesh. */
         public int[] v;
+        /** Index of a normal in the NORMAL section of the SI_Shape template for the mesh. */
         public int[] n;
+        /** Index of a color in the COLOR section of the SI_Shape template for the mesh. */
         public int[] c;
-
+        /** 
+         * Index of a UV coordinate in the TEX_COORD_UV section of the {@link SI_Shape } template for the mesh.
+         * <p>Note: The uv element is only available in v3.5 and beyond.
+         */
         public int[][] uv;
     }
 

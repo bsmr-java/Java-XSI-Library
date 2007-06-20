@@ -4,18 +4,58 @@ package com.mojang.joxsi.loader;
 import java.util.Iterator;
 
 /**
- * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
- * 
- * <p>It's very sparsely documented.
- * @author Notch
+ * Stores constraints. This class is a container for a template in the dotXSI
+ * file format, as specified by XSIFTK template reference. <br>
+ * <table border="1" cellpadding="5" cellspacing="0"> <tbody>
+ * <tr>
+ * <td><b>&lt;constraintType&gt;</b> </td>
+ * <td><b>Applies to</b> </td>
+ * </tr>
+ * <tr>
+ * <td> POSITION </td>
+ * <td> Lights, cameras, models </td>
+ * </tr>
+ * <tr>
+ * <td> SCALING </td>
+ * <td> Models </td>
+ * </tr>
+ * <tr>
+ * <td> DIRECTION </td>
+ * <td> Models </td>
+ * </tr>
+ * <tr>
+ * <td> ORIENTATION </td>
+ * <td> Models </td>
+ * </tr>
+ * <tr>
+ * <td> UP_VECTOR </td>
+ * <td> Cameras, models </td>
+ * </tr>
+ * <tr>
+ * <td> PREFERED_AXIS </td>
+ * <td> Models </td>
+ * </tr>
+ * <tr>
+ * <td> INTEREST </td>
+ * <td> Lights, cameras </td>
+ * </tr>
+ * </tbody></table>
+ * <p>
+ * It's very sparsely documented.
  * TODO Use the parsed values.
+ * @author Notch 
+ * @author Egal
  */
 public class SI_Constraint extends Template
 {
-    private String objectName;
-    private String constraintType;
-    private int nbConstrainingObjects;
-    private String constrainingObjectName;
+    /** Nbject name. */
+    public  String objectName;
+    /** Constraint type. */
+    public String constraintType;
+    /** Number of Constraining Objects. */
+    public int nbConstrainingObjects;
+    /** Constraining Object Name. */
+    public String constrainingObjectName;
     
     public void parse(RawTemplate rawtemplate) 
     {
