@@ -35,6 +35,7 @@ public class TemplateTree extends JTree
         {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(template.templates.get(i));
             node.add(child);
+            System.out.println("Added child to tree: " + child);
             populateTree(child, (Template)template.templates.get(i));
         }
     }
