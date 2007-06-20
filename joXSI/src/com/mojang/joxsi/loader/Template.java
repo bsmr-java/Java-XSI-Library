@@ -71,6 +71,7 @@ public abstract class Template
     public static final String XSI_NurbsProjection = "XSI_NurbsProjection";
     public static final String XSI_NurbsTrim = "XSI_NurbsTrim";
     public static final String XSI_Shader = "XSI_Shader";
+    public static final String XSI_ShaderInstanceData = "XSI_ShaderInstanceData";
     public static final String XSI_StaticValues = "XSI_StaticValues";
     public static final String XSI_SurfaceMesh = "XSI_SurfaceMesh";
     public static final String XSI_TimeControl = "XSI_TimeControl";
@@ -189,6 +190,12 @@ public abstract class Template
     }
 
     public abstract void parse(RawTemplate block);
+
+    public Template getRoot() {
+	if (parent != null)
+	    return parent.getRoot();
+	return this;
+    }
 
     public String toString()
     {
