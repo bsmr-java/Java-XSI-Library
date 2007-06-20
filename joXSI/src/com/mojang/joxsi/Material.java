@@ -55,7 +55,8 @@ public class Material
                 XSI_Image image = ((XSI_Image)images.get(conn.point));
                 if (image==null)
                 {
-                    System.out.println("Couldn't locate XSI_Image "+conn.point);
+                    Template template = material.getRoot();
+                    System.out.println("Null XSI_Image for \"" + conn.point + "\" in " + template + ". Loading model anyway..");
                 }
                 else
                 {
