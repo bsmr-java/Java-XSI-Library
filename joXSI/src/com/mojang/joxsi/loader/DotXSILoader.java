@@ -19,7 +19,6 @@ public class DotXSILoader
     private Header header;
     private InputStream in;
     private LineNumberReader reader;
-    private StringTokenizer st;
 
     /**
      * Private constructor. Use the public static load method.
@@ -35,9 +34,10 @@ public class DotXSILoader
      * Reads the header from the dotXSI file, and makes sure it's valid.
      * 
      * @return the header.
-     * @throws IOException if there's an io error, or if the parsing fails
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
      */
-    private Header readHeader() throws IOException
+    private Header readHeader() throws IOException, ParseException
     {
         byte[] buf = new byte[4];
         int read = 0;
@@ -46,7 +46,7 @@ public class DotXSILoader
 
         // "xsi" in the start of the file means it's a dotXSI file.
         if (!magicNumber.equals("xsi"))
-            throw new IOException("Corrupt .xsi file: Bad magic number");
+            throw new ParseException("Corrupt .xsi file: Bad magic number");
 
         Header header = new Header();
 
@@ -80,9 +80,10 @@ public class DotXSILoader
      * Reads a string from the inputstream.
      * 
      * @return the parsed string
-     * @throws IOException if there was an io error, or if the parsing failed.
+     * @throws IOException if there was an io error.
+     * @throws ParseException if the parsing fails for any reason
      */
-    private String readUntilEndOfString() throws IOException
+    private String readUntilEndOfString() throws IOException, ParseException
     {
         // Horribly slow method of reading strings..
         
@@ -93,7 +94,7 @@ public class DotXSILoader
         {
             int i = reader.read();
             if (i == -1)
-                throw new IOException("Corrupt .xsi file: Unexpected EOF in string");
+                throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
 
             char ch = (char)i;
 
@@ -106,7 +107,7 @@ public class DotXSILoader
                 // If it was '"', read another character and make sure it's a ','
                 ch = (char)reader.read();
                 if (ch != ',')
-                    throw new IOException("Corrupt .xsi file: Expected \",\", got \"" + ch + "\"");
+                    throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + ch + "\"");
                 keepReading = false;
             }
         }
@@ -118,9 +119,10 @@ public class DotXSILoader
      * Builds a tree of RawTemplates, representing the dotXSI file.
      * 
      * @return the root RawTemplate
-     * @throws IOException if there's an io error, or if the parsing fails.
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
      */
-    private RawTemplate parseRawTemplates() throws IOException
+    private RawTemplate parseRawTemplates() throws IOException, ParseException
     {
         // Horrible way of parsing the tags one byte at the time.
         // Needs to be profiled and optimised.
@@ -213,8 +215,9 @@ public class DotXSILoader
      * 
      * @param rawTemplate the RawTemplate that should be converted to a Template
      * @return the Template representing the RawTemplate
+     * @throws ParseException if the parsing fails for any reason
      */
-    private Template buildTemplate(RawTemplate rawTemplate)
+    private Template buildTemplate(RawTemplate rawTemplate) throws ParseException
     {
         // Depth first. Iterate over all values and replace all RawTemplates with them with the real Templates
         for (int i=0; i<rawTemplate.values.size(); i++)
@@ -259,19 +262,20 @@ public class DotXSILoader
      * then converting them into instances of their respective classes.
      * 
      * @return the RootTemplate that holds the dotXSI file
-     * @throws IOException if there's an io error, or if the parsing failed
+     * @throws IOException if there's an io error
+     * @throws ParseException if the parsing fails for any reason
      */
-    private RootTemplate parse() throws IOException
+    private RootTemplate parse() throws IOException, ParseException
     {
         try
         {
             header = readHeader();
 
-            // TODO: Add support for binary and compressed formats
+            // TODO: Add support for dotXSI formats newer than 3.x
             if (!header.formatType.equals("txt"))
-                throw new IOException("Failed to read dotXSI: Only txt format supported");
+                throw new ParseException("Failed to read dotXSI: Only txt format supported");
             if (!(header.majorVersion == 3))
-                throw new IOException("Failed to read dotXSI: Only 3.x files supported");
+                throw new ParseException("Failed to read dotXSI: Only 3.x files supported");
             
             reader = new LineNumberReader(new InputStreamReader(in));
 
@@ -285,7 +289,7 @@ public class DotXSILoader
 
             System.out.println("Error occured on line "+line);
             e.printStackTrace();
-        	throw new IOException("Failed to read file: "+e);
+        	throw new ParseException("Failed to read file: "+e);
         }
     }
 
@@ -294,9 +298,10 @@ public class DotXSILoader
      * 
      * @param in an input stream that contains a dotXSI file
      * @return a RootTemplate containing the entire scene
-     * @throws IOException if there's an io error, or if the parsing fails for any reason
+     * @throws IOException if there's an io error
+     * @throws ParseException if the parsing fails for any reason
      */
-    public static RootTemplate load(InputStream in) throws IOException
+    public static RootTemplate load(InputStream in) throws IOException, ParseException
     {
         // TODO: Add a ParseException or something.. throwing them as ioexceptions isn't right.
         return new DotXSILoader(in).parse();

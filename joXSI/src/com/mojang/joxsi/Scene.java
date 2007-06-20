@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.joxsi.loader.DotXSILoader;
+import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.loader.RootTemplate;
 import com.mojang.joxsi.loader.SI_Envelope;
 import com.mojang.joxsi.loader.SI_EnvelopeList;
@@ -44,9 +45,10 @@ public class Scene
      * 
      * @param in the input stream to read the scene from. This input stream needs to contain a valid XSI file
      * @return a new Scene.
-     * @throws IOException if there's an io error, of if the parsing fails.
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
      */
-    public static Scene load(InputStream in) throws IOException
+    public static Scene load(InputStream in) throws IOException, ParseException
     {
         return new Scene(DotXSILoader.load(in));
     }
@@ -94,7 +96,7 @@ public class Scene
             }
         }
         
-        // Add all materials, if there is a materiallibrar. Both SI_Material and XSI_Materials get added.
+        // Add all materials, if there is a materiallibrary. Both SI_Material and XSI_Materials get added.
         SI_MaterialLibrary materialLibrary = (SI_MaterialLibrary)root.get(Template.SI_MaterialLibrary);
         if (materialLibrary != null)
         {
