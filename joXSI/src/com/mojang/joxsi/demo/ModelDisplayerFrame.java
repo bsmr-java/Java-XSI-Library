@@ -1,4 +1,7 @@
 package com.mojang.joxsi.demo;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
@@ -6,7 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-public class ModelDisplayerFrame extends JFrame {
+public class ModelDisplayerFrame extends JFrame implements ActionListener{
 
 	ModelDisplayerFrame(String title)
 	{
@@ -19,6 +22,8 @@ public class ModelDisplayerFrame extends JFrame {
     { 
     	JMenuItem menuItem = new JMenuItem(text);
     	menuItem.setMnemonic(mnemonic);
+   	menuItem.addActionListener(this);
+    	menuItem.setActionCommand(text);
     	return menuItem;
     }
    
@@ -52,4 +57,32 @@ public class ModelDisplayerFrame extends JFrame {
         jmb.add(jmAnimations);
         return(jmb);
     }
+
+
+	@Override
+ 	public void actionPerformed(ActionEvent e) {
+
+		String action = e.getActionCommand();
+		if (action == null) {
+				System.out.println("Empty ActionCommand ");
+			return;
+		}else{
+			System.out.println("ActionCommand: " + action+" source: "+((Component) e.getSource()));
+		}		
+		if (!action.equals("Model A")) {
+			System.out.println();
+		}
+		
+		if (!action.equals("Model B")) {
+			System.out.println();
+		}
+		if (!action.equals("Model C")) {
+			System.out.println();
+		}
+		if (!action.equals("Animation 1")) {
+			System.out.println();
+		}
+		
+ 	}
+		
 }
