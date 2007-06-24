@@ -32,6 +32,7 @@ public class XSI_Action extends Template
      */
 	public int type;
 
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -39,4 +40,55 @@ public class XSI_Action extends Template
 		end = ((Float)it.next()).floatValue();
 		type = ((Integer)it.next()).intValue();
 	}
+
+    /**
+     * Returns the type of action as descriptive text.
+     * 
+     * @param aType
+     *            the type of action
+     * @return the type of action as descriptive text.
+     * @pre $aType >= 0 && aType <= 7
+     * @post $none
+     */
+	public String getTypeDescription(int aType) {
+	    String lDescription;
+        
+        switch (aType)
+        {
+        case 0:
+            lDescription = "FCurve action source";
+            break;
+        case 1:
+            lDescription = "Static value action source";
+            break;
+        case 2:
+            lDescription = "Expression source";
+            break;
+        case 3:
+            lDescription = "ClusterKey source";
+            break;
+        case 4:
+            lDescription = "Constraint source";
+            break;
+        case 5:
+            lDescription = "Compound action item source";
+            break;
+        case 6:
+            lDescription = "Shape compound action item";
+            break;
+        case 7:
+            lDescription = "Fno flagged source";
+            break;
+        default:
+            lDescription = "Unknown action source type: " + aType;
+            break;
+        }
+        return lDescription;
+	}
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + ", type: " + getTypeDescription(type) + ", start: " + start + ", end: " + end;
+    }    
 }

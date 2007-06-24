@@ -104,7 +104,8 @@ public class SI_Shape extends Template
 			return elements.startsWith(type);
 		}
 	}
-	
+
+    @Override
     public void parse(RawTemplate block)
     {
         ListIterator it = block.values.listIterator();
@@ -141,7 +142,6 @@ public class SI_Shape extends Template
 //				System.out.println("Skipping "+o);
 			}
 
-			
 			for (int j=0; j<shapeArrays[i].nbElements; j++)
 			{
 				if (isIndexed)
@@ -155,5 +155,11 @@ public class SI_Shape extends Template
 				}
 			}
 		}
+    }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + ", Number of Shapes: " + nbShapeArrays;
     }
 }

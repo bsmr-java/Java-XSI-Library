@@ -14,6 +14,11 @@ import java.util.Iterator;
  */
 public class SI_Angle extends Template
 {
+    /** Indicates angle values are expressed in Degrees in the file. */
+    public static final int DEGREES = 0;
+    /** Indicates angle values are expressed in Radians in the file. */
+    public static final int RADIANS = 1;
+    
     /**
      * Specifies angle representation:<br>
      * 0 = degrees<br>
@@ -21,9 +26,16 @@ public class SI_Angle extends Template
      */
 	public int type;
 
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
 		type = ((Integer)it.next()).intValue();
 	}
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + "type: " + type;
+    }
 }

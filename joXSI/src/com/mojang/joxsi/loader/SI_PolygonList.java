@@ -46,8 +46,10 @@ public class SI_PolygonList extends Template
     public String material;
     /** Number of vertices in total for this mesh object. */
     public int nbTotalVertices;
+    /** Array of Polygons. */
     public Polygon[] polygons;
 
+    /** One Polygon in the mesh. */
     public class Polygon implements Serializable
     {
         /** Number of vertices for a specific polygon in the mesh. */
@@ -65,6 +67,7 @@ public class SI_PolygonList extends Template
         public int[][] uv;
     }
 
+    @Override
     public void parse(RawTemplate block)
     {
         ListIterator it = block.values.listIterator();
@@ -134,5 +137,11 @@ public class SI_PolygonList extends Template
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + " - Number of Polyygons: " + nbPolygons + ", material: " + material + ", number of vertices: " + nbTotalVertices;
     }
 }

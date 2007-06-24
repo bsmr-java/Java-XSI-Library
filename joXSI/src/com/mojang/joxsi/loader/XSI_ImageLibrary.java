@@ -9,9 +9,12 @@ import java.util.Iterator;
  */
 public class XSI_ImageLibrary extends Template
 {
+    /** Number of images in the library. */
 	public int image_count;
+    /** Array of XSI_Images. */
 	public XSI_Image[] images;
-	
+
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -24,4 +27,9 @@ public class XSI_ImageLibrary extends Template
 			images[i] = (XSI_Image)it2.next();
 		} 
 	}
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Number of Images: " + image_count;
+    }
 }

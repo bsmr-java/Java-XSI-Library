@@ -61,6 +61,7 @@ public class XSI_ShaderInstanceData extends Template
 	public Parameter[] parameters;
 	public Map parameterMap = new HashMap();
 
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -78,5 +79,11 @@ public class XSI_ShaderInstanceData extends Template
 			
 			parameterMap.put(parameters[i].name, parameters[i]);
 		}
+    }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + " - objectName: " + objectName + ", Output: " + output + ", Number of parameters: " + param_number;
     }
 }

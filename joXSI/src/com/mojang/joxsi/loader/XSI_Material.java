@@ -42,6 +42,7 @@ public class XSI_Material extends Template implements Material
 	public int cnx_number;
 	public Connection[] connections;
 
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -60,7 +61,16 @@ public class XSI_Material extends Template implements Material
      * 
      * @return the clsss name and the number of connections pairs.
      */
-    public String toString() {
-        return super.toString() + " - cnx_number: " + cnx_number;
+    public String toString()
+    {
+        String lConnectionDetails = "";
+        for (Connection item : connections) {
+            if (item != null && item.toString().length() > 0)
+            {
+                lConnectionDetails += item;
+                lConnectionDetails += ", ";
+            }
+        }
+        return super.toString() + " - cnx_number: " + cnx_number + ", details: " + lConnectionDetails;
     }
 }

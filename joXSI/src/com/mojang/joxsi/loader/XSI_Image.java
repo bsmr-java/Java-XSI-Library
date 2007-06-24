@@ -53,6 +53,7 @@ public class XSI_Image extends Template
     /** Specifies frame number for last frame in sequence. */
 	public int last;
 	
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -70,4 +71,9 @@ public class XSI_Image extends Template
 		first = ((Integer)it.next()).intValue();
 		last = ((Integer)it.next()).intValue();
 	}
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Imagename: " + filename + " (" + imageX + ", " + imageY + ")";
+    }
 }

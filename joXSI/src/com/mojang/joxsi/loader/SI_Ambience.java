@@ -19,6 +19,7 @@ public class SI_Ambience extends Template
     /** The ambient blue color in the scene. */
 	public float blue;
 
+    @Override
 	public void parse(RawTemplate block)
 	{
 		Iterator it = block.values.iterator();
@@ -26,4 +27,10 @@ public class SI_Ambience extends Template
 		green = ((Float)it.next()).floatValue();
 		blue = ((Float)it.next()).floatValue();
 	}
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString() + ", Red: " + red + ", Green: " + green + ", Blue: " + blue;
+    }
 }

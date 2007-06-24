@@ -198,4 +198,12 @@ public class SI_CoordinateSystem extends Template
             transform.rotZ = rotate[2];
         }*/
     }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return super.toString()
+                + "handRotation: " + handRotation + ", uAxis: " + uAxis + ", vAxis: " + vAxis + "xAxis: " + xAxis + ", yAxis: "
+                + yAxis + ", zAxis: + zAxis";
+    }
 }
