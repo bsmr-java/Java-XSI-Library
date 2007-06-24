@@ -22,11 +22,13 @@ import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
 
+
 /**
  * A simple model displayer demo application.
  */
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener
 {
+	
     private Scene scene;
     private int xDragStart;
     private int yDragStart;
@@ -48,7 +50,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         yCamera = -1.0f;
     }
-
+	
     public void mouseClicked(MouseEvent e)
     {
     }
@@ -260,8 +262,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             System.out.println("No arguments. We're probably run from webstart, so load the default model");
             // No arguments. We're probably run from webstart, so load the default model
-            scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
-        }
+     			scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
+       }
         else
         {
             System.out.println("Going to load '" + args[0] + "' as a model");
@@ -290,7 +292,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         frame.add(canvas);
         new Thread(canvas).start();
 
-        frame.setLocation(200, 0);
+        frame.setLocation(200, 30);
         frame.setSize(512, 384);
         frame.setVisible(true);
         
@@ -303,5 +305,6 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             }
         });
     }
+
 
 }
