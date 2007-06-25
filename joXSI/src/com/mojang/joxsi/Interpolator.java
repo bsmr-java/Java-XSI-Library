@@ -114,10 +114,17 @@ public class Interpolator
             target = ROTATION_Z;
 
         else
-            throw new IllegalArgumentException("I have no idea how to animate " + curve.fcurve + "!");
+        {
+            if (curve != null)
+                throw new IllegalArgumentException("I have no idea how to animate " + curve.fcurve + "!");
+            else
+                throw new IllegalArgumentException("I have no idea how to animate a null curve - target: " + targetName + "!");
+        }
 
         // Parse the interpolation type.
-        if (curve.interpolation.equals("CONSTANT"))
+        if (curve == null || curve.interpolation == null)
+            throw new IllegalArgumentException("I have no idea how to animate a null curve or null interpolation type - target: " + targetName + "!");
+        else if (curve.interpolation.equals("CONSTANT"))
             interpolation = INTERPOLATION_CONSTANT;
         else if (curve.interpolation.equals("HERMITE"))
             interpolation = INTERPOLATION_HERMITE;
