@@ -22,13 +22,11 @@ import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
 
-
 /**
  * A simple model displayer demo application.
  */
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener
 {
-	
     private Scene scene;
     private int xDragStart;
     private int yDragStart;
@@ -50,7 +48,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         yCamera = -1.0f;
     }
-	
+
     public void mouseClicked(MouseEvent e)
     {
     }
@@ -151,7 +149,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Find all actions in all models in the root of the scene, then store the first one in the 'action' object
         for (int i = 0; i < scene.models.length; i++)
         {
-            System.out.println("Number of actions in model " + i + ": " + scene.images.size());
+            System.out.println("Number of actions in model " + i + ": " + scene.models[i].actions.length);
             for (int j = 0; j < scene.models[i].actions.length; j++)
             {
                 Action a = scene.models[i].actions[j];
@@ -220,7 +218,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[] {0, 0.7f, 0.7f, 0}, 0);
             gl.glEnable(GL.GL_LIGHT0);
             gl.glEnable(GL.GL_LIGHTING);
-            
+
             // If an animation was found in the setup, apply it now.
             if (action != null)
             {
@@ -262,8 +260,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             System.out.println("No arguments. We're probably run from webstart, so load the default model");
             // No arguments. We're probably run from webstart, so load the default model
-     			scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
-       }
+            scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
+        }
         else
         {
             System.out.println("Going to load '" + args[0] + "' as a model");
@@ -305,6 +303,4 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             }
         });
     }
-
-
 }
