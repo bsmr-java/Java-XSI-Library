@@ -12,7 +12,8 @@ public class Shape
     public float[] vertexBuffer;
     public float[] normalBuffer;
     public float[] colorBuffer;
-    public float[][] texCoordBuffer = new float[16][];
+    /** the forest-giant.xsi has TEX_COORD_UVs that reach 42 so 16 is not enough. */
+    public float[][] texCoordBuffer = new float[44][];
 
     /**
      * Creates a new Shape from an SI_Shape object.
