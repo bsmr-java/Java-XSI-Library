@@ -204,6 +204,6 @@ public class SI_CoordinateSystem extends Template
         // TODO Auto-generated method stub
         return super.toString()
                 + "handRotation: " + handRotation + ", uAxis: " + uAxis + ", vAxis: " + vAxis + "xAxis: " + xAxis + ", yAxis: "
-                + yAxis + ", zAxis: + zAxis";
+                + yAxis + ", zAxis: " + zAxis;
     }
 }
