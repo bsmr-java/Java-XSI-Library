@@ -33,9 +33,29 @@ public class SI_Angle extends Template
 		type = ((Integer)it.next()).intValue();
 	}
 
+    /**
+     * Returns the angle representation for the model.
+     * 
+     * @return the angle representation for the model.
+     * @ost $result == DEGREES || $result == RADIANS
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
+     * Sets the angle representation for the model.
+     * 
+     * @param aType
+     *            the angle representation for the model.
+     * @pre aType == DEGREES || aType == RADIANS
+     */
+    public void setType(final int aType) {
+        type = aType;
+    }
+
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString() + "type: " + type;
+        return super.toString() + " - type: " + type;
     }
 }
