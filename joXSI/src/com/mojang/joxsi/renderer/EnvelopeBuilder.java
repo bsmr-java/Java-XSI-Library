@@ -128,24 +128,39 @@ public class EnvelopeBuilder
         boolean hasNormals = triangleList.hasNormals;
         Shape shape = triangleList.shape;
 
+        int vertex;
+        float xv;
+        float yv;
+        float zv;
+        float x = 0;
+        float y = 0;
+        float z = 0;
+        int j;
+        float weight;
+        float[] mtrx;
+        
+        int normal;
+        float xn;
+        float yn;
+        float zn;
         // Iterate over all vertices
         for (int i = 0; i < triangleList.vertices; i++)
         {
-            int vertex = triangleList.vertexIndexes[i];
+            vertex = triangleList.vertexIndexes[i];
 
             // Get original position
-            float xv = shape.vertexBuffer[vertex * 3 + 0];
-            float yv = shape.vertexBuffer[vertex * 3 + 1];
-            float zv = shape.vertexBuffer[vertex * 3 + 2];
+            xv = shape.vertexBuffer[vertex * 3 + 0];
+            yv = shape.vertexBuffer[vertex * 3 + 1];
+            zv = shape.vertexBuffer[vertex * 3 + 2];
 
-            float x = 0;
-            float y = 0;
-            float z = 0;
+            x = 0;
+            y = 0;
+            z = 0;
             // Iterate over all envelopes that affect this envelope
-            for (int j = 0; j < triangleList.envelopeCounts[vertex]; j++)
+            for (j = 0; j < triangleList.envelopeCounts[vertex]; j++)
             {
-                float weight = triangleList.envelopeWeights[j][vertex];
-                float[] mtrx = envelopes[triangleList.envelopeIndexes[j][vertex]].deformationMatrix;
+                weight = triangleList.envelopeWeights[j][vertex];
+                mtrx = envelopes[triangleList.envelopeIndexes[j][vertex]].deformationMatrix;
                 
                 // Multiply original position by the deformer matrix, multiply result by weight, and add to output values.
                 x += (mtrx[0] * xv + mtrx[4] * yv + mtrx[8] * zv + mtrx[12]) * weight;
@@ -158,21 +173,21 @@ public class EnvelopeBuilder
 
             if (hasNormals)
             {
-                int normal = triangleList.normalIndexes[i];
+                normal = triangleList.normalIndexes[i];
                 
                 // Get original normal
-                float xn = shape.normalBuffer[normal * 3 + 0];
-                float yn = shape.normalBuffer[normal * 3 + 1];
-                float zn = shape.normalBuffer[normal * 3 + 2];
+                xn = shape.normalBuffer[normal * 3 + 0];
+                yn = shape.normalBuffer[normal * 3 + 1];
+                zn = shape.normalBuffer[normal * 3 + 2];
 
                 x = 0;
                 y = 0;
                 z = 0;
                 // Iterate over all envelopes that affect this envelope
-                for (int j = 0; j < triangleList.envelopeCounts[vertex]; j++)
+                for (j = 0; j < triangleList.envelopeCounts[vertex]; j++)
                 {
-                    float weight = triangleList.envelopeWeights[j][vertex];
-                    float[] mtrx = envelopes[triangleList.envelopeIndexes[j][vertex]].deformationMatrix;
+                    weight = triangleList.envelopeWeights[j][vertex];
+                    mtrx = envelopes[triangleList.envelopeIndexes[j][vertex]].deformationMatrix;
 
                     // Multiply original normal by the deformer matrix (sans translation), multiply result by weight, and add to output values.
                     x += (mtrx[0] * xn + mtrx[4] * yn + mtrx[8] * zn) * weight;
@@ -220,10 +235,11 @@ public class EnvelopeBuilder
 
         if (hasColors)
         {
+      	  int colorIndex;
             // Look up the colors from the shape, and add to the buffer
             for (int i = 0; i < triangleList.vertices; i++)
             {
-                int colorIndex = triangleList.colorIndexes[i];
+                colorIndex = triangleList.colorIndexes[i];
                 colorBuffer[i * 4 + 0] = shape.colorBuffer[colorIndex * 4 + 0];
                 colorBuffer[i * 4 + 1] = shape.colorBuffer[colorIndex * 4 + 1];
                 colorBuffer[i * 4 + 2] = shape.colorBuffer[colorIndex * 4 + 2];
@@ -237,10 +253,11 @@ public class EnvelopeBuilder
         {
             if (triangleList.hasTexCoords[t])
             {
+            	int texCoordIndex;
                 // Look up the texture coordinates from the shape, and add to the buffer
                 for (int i = 0; i < triangleList.vertices; i++)
                 {
-                    int texCoordIndex = triangleList.texCoordIndexes[t][i];
+                    texCoordIndex = triangleList.texCoordIndexes[t][i];
                     texCoordBuffers[t][i * 2 + 0] = shape.texCoordBuffer[t][texCoordIndex * 2 + 0];
                     texCoordBuffers[t][i * 2 + 1] = shape.texCoordBuffer[t][texCoordIndex * 2 + 1];
                 }
