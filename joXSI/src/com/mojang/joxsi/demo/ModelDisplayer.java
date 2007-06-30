@@ -237,7 +237,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             if (now - start > 4000)
             {
                 start += 4000;
-                System.out.println(frames / 4 + " fps");
+                System.out.println(frames / 4 + " fps and Time of creating scene: "+time);
                 frames = 0;
             }
             
@@ -253,8 +253,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * @throws IOException if the model can't be loaded.
      * @throws ParseException if the parsing fails for any reason
      */
+    static long time=0;
     public static void main(String[] args) throws IOException, ParseException
     {
+   	 	TimeIt timer = new TimeIt();
+   	 
         Scene scene = null;
         if (args.length == 0)
         {
@@ -264,20 +267,26 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
         else
         {
-            System.out.println("Going to load '" + args[0] + "' as a model");
-            final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[0]);
-            if (lResourceAsStream != null)
-            {
-                System.out.println("Going to load '" + args[0] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[0]));
-                scene = Scene.load(lResourceAsStream);
-                
+      	  //Just the possibility to load more Models at start for better time measurement
+            for (int i=0; i<args.length;i++){
+               System.out.println("Going to load '" + args[i] + "' as a model");
+               final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
+               if (lResourceAsStream != null)
+               {
+                   System.out.println("Going to load '" + args[i] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[0]));
+                   scene = Scene.load(lResourceAsStream);
+                   
+               }
+               else
+               {
+                   throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
+               }          	
             }
-            else
-            {
-                throw new IllegalArgumentException("Cannot load model from this location: " + args[0]);
-            }
+
         }
 
+        time = timer.getTime();
+//        System.err.println("Time of creating scene: "+time);
         // Set up a JFrame for a TemplateTree showing the entire scene
         JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);
