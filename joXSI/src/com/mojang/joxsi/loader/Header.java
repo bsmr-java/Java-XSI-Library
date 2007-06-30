@@ -19,4 +19,6 @@ public class Header implements Serializable
     public String compressionType;
     /** Float size; 32 or 64bit floats. */
     public int floatSize;
+    /** String that reprsents the Text dotXSI format type. */
+    public static final String TEXT_FORMAT_TYPE = "txt";
 }
