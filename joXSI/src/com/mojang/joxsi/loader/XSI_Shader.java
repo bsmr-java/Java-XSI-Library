@@ -159,6 +159,18 @@ public class XSI_Shader extends Template
     }
 
     /**
+     * Returns the Parameter with the given name.
+     * 
+     * @param name
+     *            Parameter name.
+     * @return the Parameter with the given name.
+     */
+    public Parameter getParameter(String name)
+    {
+        return (Parameter)parameterMap.get(name);
+    }
+
+    /**
      * Returns a String that describes the Shader including the Parameters and
      * Connections.
      * 
