@@ -121,6 +121,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     {
     }
 
+    //lights
+    final float[] whitelight = new float[] {1, 1, 1, 1};
+    final float[] greylight = new float[] {0.25f, 0.25f, 0.25f, 1};
+    final float[] brightlight = new float[] {0, 0.7f, 0.7f, 0};
     /**
      * This is where all the rendering magic happens.
      * Only handles two actions at the moment.
@@ -213,9 +217,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glEnd();
 
             // Set up the lights
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, new float[] {1, 1, 1, 1}, 0);
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, new float[] {0.25f, 0.25f, 0.25f, 1}, 0);
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, new float[] {0, 0.7f, 0.7f, 0}, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, whitelight, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, greylight, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, brightlight, 0);
             gl.glEnable(GL.GL_LIGHT0);
             gl.glEnable(GL.GL_LIGHTING);
 
@@ -236,7 +240,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             long now = System.currentTimeMillis();
             if (now - start > 4000)
             {
-                start += 4000;
+            	//This is more precisly 
+            	start = now;
+//                start += 2000;
                 System.out.println(frames / 4 + " fps and Time of creating scene: "+time);
                 frames = 0;
             }
