@@ -24,6 +24,9 @@ import com.mojang.joxsi.renderer.TextureLoader;
 
 /**
  * A simple model displayer demo application.
+ * @author Notch
+ * @author Egal
+ * @author Milbo
  */
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener
 {
@@ -38,6 +41,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private float zoomDistance = 4.1f;
     private static boolean stop = false;
     private JoglSceneRenderer sceneRenderer;
+    private static long time = 0l;
+    /** Diffuse scene light zero. */
+    private float[] diffuseSceneLight0 = new float[] {1, 1, 1, 1};
+    /** Ambient scene lighting zero. */
+    private float[] ambientSceneLight0 = new float[] {0.25f, 0.25f, 0.25f, 1};
+    /** Position of the Scene light zero */
+    private float[] positionSceneLight0 = new float[] {0, 0.7f, 0.7f, 0};
 
     public ModelDisplayer(Scene scene)
     {
@@ -121,10 +131,6 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     {
     }
 
-    //lights
-    final float[] whitelight = new float[] {1, 1, 1, 1};
-    final float[] greylight = new float[] {0.25f, 0.25f, 0.25f, 1};
-    final float[] brightlight = new float[] {0, 0.7f, 0.7f, 0};
     /**
      * This is where all the rendering magic happens.
      * Only handles two actions at the moment.
@@ -217,9 +223,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glEnd();
 
             // Set up the lights
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, whitelight, 0);
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, greylight, 0);
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, brightlight, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseSceneLight0, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientSceneLight0, 0);
+            gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT0);
             gl.glEnable(GL.GL_LIGHTING);
 
@@ -240,10 +246,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             long now = System.currentTimeMillis();
             if (now - start > 4000)
             {
-            	//This is more precisly 
-            	start = now;
-//                start += 2000;
-                System.out.println(frames / 4 + " fps and Time of creating scene: "+time);
+            	// This is more precise 
+                start = now;
+                //start += 4000;
+                System.out.println(frames / 4 + " fps and Time of creating scene: " + time);
                 frames = 0;
             }
             
@@ -259,11 +265,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * @throws IOException if the model can't be loaded.
      * @throws ParseException if the parsing fails for any reason
      */
-    static long time=0;
     public static void main(String[] args) throws IOException, ParseException
     {
    	 	TimeIt timer = new TimeIt();
-   	 
+
         Scene scene = null;
         if (args.length == 0)
         {
@@ -274,25 +279,24 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         else
         {
       	  //Just the possibility to load more Models at start for better time measurement
-            for (int i=0; i<args.length;i++){
-               System.out.println("Going to load '" + args[i] + "' as a model");
-               final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
-               if (lResourceAsStream != null)
-               {
-                   System.out.println("Going to load '" + args[i] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[0]));
-                   scene = Scene.load(lResourceAsStream);
-                   
-               }
-               else
-               {
-                   throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
-               }          	
+            for (int i = 0; i < args.length; i++)
+            {
+                System.out.println("Going to load '" + args[i] + "' as a model");
+                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[0]);
+                if (lResourceAsStream != null)
+                {
+                    System.out.println("Going to load '" + args[0] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[i]));
+                    scene = Scene.load(lResourceAsStream);
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
+                }
             }
-
         }
 
         time = timer.getTime();
-//        System.err.println("Time of creating scene: "+time);
+        // System.err.println("Time of creating scene: "+time);
         // Set up a JFrame for a TemplateTree showing the entire scene
         JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);
