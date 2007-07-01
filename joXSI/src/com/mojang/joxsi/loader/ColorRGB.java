@@ -8,7 +8,7 @@ import java.util.Iterator;
  * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
  * 
  * <p>It's very sparsely documented.
- * @autor Notch
+ * @author Notch
  * @author Egal
  */
 public class ColorRGB
@@ -39,8 +39,8 @@ public class ColorRGB
 	}
 	
     /**
-     * Construct a new ColorRGB instance with the specified Red, Green, and Blue
-     * values.
+     * Construct a new ColorRGB instance with the Red, Green, and Blue
+     * values specified in the Iterator.
      * 
      * @param it
      *            an Iterator.
