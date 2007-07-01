@@ -163,6 +163,15 @@ public abstract class Template
         return result;
     }
 
+    /**
+     * Returns a List of all Templates in the current model whose name matches
+     * the given String.
+     * 
+     * @param templateType
+     *            the search String.
+     * @return a List of all Templates in the current model whose name matches
+     *         the given String.
+     */
     public List getAll(String templateType)
     {
         List result = new ArrayList();
@@ -177,6 +186,15 @@ public abstract class Template
         return result;
     }
 
+    /**
+     * Returns a List of all Templates in the current model whose name starts
+     * with the given String.
+     * 
+     * @param templateType
+     *            the search String.
+     * @return a List of all Templates in the current model whose name starts
+     *         with the given String.
+     */
     public List getAllStartingWith(String templateType)
     {
         List result = new ArrayList();
@@ -191,12 +209,33 @@ public abstract class Template
         return result;
     }
 
+    /**
+     * Parses a <code>Template</code> from the {@link RawTemplate }.
+     * 
+     * @param block
+     *            the raw template.
+     */
     public abstract void parse(RawTemplate block);
 
+    /**
+     * Returns the root template.
+     * 
+     * @return the root template.
+     */
     public Template getRoot() {
-	if (parent != null)
-	    return parent.getRoot();
-	return this;
+        if (parent != null)
+            return parent.getRoot();
+        else
+            return this;
+    }
+
+    /**
+     * Returns the parent of the current template.
+     * 
+     * @return the parent of the current template.
+     */
+    public Template getParent() {
+        return parent;
     }
 
     public String toString()
