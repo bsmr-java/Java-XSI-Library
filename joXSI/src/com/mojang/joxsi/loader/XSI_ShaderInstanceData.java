@@ -59,7 +59,7 @@ public class XSI_ShaderInstanceData extends Template
 	public int output;
 	public int param_number;
 	public Parameter[] parameters;
-	public Map parameterMap = new HashMap();
+	public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
 
     @Override
 	public void parse(RawTemplate block)

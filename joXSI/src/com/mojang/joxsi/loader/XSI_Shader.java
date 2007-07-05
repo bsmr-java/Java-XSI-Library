@@ -111,8 +111,8 @@ public class XSI_Shader extends Template
 	public Parameter[] parameters;
     /** Array of Connections. */
 	public Connection[] connections;
-	public Map parameterMap = new HashMap();
-	public Map connectionMap = new HashMap();
+	public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
+	public Map<String, Connection> connectionMap = new HashMap<String, Connection>();
 
 	public void parse(RawTemplate block)
 	{
@@ -155,7 +155,7 @@ public class XSI_Shader extends Template
      */
     public Connection getConnection(String name)
     {
-    	return (Connection)connectionMap.get(name);
+    	return connectionMap.get(name);
     }
 
     /**
@@ -167,7 +167,7 @@ public class XSI_Shader extends Template
      */
     public Parameter getParameter(String name)
     {
-        return (Parameter)parameterMap.get(name);
+        return parameterMap.get(name);
     }
 
     /**
