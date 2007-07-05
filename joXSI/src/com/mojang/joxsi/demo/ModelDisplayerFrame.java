@@ -58,8 +58,9 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener{
         return(jmb);
     }
 
-
-	@Override
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
  	public void actionPerformed(ActionEvent e) {
 
 		String action = e.getActionCommand();
@@ -82,7 +83,5 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener{
 		if (!action.equals("Animation 1")) {
 			System.out.println();
 		}
-		
  	}
-		
 }
