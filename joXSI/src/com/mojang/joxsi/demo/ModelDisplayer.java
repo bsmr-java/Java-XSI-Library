@@ -1,6 +1,8 @@
 package com.mojang.joxsi.demo;
 
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,7 +30,7 @@ import com.mojang.joxsi.renderer.TextureLoader;
  * @author Egal
  * @author Milbo
  */
-public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener
+public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 {
     private Scene scene;
     private int xDragStart;
@@ -44,8 +46,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private static long time = 0l;
     /** Diffuse scene light zero. */
     private float[] diffuseSceneLight0 = new float[] {1, 1, 1, 1};
+    /** Should the Diffuse scene light zero be shown. */
+    private boolean diffuseSceneLightFlag0 = true;
     /** Ambient scene lighting zero. */
     private float[] ambientSceneLight0 = new float[] {0.25f, 0.25f, 0.25f, 1};
+    /** Should the Ambient scene light zero be shown. */
+    private boolean ambientSceneLightFlag0 = true;
     /** Position of the Scene light zero */
     private float[] positionSceneLight0 = new float[] {0, 0.7f, 0.7f, 0};
 
@@ -55,28 +61,49 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         addMouseListener(this);
         addMouseMotionListener(this);
         addMouseWheelListener(this);
+        addKeyListener(this);
 
         yCamera = -1.0f;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
     public void mouseClicked(MouseEvent e)
     {
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
     public void mousePressed(MouseEvent e)
     {
         xDragStart = e.getX();
         yDragStart = e.getY();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     */
     public void mouseReleased(MouseEvent e)
     {
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+     */
     public void mouseEntered(MouseEvent e)
     {
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+     */
     public void mouseExited(MouseEvent e)
     {
     }
@@ -84,6 +111,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /**
      * Zoom in or out if the mousewheel is moved.
      * Pressing the Ctrl key zooms at 1/10th of normal.
+     *
+     * @see java.awt.event.MouseWheelListener#mouseWheelMoved(java.awt.event.MouseWheelEvent)
      */
     public void mouseWheelMoved(MouseWheelEvent e)
     {
@@ -98,6 +127,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         if (zoomDistance < 0.1f) zoomDistance = 0.1f;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+     */
     public void mouseDragged(MouseEvent e)
     {
         // Some magic for looking around
@@ -127,8 +160,58 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         yDragStart = e.getY();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+     */
     public void mouseMoved(MouseEvent e)
     {
+    }
+
+    /* 
+     * (non-Javadoc)
+     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+     */
+    public void keyPressed(KeyEvent aEvent) {
+        int keyCode = aEvent.getKeyCode();
+        String keyString = "key code = " + keyCode + " (" + KeyEvent.getKeyText(keyCode) + ")";
+
+        int modifiersEx = aEvent.getModifiersEx();
+        String modString = "extended modifiers = " + modifiersEx;
+        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+        if (tmpString.length() > 0) {
+            modString += " (" + tmpString + ")";
+        } else {
+            modString += " (no extended modifiers)";
+        }
+        System.out.println("keyPressed: " + keyString + ", " + modString);
+        
+        switch (keyCode)
+        {
+            case 65: // A
+                ambientSceneLightFlag0 = !ambientSceneLightFlag0;
+                break;
+            case 68: // D
+                diffuseSceneLightFlag0 = !diffuseSceneLightFlag0;
+                break;
+            default:
+                break;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+     */
+    public void keyReleased(KeyEvent aEvent) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+     */
+    public void keyTyped(KeyEvent aEvent) {
     }
 
     /**
@@ -143,7 +226,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         Action action = null;
         // Log some details of the model
         int lNumberOfModels = 0;
-        if (scene.models != null)
+        if (scene != null && scene.models != null)
         {
             lNumberOfModels = scene.models.length;
         }
@@ -223,8 +306,22 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glEnd();
 
             // Set up the lights
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseSceneLight0, 0);
-            gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientSceneLight0, 0);
+            if (diffuseSceneLightFlag0)
+            {
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, diffuseSceneLight0, 0);
+            }
+            else
+            {
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, new float[] {0.0f, 0.0f, 0.0f}, 0);
+            }
+            if (ambientSceneLightFlag0)
+            {
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, ambientSceneLight0, 0);
+            }
+            else
+            {
+                gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, new float[] {0.0f, 0.0f, 0.0f}, 0);
+            }
             gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT0);
             gl.glEnable(GL.GL_LIGHTING);
@@ -282,10 +379,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             for (int i = 0; i < args.length; i++)
             {
                 System.out.println("Going to load '" + args[i] + "' as a model");
-                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[0]);
+                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
                 if (lResourceAsStream != null)
                 {
-                    System.out.println("Going to load '" + args[0] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[i]));
+                    System.out.println("Going to load '" + args[i] + "' as a model from " + ModelDisplayer.class.getResource("/" + args[i]));
                     scene = Scene.load(lResourceAsStream);
                 }
                 else
