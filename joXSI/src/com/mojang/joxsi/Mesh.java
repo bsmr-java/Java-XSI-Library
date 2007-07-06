@@ -8,7 +8,6 @@ import com.mojang.joxsi.loader.SI_PolygonList;
 import com.mojang.joxsi.loader.SI_Shape;
 import com.mojang.joxsi.loader.SI_TriangleList;
 import com.mojang.joxsi.loader.Template;
-import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
 
 /**
  * A mesh is a container for one or more TriangleLists.
@@ -30,8 +29,8 @@ public class Mesh
         // The shape contains the actual vertex, color, normal and uv data.
         Shape shape = new Shape((SI_Shape)mesh.get(Template.SI_Shape));
 
-        List triangleListTemplates = mesh.getAll(Template.SI_TriangleList);
-        List polygonListTemplates = mesh.getAll(Template.SI_PolygonList);
+        List<Template> triangleListTemplates = mesh.getAll(Template.SI_TriangleList);
+        List<Template> polygonListTemplates = mesh.getAll(Template.SI_PolygonList);
         
         triangleLists = new TriangleList[triangleListTemplates.size() + polygonListTemplates.size()];
         
@@ -59,7 +58,7 @@ public class Mesh
      */
     private SI_TriangleList tesselate(SI_PolygonList list)
     {
-        ArrayList triangles = new ArrayList();
+        ArrayList<SI_TriangleList.Triangle> triangles = new ArrayList<SI_TriangleList.Triangle>();
         for (int i = 0; i < list.polygons.length; i++)
         {
             Tesselator.tesselate(list.polygons[i], triangles);
@@ -70,7 +69,7 @@ public class Mesh
         triangleList.nbTriangles = triangles.size();
         triangleList.elements = list.elements;
         triangleList.material = list.material;
-        triangleList.triangles = (Triangle[])triangles.toArray(new SI_TriangleList.Triangle[triangles.size()]);
+        triangleList.triangles = triangles.toArray(new SI_TriangleList.Triangle[triangles.size()]);
 
         return triangleList;
     }

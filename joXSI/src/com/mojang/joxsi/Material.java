@@ -48,7 +48,6 @@ public class Material
         diffuseColor = material.faceColor;
         emissiveColor = material.emissiveColor;
         specularColor = material.specularColor;
-        
     }
     
     /**
@@ -59,23 +58,23 @@ public class Material
      * @param material the SI_Material that contains the material information
      * @param images a map of String -> XSI_Image mappings, as defined by the XSI_ImageLibrary in the scene.
      */
-    public Material(XSI_Material material, Map images)
+    public Material(XSI_Material material, Map<String, XSI_Image> images)
     {
    	 	XSI_Image image;
         name = material.template_info;
-        for (Iterator it = material.getAll(Template.XSI_Shader).iterator(); it.hasNext();)
+        for (Iterator<Template> it = material.getAll(Template.XSI_Shader).iterator(); it.hasNext();)
         {
             XSI_Shader shader = (XSI_Shader)it.next();
 
             // A "bump_inuse" Parameter indicates that this image is used for bump mapping
             XSI_Shader.Parameter parm = shader.getParameter("bump_inuse");
             bumpInUse = (parm != null && parm.value != null && parm.value instanceof Integer && ((Integer)parm.value).intValue() == 1);
-            
+
             // A "tex" connection maps to an entry in the ImageLibrary
             XSI_Shader.Connection conn = shader.getConnection("tex");
             if (conn!=null)
             {
-                image = ((XSI_Image)images.get(conn.point));
+                image = images.get(conn.point);
                 if (image==null)
                 {
                     Template template = material.getRoot();

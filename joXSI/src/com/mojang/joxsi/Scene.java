@@ -34,9 +34,9 @@ public class Scene
     /** Array of Envelopes in the Scene. */
     public Envelope[] envelopes;
     /** Map of Materials in the Scene. */
-    public Map materials = new HashMap();;
+    public Map<String, Material> materials = new HashMap<String, Material>();;
     /** Map of Images in the Scene. */
-    public Map images = new HashMap();
+    public Map<String, XSI_Image> images = new HashMap<String, XSI_Image>();
 
     /**
      * Factory method for loading a Scene from an input stream.
@@ -63,7 +63,7 @@ public class Scene
         this.root = root;
 
         // Add all models
-        List modelTemplates = root.getAll(Template.SI_Model);
+        List<Template> modelTemplates = root.getAll(Template.SI_Model);
         models = new Model[modelTemplates.size()];
         for (int i = 0; i < modelTemplates.size(); i++)
         {
@@ -89,7 +89,7 @@ public class Scene
         XSI_ImageLibrary imageLibrary = (XSI_ImageLibrary)root.get(Template.XSI_ImageLibrary);
         if (imageLibrary != null)
         {
-            for (Iterator it = imageLibrary.getAll(Template.XSI_Image).iterator(); it.hasNext();)
+            for (Iterator<Template> it = imageLibrary.getAll(Template.XSI_Image).iterator(); it.hasNext();)
             {
                 XSI_Image image = (XSI_Image)it.next();
                 images.put(image.template_info, image);
@@ -100,13 +100,13 @@ public class Scene
         SI_MaterialLibrary materialLibrary = (SI_MaterialLibrary)root.get(Template.SI_MaterialLibrary);
         if (materialLibrary != null)
         {
-            for (Iterator it = materialLibrary.getAll(Template.SI_Material).iterator(); it.hasNext();)
+            for (Iterator<Template> it = materialLibrary.getAll(Template.SI_Material).iterator(); it.hasNext();)
             {
                 SI_Material material = (SI_Material)it.next();
                 materials.put(material.template_info, new Material(material));
             }
 
-            for (Iterator it = materialLibrary.getAll(Template.XSI_Material).iterator(); it.hasNext();)
+            for (Iterator<Template> it = materialLibrary.getAll(Template.XSI_Material).iterator(); it.hasNext();)
             {
                 XSI_Material material = (XSI_Material)it.next();
                 materials.put(material.template_info, new Material(material, images));
@@ -145,6 +145,6 @@ public class Scene
      */
     public Material getMaterial(String materialName)
     {
-        return (Material)materials.get(materialName);
+        return materials.get(materialName);
     }
 }

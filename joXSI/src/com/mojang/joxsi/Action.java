@@ -33,7 +33,7 @@ public class Action
         // TODO: Implement other types of animation than FCurves
         if (action.type == 0) // FCurve action source 
         {
-            List fcurves = action.getAll(Template.SI_FCurve);
+            List<Template> fcurves = action.getAll(Template.SI_FCurve);
             interpolators = new Interpolator[fcurves.size()];
             for (int i=0; i<fcurves.size(); i++)
             {
@@ -61,8 +61,8 @@ public class Action
     {
         for (int i=0; i<interpolators.length; i++)
         {
-            // HACK: This is just odd. Get the framerate from the scene, and use the length of the Action instead.
-            interpolators[i].apply(time*31);
+            // TODO HACK: This is just odd. Get the framerate from the scene, and use the length of the Action instead.
+            interpolators[i].apply(time*30.F);
         }
     }
 

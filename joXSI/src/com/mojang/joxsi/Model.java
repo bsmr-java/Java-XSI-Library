@@ -71,7 +71,7 @@ public class Model
         if (name.startsWith("MDL-")) name = name.substring("MDL-".length());
 
         // Add all sub models
-        List modelTemplates = model.getAll(Template.SI_Model);
+        List<Template> modelTemplates = model.getAll(Template.SI_Model);
         models = new Model[modelTemplates.size()];
         for (int i = 0; i < modelTemplates.size(); i++)
         {
@@ -79,7 +79,7 @@ public class Model
         }
 
         // Add all meshes
-        List meshTemplates = model.getAll(Template.SI_Mesh);
+        List<Template> meshTemplates = model.getAll(Template.SI_Mesh);
         meshes = new Mesh[meshTemplates.size()];
         for (int i = 0; i < meshTemplates.size(); i++)
         {
@@ -87,7 +87,7 @@ public class Model
         }
 
         // Add the basepose transform and local transform
-        List transforms = model.getAll(Template.SI_Transform);
+        List<Template> transforms = model.getAll(Template.SI_Transform);
         // There two lines ensures the model gets a transform and a basepose if there's any transform
         // at all in the SI_Model.
         if (transforms.size() > 0) transform = (SI_Transform)transforms.get(0);
@@ -113,7 +113,7 @@ public class Model
         XSI_Mixer mixer = (XSI_Mixer)model.get(Template.XSI_Mixer);
         if (mixer != null)
         {
-            List xsiActions = mixer.getAll(Template.XSI_Action);
+            List<Template> xsiActions = mixer.getAll(Template.XSI_Action);
             actions = new Action[xsiActions.size()];
             for (int i = 0; i < xsiActions.size(); i++)
             {

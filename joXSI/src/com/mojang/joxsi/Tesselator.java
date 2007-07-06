@@ -18,7 +18,7 @@ public class Tesselator
      * @param p the Polygon to tesselate
      * @param triangles the list to add the triangles to
      */
-    public static void tesselate(Polygon p, List triangles)
+    public static void tesselate(Polygon p, List<Triangle> triangles)
     {
         if (p.nbVertices == 3) // Three vertices/sides! Trivial case, just create a new triangle.
         {
