@@ -1,14 +1,8 @@
 package com.mojang.joxsi;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-
-import javax.swing.*;
 
 import com.mojang.joxsi.loader.XSI_Image;
 
