@@ -57,13 +57,16 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** Position of the Scene light zero */
     private float[] positionSceneLight0 = new float[] {0, 0.7f, 0.7f, 0};
 
+ 	private boolean moreLight;
+	private boolean grid;
+	private boolean vertexshader;
+	
     //Hmm just for testing
     private static final float TWO_PI = (float) (Math.PI *2);
     private float wave_movement = 0.0f;
     private int SIZE=32;
     private float[][][] mesh = new float[SIZE][SIZE][3];
-	private boolean moreLight;
-	private boolean grid;
+
 
     public ModelDisplayer(Scene scene)
     {
@@ -205,11 +208,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 68: // D
                 diffuseSceneLightFlag0 = !diffuseSceneLightFlag0;
                 break;
-            case 76: // L
+            case 76: //l
             	moreLight = !moreLight;
             	break;
-            case 71:	//G
+            case 71:	//g
             	grid=!grid;
+            	break;
+            case 86:	//v
+            	vertexshader=!vertexshader;
             	break;
             default:
                 break;
@@ -319,7 +325,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             
 //          lshaders.vertexShaderSupported=true;
 //   			Programming the GPU with the Vertexshader for the object drawn later
-           if (lshaders.vertexShaderSupported) {
+           if (lshaders.vertexShaderSupported && vertexshader) {
               gl.glUseProgramObjectARB(lshaders.programObject);
           }
 
@@ -343,7 +349,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                gl.glEnd();
            }
 //				Setting the GPU shader 0 to object drawn before
-           if (lshaders.vertexShaderSupported) {
+           if (lshaders.vertexShaderSupported && vertexshader) {
                gl.glUseProgramObjectARB(0);
              
            }
