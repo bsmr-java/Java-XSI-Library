@@ -322,7 +322,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glTranslatef(xCamera, yCamera, zCamera);
 
             
-            
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
 //          lshaders.vertexShaderSupported=true;
 //   			Programming the GPU with the Vertexshader for the object drawn later
            if (lshaders.vertexShaderSupported && vertexshader) {
@@ -330,14 +330,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
           }
 
            // Start Drawing Mesh, this is only for learning and testing shaders
-           gl.glColor3f(0.5f, 1f, 0.5f);
+           gl.glColor3f(1.0f, 1f, 1.0f);
            for (int x = 0; x < SIZE - 1; x++) {
                // Draw A Triangle Strip For Each Column Of Our Mesh
                gl.glBegin(GL.GL_TRIANGLE_STRIP);
                for (int z = 0; z < SIZE - 1; z++) {
                    // Set The Wave Parameter Of Our Shader To The Incremented Wave Value From Our Main Program
-                   if (lshaders.vertexShaderSupported) {
+                   if (lshaders.vertexShaderSupported && vertexshader) {
                        gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
+                       gl.glColor3f(0.5f, 0f, 1.0f);
                    }
                    gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);        // Draw Vertex
                    gl.glVertex3f(mesh[x + 1][z][0], mesh[x + 1][z][1], mesh[x + 1][z][2]);    // Draw Vertex
@@ -354,6 +355,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
              
            }
            
+          //Old mesh
 //            // Draw a grid on the grid for the base plane
 //            gl.glBegin(GL.GL_LINES);
 //            {
