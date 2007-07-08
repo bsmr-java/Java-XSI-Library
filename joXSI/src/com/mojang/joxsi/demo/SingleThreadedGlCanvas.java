@@ -15,6 +15,9 @@ import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.glu.GLU;
 
+import com.mojang.joxsi.GLSLshaders;
+
+
 /**
  * An abstract baseclass for a singlethreaded opengl canvas.
  * 
@@ -94,8 +97,9 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * 
      * @param gl a valid GL object
      * @param glu a valid GLU object
+     * @param lshaders 
      */
-    protected abstract void renderLoop(GL gl, GLU glu);
+    protected abstract void renderLoop(GL gl, GLU glu, GLSLshaders lshaders);
 
     /**
      * Swaps the opengl buffers.
@@ -110,8 +114,8 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      */
     public void run()
     {
-        try
-        {
+			try
+      	{
             // Wait until the canvas is both visible and realized.
             while (!ok || !isVisible())
             {
@@ -135,9 +139,10 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             // Create GL and GLU objects
             GL gl = context.getGL();
             GLU glu = new GLU();
-
+            GLSLshaders gLSLshaders = new GLSLshaders(gl);
+            setupGLstates(gl);
             // Call render loop
-            renderLoop(gl, glu);
+            renderLoop(gl, glu, gLSLshaders);
         }
         catch (RuntimeException e)
         {
@@ -155,6 +160,22 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     }
 
     /**
+     * Setting Up the GL states
+     * could be set in relation to Usersettings and available Graphiccards later
+     * @param gl
+     */
+	private void setupGLstates(GL gl) {
+      // Setup GL States
+      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);                        // Black Background
+      gl.glClearDepth(1.0f);                                        // Depth Buffer Setup
+      gl.glDepthFunc(GL.GL_LEQUAL);                                    // The Type Of Depth Testing (Less Or Equal)
+      gl.glEnable(GL.GL_DEPTH_TEST);                                    // Enable Depth Testing
+      gl.glShadeModel(GL.GL_SMOOTH);                                    // Select Smooth Shading
+      gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);            // Set Perspective Calculations To Most Accurate
+      gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);							// Draw Our Mesh In Wireframe Mode	
+	}
+
+	/**
      * Gets the GraphicsConfiguration of an AWTGraphicsConfiguration, unless the AWTGraphicsConfiguration is null.
      * 
      * @param config the AWTGraphicsConfiguration we want the GraphicsConfiguration from
