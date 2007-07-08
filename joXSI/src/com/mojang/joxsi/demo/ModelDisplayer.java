@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
+import com.mojang.joxsi.GLSLshaders;
 import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
@@ -32,6 +33,7 @@ import com.mojang.joxsi.renderer.TextureLoader;
  */
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 {
+    
     private Scene scene;
     private int xDragStart;
     private int yDragStart;
@@ -55,6 +57,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** Position of the Scene light zero */
     private float[] positionSceneLight0 = new float[] {0, 0.7f, 0.7f, 0};
 
+    //Hmm just for testing
+    private static final float TWO_PI = (float) (Math.PI *2);
+    private float wave_movement = 0.0f;
+    private int SIZE=32;
+    private float[][][] mesh = new float[SIZE][SIZE][3];
+	private boolean moreLight;
+	private boolean grid;
+
     public ModelDisplayer(Scene scene)
     {
         this.scene = scene;
@@ -64,6 +74,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         addKeyListener(this);
 
         yCamera = -1.0f;
+        createMesh();
     }
 
     /*
@@ -194,6 +205,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 68: // D
                 diffuseSceneLightFlag0 = !diffuseSceneLightFlag0;
                 break;
+            case 76: // L
+            	moreLight = !moreLight;
+            	break;
+            case 71:	//G
+            	grid=!grid;
+            	break;
             default:
                 break;
         }
@@ -213,13 +230,26 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      */
     public void keyTyped(KeyEvent aEvent) {
     }
+    
+    //Just for testing purposes
+    public void createMesh(){
+       // Create Our Mesh
+       for (int x = 0; x < SIZE; x++) {
+           for (int z = 0; z < SIZE; z++) {
+               mesh[x][z][0] = (float) (SIZE / 2) - x;                        // We Want To Center Our Mesh Around The Origin
+               mesh[x][z][1] = 0.0f;                                        // Set The Y Values For All Points To 0
+               mesh[x][z][2] = (float) (SIZE / 2) - z;                        // We Want To Center Our Mesh Around The Origin
+           }
+       }
+    }
 
     /**
      * This is where all the rendering magic happens.
      * Only handles two actions at the moment.
      */
-    protected void renderLoop(GL gl, GLU glu)
+    protected void renderLoop(GL gl, GLU glu,GLSLshaders lshaders)
     {
+ 
         int frames = 0;
         long start = System.currentTimeMillis();
 
@@ -253,10 +283,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 System.out.println("Length of action: " + a.getName() + ": " + a.getLength());
             }
         }
-
+        
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(gl, glu));
 
+
+        
         // Run main loop until the stop flag is raised. 
         while (!stop)
         {
@@ -269,12 +301,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glViewport(0, 0, width, height);
             gl.glDepthMask(true);
             gl.glEnable(GL.GL_DEPTH_TEST);
-            gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
-            gl.glMatrixMode(GL.GL_PROJECTION);
-            gl.glLoadIdentity();
+            
+            gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);	// Clear Screen And Depth Buffer
+            gl.glMatrixMode(GL.GL_PROJECTION);										//Set Matrix to GL_PROJECTION
+            gl.glLoadIdentity();															// Reset The Projection Matrix
             glu.gluPerspective(70.0f, h, 0.1f, 1000.0f);
-            gl.glMatrixMode(GL.GL_MODELVIEW);
-            gl.glLoadIdentity();
+            gl.glMatrixMode(GL.GL_MODELVIEW);										//Set Matrix to GL_MODELVIEW
+            gl.glLoadIdentity();															// Reset The Modelview Matrix
             
             // Translate to camera
             gl.glTranslatef(0, 0, -(zoomDistance * zoomDistance));
@@ -282,28 +315,63 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glRotatef(xRot, 0, 1, 0);
             gl.glTranslatef(xCamera, yCamera, zCamera);
 
-            // Draw a grid on the grid for the base plane
-            gl.glBegin(GL.GL_LINES);
-            {
-                float z = 10;
-                for (int x = -32; x <= 32; x++)
-                {
-                    if ((x & 3) == 0)
-                    {
-                        gl.glColor3f(0.5f, 0.5f, 0.5f);
-                    }
-                    else
-                    {
-                        gl.glColor3f(0.25f, 0.25f, 0.25f);
-                    }
+            
+            
+//          lshaders.vertexShaderSupported=true;
+//   			Programming the GPU with the Vertexshader for the object drawn later
+           if (lshaders.vertexShaderSupported) {
+              gl.glUseProgramObjectARB(lshaders.programObject);
+          }
 
-                    gl.glVertex3f(x * z, 0, -32 * z);
-                    gl.glVertex3f(x * z, 0, 32 * z);
-                    gl.glVertex3f(-32 * z, 0, x * z);
-                    gl.glVertex3f(32 * z, 0, x * z);
-                }
-            }
-            gl.glEnd();
+           // Start Drawing Mesh, this is only for learning and testing shaders
+           gl.glColor3f(0.5f, 1f, 0.5f);
+           for (int x = 0; x < SIZE - 1; x++) {
+               // Draw A Triangle Strip For Each Column Of Our Mesh
+               gl.glBegin(GL.GL_TRIANGLE_STRIP);
+               for (int z = 0; z < SIZE - 1; z++) {
+                   // Set The Wave Parameter Of Our Shader To The Incremented Wave Value From Our Main Program
+                   if (lshaders.vertexShaderSupported) {
+                       gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
+                   }
+                   gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);        // Draw Vertex
+                   gl.glVertex3f(mesh[x + 1][z][0], mesh[x + 1][z][1], mesh[x + 1][z][2]);    // Draw Vertex
+                   wave_movement += 0.00001f;                                    // Increment Our Wave Movement
+                   if (wave_movement > TWO_PI) {                                // Prevent Crashing
+                       wave_movement = 0.0f;
+                   }
+               }
+               gl.glEnd();
+           }
+//				Setting the GPU shader 0 to object drawn before
+           if (lshaders.vertexShaderSupported) {
+               gl.glUseProgramObjectARB(0);
+             
+           }
+           
+//            // Draw a grid on the grid for the base plane
+//            gl.glBegin(GL.GL_LINES);
+//            {
+//                float z = 10;
+//                for (int x = -32; x <= 32; x++)
+//                {
+//
+//                    if ((x & 3) == 0)
+//                    {
+//                        gl.glColor3f(0.5f, 0.5f, 0.5f);
+//                    }
+//                    else
+//                    {
+//                        gl.glColor3f(0.25f, 0.25f, 0.25f);
+//                    }
+//
+//                    gl.glVertex3f(x * z, 0, -32 * z);
+//                    gl.glVertex3f(x * z, 0, 32 * z);
+//                    gl.glVertex3f(-32 * z, 0, x * z);
+//                    gl.glVertex3f(32 * z, 0, x * z);
+//  
+//                }
+//            }
+//            gl.glEnd();
 
             // Set up the lights
             if (diffuseSceneLightFlag0)
@@ -322,8 +390,23 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             {
                 gl.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, new float[] {0.0f, 0.0f, 0.0f}, 0);
             }
+            if (moreLight)
+            {
+               gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, diffuseSceneLight0, 0);
+            }else{
+               gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, new float[] {0.1f, 0.1f, 0.1f}, 0);
+           	
+            }
+            if(grid)
+            {
+            	gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+            }else{
+            	gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+            }
             gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT0);
+            gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, positionSceneLight0, 0);
+            gl.glEnable(GL.GL_LIGHT1);
             gl.glEnable(GL.GL_LIGHTING);
 
             // If an animation was found in the setup, apply it now.
