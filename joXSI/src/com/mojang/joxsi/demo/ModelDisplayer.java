@@ -200,6 +200,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
         System.out.println("keyPressed: " + keyString + ", " + modString);
         
+        float xs = (float)Math.sin(xRot * Math.PI / 180.0f);
+        float xc = (float)Math.cos(xRot * Math.PI / 180.0f);
+        float zs = (float)Math.sin((90-xRot) * Math.PI / 180.0f);
+        float zc = (float)Math.cos((90-xRot) * Math.PI / 180.0f);
+        
         switch (keyCode)
         {
             case 65: // A
@@ -217,6 +222,23 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 86:	//v
             	vertexshader=!vertexshader;
             	break;
+            case 37://Left arrow
+            	xCamera += (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	zCamera += (2 * xs * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	break;
+            case 38://Up arrow
+            	xCamera -= (2 * zc * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	zCamera += (2 * zs * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	break;
+            case 39://Right arrow
+            	xCamera -= (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	zCamera -= (2 * xs * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	break;
+            case 40://Down arrow
+            	xCamera += (2 * zc * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	zCamera -= (2 * zs * zoomDistance) * zoomDistance * zoomDistance / 100;
+            	break;
+            
             default:
                 break;
         }
