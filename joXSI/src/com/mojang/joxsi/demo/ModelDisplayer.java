@@ -222,22 +222,49 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 86: //v
             	vertexshader=!vertexshader;
             	break;
-            case 37://Left arrow
+            
+            //Arrow keys movement
+            case 37: //Left arrow
             	xCamera += (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
             	zCamera += (2 * xs * zoomDistance) * zoomDistance * zoomDistance / 100;
             	break;
-            case 38://Up arrow
+            case 38: //Up arrow
             	xCamera -= (2 * zc * zoomDistance) * zoomDistance * zoomDistance / 100;
             	zCamera += (2 * zs * zoomDistance) * zoomDistance * zoomDistance / 100;
             	break;
-            case 39://Right arrow
+            case 39: //Right arrow
             	xCamera -= (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
             	zCamera -= (2 * xs * zoomDistance) * zoomDistance * zoomDistance / 100;
             	break;
-            case 40://Down arrow
+            case 40: //Down arrow
             	xCamera += (2 * zc * zoomDistance) * zoomDistance * zoomDistance / 100;
             	zCamera -= (2 * zs * zoomDistance) * zoomDistance * zoomDistance / 100;
             	break;
+            //Numpad movement
+            case 98: //Numpad 2
+            	yRot -= 2;
+            	break;
+            case 100: //Numpad 4
+            	xRot += 2;
+            	break;
+            case 102: //Numpad 6
+            	xRot -= 2;
+            	break;
+            case 104: //Numpad 8
+            	yRot += 2;
+            	break;
+            case 107: //Numpad +
+            	zoomDistance = zoomDistance * 0.9f;
+            	if(zoomDistance < 0.1f) {
+            		zoomDistance = 0.1f;
+            		System.out.println("Resetting zoomDistance to 0.1");
+            	}
+            	break;
+            case 109: //Numpad -
+            	zoomDistance = zoomDistance * 1.1f;
+            	break;
+            
+            
             default:
                 break;
         }
