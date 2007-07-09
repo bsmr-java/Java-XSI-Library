@@ -391,11 +391,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glBegin(GL.GL_TRIANGLE_STRIP);
                 for (int z = 0; z < SIZE - 1; z++)
                 {
-                    // Set The Wave Parameter Of Our Shader To The Incremented
-                    // Wave Value From Our Main Program
-                    if (lshaders.vertexShaderSupported)
+                    //Test if Shader is supported and activated
+                    if (lshaders.vertexShaderSupported && vertexshader)
                     {
+                  	// Set The Wave Parameter Of Our Shader To The Incremented
+                       // Wave Value From Our Main Program
                         gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
+                        gl.glColor3f(0.5f, 0.0f, 1.0f);
                     }
                     // Draw Vertex
                     gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);
