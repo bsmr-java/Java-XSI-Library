@@ -16,6 +16,12 @@ import javax.media.opengl.GL;
 
 import com.sun.opengl.util.BufferUtil;
 
+
+/** Test Compatibility of the graphiccard and loads the shaders
+ * 
+ * @author Milbo
+ *
+ */
 public class GLSLshaders {
 
 	public boolean fragmentShaderSupported;
