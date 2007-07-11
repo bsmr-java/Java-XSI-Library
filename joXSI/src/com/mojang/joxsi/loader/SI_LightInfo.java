@@ -42,7 +42,7 @@ public class SI_LightInfo extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 
 		falloff_active = ((Integer)it.next()).intValue()!=0;
 		mode = ((Integer)it.next()).intValue();

@@ -29,7 +29,7 @@ public class SI_IK_Effector extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		rotation_flag = ((Integer)it.next()).intValue()!=0;
 	}
 }

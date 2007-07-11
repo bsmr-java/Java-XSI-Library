@@ -34,7 +34,7 @@ public class SI_Envelope extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		envelope = (String)it.next();
 		deformer = (String)it.next();
 		nVertices  = ((Integer)it.next()).intValue();

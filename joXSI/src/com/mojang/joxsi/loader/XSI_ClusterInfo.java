@@ -19,7 +19,7 @@ public class XSI_ClusterInfo extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		type = (String)it.next();
 	}
 }

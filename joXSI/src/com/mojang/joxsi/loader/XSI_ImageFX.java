@@ -25,7 +25,7 @@ public class XSI_ImageFX extends Template
 	
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		hue = ((Float)it.next()).floatValue();  
 		gain = ((Float)it.next()).floatValue();  
 		saturation = ((Float)it.next()).floatValue();  

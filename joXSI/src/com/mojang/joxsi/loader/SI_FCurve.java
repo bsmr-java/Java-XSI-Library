@@ -116,7 +116,7 @@ public class SI_FCurve extends Template
      */
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		objectName = (String)it.next();
 		fcurve = ((String)it.next()).intern();
 		interpolation = (String)it.next();

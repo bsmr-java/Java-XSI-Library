@@ -44,7 +44,7 @@ public class SI_Material extends Template implements Material
 
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         faceColor = new ColorRGBA(it);
         power = ((Float)it.next()).floatValue();
         specularColor = new ColorRGB(it);

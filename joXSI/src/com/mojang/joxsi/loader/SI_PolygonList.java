@@ -70,14 +70,14 @@ public class SI_PolygonList extends Template
     @Override
     public void parse(RawTemplate block)
     {
-        ListIterator it = block.values.listIterator();
+        ListIterator<Object> it = block.values.listIterator();
 
 //        boolean newVersion = dot_xsi_header.majorVersion > 3 || (dot_xsi_header.majorVersion == 3 && dot_xsi_header.minorVersion >= 5);
 
         nbPolygons = ((Integer)it.next()).intValue();
         elements = (String)it.next();
 
-		Object next = (Object)it.next();
+		Object next = it.next();
 		it.previous();
 
 //		if (newVersion) // Material is only available in 3.5 and above

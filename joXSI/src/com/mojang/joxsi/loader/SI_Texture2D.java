@@ -137,7 +137,7 @@ public class SI_Texture2D extends Template
 
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         imageName = (String)it.next();
         mappingType = ((Integer)it.next()).intValue();
 

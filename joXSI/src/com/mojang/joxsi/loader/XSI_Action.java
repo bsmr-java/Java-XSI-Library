@@ -35,7 +35,7 @@ public class XSI_Action extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		start = ((Float)it.next()).floatValue();
 		end = ((Float)it.next()).floatValue();
 		type = ((Integer)it.next()).intValue();

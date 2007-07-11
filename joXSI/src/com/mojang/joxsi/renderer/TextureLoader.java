@@ -22,7 +22,7 @@ public class TextureLoader
 {
     private GL gl;
     private GLU glu;
-    private Map loadedTextures = new HashMap();
+    private Map<String,Integer> loadedTextures = new HashMap<String,Integer>();
 
     /**
      * Creates a new TextureLoader
@@ -49,7 +49,7 @@ public class TextureLoader
     public int loadTexture(String textureName)
     {
         // Check if an id already exists for this texture name
-        Integer i = (Integer)loadedTextures.get(textureName);
+        Integer i = loadedTextures.get(textureName);
         if (i != null)
         {
             // Yes, it has been loaded before. Return that id.

@@ -50,7 +50,7 @@ public class ColorRGBA
      * @param it
      *            an Iterator.
      */
-	public ColorRGBA(Iterator it)
+	public ColorRGBA(Iterator<Object> it)
 	{
 		this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
 	}

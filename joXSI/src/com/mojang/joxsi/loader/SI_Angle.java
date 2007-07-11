@@ -29,7 +29,7 @@ public class SI_Angle extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		type = ((Integer)it.next()).intValue();
 	}
 

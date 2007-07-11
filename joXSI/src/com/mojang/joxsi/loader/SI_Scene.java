@@ -26,7 +26,7 @@ public class SI_Scene extends Template
 	
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		timing = (String)it.next();
 		start = ((Number)it.next()).floatValue();
 		end = ((Number)it.next()).floatValue();

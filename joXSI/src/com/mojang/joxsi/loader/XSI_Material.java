@@ -45,7 +45,7 @@ public class XSI_Material extends Template implements Material
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		cnx_number = ((Integer)it.next()).intValue();
 		connections = new Connection[cnx_number];
 		for (int i=0; i<cnx_number; i++)

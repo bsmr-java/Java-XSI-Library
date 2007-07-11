@@ -66,12 +66,12 @@ public class SI_TriangleList extends Template
 
 	public void parse(RawTemplate block)
 	{
-		ListIterator it = block.values.listIterator();
+		ListIterator<Object> it = block.values.listIterator();
 
 		nbTriangles = ((Integer)it.next()).intValue();
 		elements = (String)it.next();
 		
-		Object next = (Object)it.next();
+		Object next = it.next();
 		it.previous();
 
 //		if (newVersion) // Material is only available in 3.5 and above

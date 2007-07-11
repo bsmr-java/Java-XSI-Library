@@ -29,7 +29,7 @@ public class XSI_MaterialInfo extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		uWrap = ((Integer)it.next()).intValue();
 		vWrap = ((Integer)it.next()).intValue();
 	}

@@ -59,7 +59,7 @@ public class SI_Constraint extends Template
     
     public void parse(RawTemplate rawtemplate) 
     {
-    	Iterator iterator = rawtemplate.values.iterator();
+    	Iterator<Object> iterator = rawtemplate.values.iterator();
     	objectName = (String) iterator.next();
     	constraintType = (String) iterator.next();
     	nbConstrainingObjects = ((Integer) iterator.next()).intValue();

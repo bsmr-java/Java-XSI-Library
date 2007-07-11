@@ -86,7 +86,7 @@ public abstract class Template
     public String template_info;
     protected Header dot_xsi_header;
 
-    public List templates = new ArrayList();
+    public List<Template> templates = new ArrayList<Template>();
 
     public void parseBlock(Header header, RawTemplate block)
     {
@@ -95,12 +95,12 @@ public abstract class Template
         template_info = block.info;
         parse(block);
 
-        for (Iterator it = block.values.iterator(); it.hasNext();)
+        for (Iterator<Object> it = block.values.iterator(); it.hasNext();)
         {
             Object o = it.next();
             if (o instanceof Template)
             {
-                templates.add(o);
+                templates.add((Template)o);
                 ((Template)o).parent = this;
             }
         }
@@ -110,9 +110,9 @@ public abstract class Template
     {
         Template result = null;
 
-        for (Iterator it = templates.iterator(); it.hasNext();)
+        for (Iterator<Template> it = templates.iterator(); it.hasNext();)
         {
-            Template template = (Template)it.next();
+            Template template = it.next();
             if (template.template_type.equals(templateType))
             {
                 if (result != null)
@@ -129,9 +129,9 @@ public abstract class Template
     {
         Template result = null;
 
-        for (Iterator it = templates.iterator(); it.hasNext();)
+        for (Iterator<Template> it = templates.iterator(); it.hasNext();)
         {
-            Template template = (Template)it.next();
+            Template template = it.next();
             if (template.template_type.equals(templateType) && template.template_info.startsWith(name))
             {
                 if (result != null)
@@ -148,9 +148,9 @@ public abstract class Template
     {
         Template result = null;
 
-        for (Iterator it = templates.iterator(); it.hasNext();)
+        for (Iterator<Template> it = templates.iterator(); it.hasNext();)
         {
-            Template template = (Template)it.next();
+            Template template = it.next();
             if (template.template_type.equals(templateType) && template.template_info.equals(name))
             {
                 if (result != null)
@@ -172,13 +172,13 @@ public abstract class Template
      * @return a List of all Templates in the current model whose name matches
      *         the given String.
      */
-    public List getAll(String templateType)
+    public List<Template> getAll(String templateType)
     {
-        List result = new ArrayList();
+        List<Template> result = new ArrayList<Template>();
 
-        for (Iterator it = templates.iterator(); it.hasNext();)
+        for (Iterator<Template> it = templates.iterator(); it.hasNext();)
         {
-            Template template = (Template)it.next();
+            Template template = it.next();
             if (template.template_type.equals(templateType))
                 result.add(template);
         }
@@ -195,13 +195,13 @@ public abstract class Template
      * @return a List of all Templates in the current model whose name starts
      *         with the given String.
      */
-    public List getAllStartingWith(String templateType)
+    public List<Template> getAllStartingWith(String templateType)
     {
-        List result = new ArrayList();
+        List<Template> result = new ArrayList<Template>();
 
-        for (Iterator it = templates.iterator(); it.hasNext();)
+        for (Iterator<Template> it = templates.iterator(); it.hasNext();)
         {
-            Template template = (Template)it.next();
+            Template template = it.next();
             if (template.template_type.startsWith(templateType))
                 result.add(template);
         }

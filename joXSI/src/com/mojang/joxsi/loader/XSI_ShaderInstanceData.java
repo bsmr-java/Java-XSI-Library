@@ -64,7 +64,7 @@ public class XSI_ShaderInstanceData extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		
         objectName = (String)it.next();
 		param_number = ((Integer)it.next()).intValue();

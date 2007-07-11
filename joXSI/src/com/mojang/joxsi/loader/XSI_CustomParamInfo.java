@@ -40,7 +40,7 @@ public class XSI_CustomParamInfo extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		min = ((Number)it.next()).floatValue();
 		max = ((Number)it.next()).floatValue();
 		capabilities = ((Integer)it.next()).intValue();

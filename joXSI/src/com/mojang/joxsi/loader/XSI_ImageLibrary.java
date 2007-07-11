@@ -17,12 +17,12 @@ public class XSI_ImageLibrary extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		image_count = ((Integer)it.next()).intValue();
 		
 		images = new XSI_Image[image_count];
 		int i=0;
-		for (Iterator it2 = getAll(Template.XSI_Image).iterator(); it2.hasNext(); i++)
+		for (Iterator<Template> it2 = getAll(Template.XSI_Image).iterator(); it2.hasNext(); i++)
 		{
 			images[i] = (XSI_Image)it2.next();
 		} 

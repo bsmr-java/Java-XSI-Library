@@ -21,7 +21,7 @@ public class SI_Camera extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		posx = ((Float)it.next()).floatValue();
 		posy = ((Float)it.next()).floatValue();
 		posz = ((Float)it.next()).floatValue();

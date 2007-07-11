@@ -45,7 +45,7 @@ public class ColorRGB
      * @param it
      *            an Iterator.
      */
-	public ColorRGB(Iterator it)
+	public ColorRGB(Iterator<Object> it)
 	{
 		this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
 	}

@@ -30,7 +30,7 @@ public class SI_Visibility extends Template
     @Override
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         visibility = ((Integer)it.next()).intValue()!=0;
     }
 

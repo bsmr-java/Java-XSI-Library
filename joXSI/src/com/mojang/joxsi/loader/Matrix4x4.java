@@ -12,7 +12,7 @@ public class Matrix4x4 implements Serializable
 {
     public float[][] matrix = new float[4][4];
 
-    public Matrix4x4(Iterator it)
+    public Matrix4x4(Iterator<Object> it)
     {
         for (int y = 0; y < 4; y++)
         {

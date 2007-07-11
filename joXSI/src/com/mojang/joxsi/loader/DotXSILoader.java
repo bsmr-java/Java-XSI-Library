@@ -160,7 +160,7 @@ public class DotXSILoader
         RawTemplate currentTemplate = new RawTemplate(RawTemplate.ROOT_TEMPLATE, "");
         
         // Templates are kept on a stack during the parsing, and pushed/popped as {'s or }'s are encountered.
-        List templateStack = new ArrayList();
+        List<Object> templateStack = new ArrayList<Object>();
         templateStack.add(currentTemplate);
         int i;
         char ch;
@@ -255,7 +255,7 @@ public class DotXSILoader
        RawTemplate currentTemplate = new RawTemplate("RootTemplate", "");
        
        // Templates are kept on a stack during the parsing, and pushed/popped as {'s or }'s are encountered.
-       List templateStack = new ArrayList();
+       List<RawTemplate> templateStack = new ArrayList<RawTemplate>();
        templateStack.add(currentTemplate);
        
        String str;
@@ -315,7 +315,7 @@ public class DotXSILoader
                            // End of a template. Pop it from the stack, and add it to the parent template as a value.
                            RawTemplate template = currentTemplate;
                            templateStack.remove(templateStack.size() - 1);
-                           currentTemplate = (RawTemplate)templateStack.get(templateStack.size() - 1);
+                           currentTemplate = templateStack.get(templateStack.size() - 1);
 
                            currentTemplate.values.add(template);
                        }
@@ -345,7 +345,7 @@ public class DotXSILoader
     private Template buildTemplate(RawTemplate rawTemplate) throws ParseException
     {
    	    Template template;
-   	    Class c;
+   	    Class<?> c;
         // Depth first. Iterate over all values and replace all RawTemplates with them with the real Templates
         for (int i=0; i<rawTemplate.values.size(); i++)
         {
@@ -409,14 +409,21 @@ public class DotXSILoader
             RawTemplate root = parseRawTemplates();
             return (RootTemplate)buildTemplate(root);
         }
+        catch (IOException ioe) 
+        {
+            ioe.printStackTrace();
+        	throw ioe;
+        }
         catch (Exception e)
         {
+        	e.printStackTrace();
+        	throw new ParseException("Failed to read file: "+e);
+        }
+        finally {
             int line = 1;
             if (reader!=null) line = reader.getLineNumber()+1;
 
             System.out.println("Error occured on line "+line);
-            e.printStackTrace();
-        	throw new ParseException("Failed to read file: "+e);
         }
     }
 

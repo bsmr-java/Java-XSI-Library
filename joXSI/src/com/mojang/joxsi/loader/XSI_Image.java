@@ -56,7 +56,7 @@ public class XSI_Image extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		filename  = (String)it.next();
 		imageX = ((Integer)it.next()).intValue();
 		imageY = ((Integer)it.next()).intValue();

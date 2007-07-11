@@ -19,7 +19,7 @@ public class SI_IK_Root extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		nbJoints = ((Integer)it.next()).intValue();
 		jointNames = new String[nbJoints];
 		for (int i=0; i<nbJoints; i++)

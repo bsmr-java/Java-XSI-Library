@@ -116,7 +116,7 @@ public class XSI_Shader extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		
 		path = (String)it.next();
 		output = ((Integer)it.next()).intValue();

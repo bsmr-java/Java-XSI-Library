@@ -25,7 +25,7 @@ public class SI_IK_Joint extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		solver_type = (String)it.next();
 		length = ((Float)it.next()).floatValue();
 		pref_rot_x = ((Float)it.next()).floatValue();

@@ -56,7 +56,7 @@ public class XSI_CustomPSet extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		propagation = (String)it.next();
 		field_count = ((Integer)it.next()).intValue();
 		

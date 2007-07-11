@@ -108,7 +108,7 @@ public class SI_Shape extends Template
     @Override
     public void parse(RawTemplate block)
     {
-        ListIterator it = block.values.listIterator();
+        ListIterator<Object> it = block.values.listIterator();
         nbShapeArrays = ((Integer)it.next()).intValue();
 		layout = (String)it.next();
 		isIndexed = layout.equals(INDEXED);

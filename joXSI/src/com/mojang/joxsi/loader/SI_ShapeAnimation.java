@@ -27,7 +27,7 @@ public class SI_ShapeAnimation extends Template
 
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         type = (String)it.next();
         nbShapes = ((Number)it.next()).intValue();
         shapes = new SI_Shape[nbShapes];

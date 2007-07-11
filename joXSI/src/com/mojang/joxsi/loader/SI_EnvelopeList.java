@@ -19,7 +19,7 @@ public class SI_EnvelopeList extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		nEnvelopes = ((Integer)it.next()).intValue();
 		envelopes = new SI_Envelope[nEnvelopes];
 		for (int i=0; i<nEnvelopes; i++)

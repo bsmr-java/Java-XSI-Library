@@ -22,7 +22,7 @@ public class SI_Ambience extends Template
     @Override
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		red = ((Float)it.next()).floatValue();
 		green = ((Float)it.next()).floatValue();
 		blue = ((Float)it.next()).floatValue();

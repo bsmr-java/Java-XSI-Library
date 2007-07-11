@@ -10,7 +10,7 @@ class RawTemplate
 {
     public final String name;
     public final String info;
-    public final List values = new ArrayList();
+    public final List<Object> values = new ArrayList<Object>();
     /** RootTemplate used for creating the root RawTemplate in the DotXSILoader.. */
     public static final String ROOT_TEMPLATE = "RootTemplate";
 

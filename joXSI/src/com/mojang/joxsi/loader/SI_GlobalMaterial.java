@@ -29,7 +29,7 @@ public class SI_GlobalMaterial extends Template
 
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         referencedMaterial = (String)it.next();
         propagation = (String)it.next();
     }

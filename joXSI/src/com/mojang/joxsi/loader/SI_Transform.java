@@ -48,7 +48,7 @@ public class SI_Transform extends Template
     
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		scalX = ((Float)it.next()).floatValue();
 		scalY = ((Float)it.next()).floatValue();
 		scalZ = ((Float)it.next()).floatValue();

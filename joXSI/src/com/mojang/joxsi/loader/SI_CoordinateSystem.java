@@ -75,7 +75,7 @@ public class SI_CoordinateSystem extends Template
 
     public void parse(RawTemplate block)
     {
-        Iterator it = block.values.iterator();
+        Iterator<Object> it = block.values.iterator();
         handRotation = ((Integer)it.next()).intValue();
         uAxis = ((Integer)it.next()).intValue();
         vAxis = ((Integer)it.next()).intValue();

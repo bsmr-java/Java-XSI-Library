@@ -22,7 +22,7 @@ public class SI_Cluster extends Template
 
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		referencedModel = (String)it.next();
 		weighting = (String)it.next();
 		clusterCenterReference = (String)it.next();

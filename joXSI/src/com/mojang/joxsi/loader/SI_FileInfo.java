@@ -18,7 +18,7 @@ public class SI_FileInfo extends Template
 	
 	public void parse(RawTemplate block)
 	{
-		Iterator it = block.values.iterator();
+		Iterator<Object> it = block.values.iterator();
 		projectName = (String)it.next();
 		userName = (String)it.next();
 		savedDateTime = (String)it.next();
