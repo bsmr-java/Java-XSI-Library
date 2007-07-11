@@ -411,19 +411,21 @@ public class DotXSILoader
         }
         catch (IOException ioe) 
         {
+            int line = 1;
+            if (reader!=null) line = reader.getLineNumber()+1;
+
+            System.out.println("Error occured on line "+line);
             ioe.printStackTrace();
         	throw ioe;
         }
         catch (Exception e)
         {
-        	e.printStackTrace();
-        	throw new ParseException("Failed to read file: "+e);
-        }
-        finally {
             int line = 1;
             if (reader!=null) line = reader.getLineNumber()+1;
 
             System.out.println("Error occured on line "+line);
+        	e.printStackTrace();
+        	throw new ParseException("Failed to read file: "+e);
         }
     }
 
