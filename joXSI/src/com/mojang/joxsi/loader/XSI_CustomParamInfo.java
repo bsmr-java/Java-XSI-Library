@@ -38,11 +38,13 @@ public class XSI_CustomParamInfo extends Template
      */
 	public int capabilities;
 
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		min = ((Number)it.next()).floatValue();
 		max = ((Number)it.next()).floatValue();
 		capabilities = ((Integer)it.next()).intValue();
+		if(capabilities < 0 || capabilities > 415)
+		    throw new ParseException("Illegal capabilities in XSI_CustomParamInfo: "+capabilities); 
 	}
 }

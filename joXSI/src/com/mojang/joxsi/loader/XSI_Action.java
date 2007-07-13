@@ -33,12 +33,15 @@ public class XSI_Action extends Template
 	public int type;
 
     @Override
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		start = ((Float)it.next()).floatValue();
 		end = ((Float)it.next()).floatValue();
 		type = ((Integer)it.next()).intValue();
+		
+		if(type < 0 || type > 7)
+		    throw new ParseException("Illegal type in XSI_Action: "+type);
 	}
 
     /**

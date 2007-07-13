@@ -54,7 +54,7 @@ public class XSI_Image extends Template
 	public int last;
 	
     @Override
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		filename  = (String)it.next();
@@ -70,6 +70,11 @@ public class XSI_Image extends Template
 		frame_count = ((Integer)it.next()).intValue();
 		first = ((Integer)it.next()).intValue();
 		last = ((Integer)it.next()).intValue();
+		
+		if(channel_count != 3 && channel_count != 4)
+		    throw new ParseException("Illegal channel_count in XSI_Image: "+channel_count);
+		if(bitsPerPixels != 24 && bitsPerPixels != 32)
+		    throw new ParseException("Illegal bitsPerPixel in XSI_Image: "+bitsPerPixels);
 	}
 
     @Override
