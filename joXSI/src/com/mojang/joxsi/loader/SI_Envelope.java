@@ -32,7 +32,7 @@ public class SI_Envelope extends Template
     /** Array of weight values associated to the vertices of the envelope. */
 	public VertexWeight[] vertexWeights; 
 
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		envelope = (String)it.next();
@@ -44,6 +44,10 @@ public class SI_Envelope extends Template
 			vertexWeights[i] = new VertexWeight();
 			vertexWeights[i].vertexIndex = ((Integer)it.next()).intValue();
 			vertexWeights[i].weight = ((Float)it.next()).floatValue();
+			
+			if(vertexWeights[i].weight < 0.0f ||
+			   vertexWeights[i].weight > 100.0f)
+			    throw new ParseException("Illegal vertex weight in SI_Envelope: "+vertexWeights[i].weight);
 		}
 	}
 }
