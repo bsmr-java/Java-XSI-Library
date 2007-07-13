@@ -42,7 +42,7 @@ public class SI_Material extends Template implements Material
     /** Ambient color. */
     public ColorRGB ambientColor;
 
-    public void parse(RawTemplate block)
+    public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
         faceColor = new ColorRGBA(it);
@@ -51,5 +51,8 @@ public class SI_Material extends Template implements Material
         emissiveColor = new ColorRGB(it);
         shadingModel = ((Integer)it.next()).intValue();
         ambientColor = new ColorRGB(it);
+        
+        if(shadingModel < 0 || shadingModel > 5)
+            throw new ParseException("Illegal shadingModel in SI_Material: "+shadingModel);
     }
 }
