@@ -40,7 +40,7 @@ public class SI_LightInfo extends Template
 	public float photon_factor;
 	public float intensity;
 
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 
@@ -53,5 +53,13 @@ public class SI_LightInfo extends Template
 		useLight_as_energy = ((Integer)it.next()).intValue()!=0;
 		photon_factor = ((Float)it.next()).floatValue();
 		intensity = ((Float)it.next()).floatValue();
+		
+		if(mode < 0 || mode > 1)
+		    throw new ParseException("Illegal mode in SI_LightInfo: "+mode);
+		if(umbra < 0.0f || umbra > 1.0f)
+		    throw new ParseException("Illegal umbra in SI_LightInfo: "+umbra);
+		if(photon_factor < 0 || photon_factor > 100000)
+		    throw new ParseException("Illegal photon_factor in SI_LightInfo: "+photon_factor);
+		
 	}
 }
