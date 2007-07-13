@@ -84,6 +84,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
     private boolean vertexshader;
 
+    private int showModel;
+
+    private int showAction;
+
+    private Action action;
+
     // Hmm just for testing
     private static final float TWO_PI = (float) (Math.PI * 2);
 
@@ -101,8 +107,69 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         addMouseWheelListener(this);
         addKeyListener(this);
 
+        showModel = -1;
+        showAction = -1;
+        action = null;
+
         yCamera = -1.0f;
         createMesh();
+    }
+
+    public void setShowModel(int modelNr)
+    {
+        if (modelNr >= scene.models.length)
+        {
+            showModel = -1;
+            System.out.println("Illegal Model: " + modelNr + " (Model out of bound, max: " + scene.models.length + ")");
+        }
+
+        else
+            showModel = modelNr;
+        showAction = -1;
+    }
+
+    public void setShowAction(int actionNr)
+    {
+        if (showModel >= 0)
+        {
+            if (actionNr >= scene.models[showModel].actions.length)
+                showAction = -1;
+            else
+                showAction = actionNr;
+        }
+        updateAction();
+    }
+
+    public void updateAction()
+    {
+        /*
+         * Pyro Small change, only do the search when there hasn't been set a
+         * model and action which has to be showed
+         */
+        if (showModel == -1 || showAction == -1)
+        {
+            // Find all actions in all models in the root of the scene,
+            // then store the first one in the 'action' object
+            for (int i = 0; i < scene.models.length; i++)
+            {
+                System.out.println("Number of actions in model " + i + ": " + scene.models[i].actions.length);
+                for (int j = 0; j < scene.models[i].actions.length; j++)
+                {
+                    Action a = scene.models[i].actions[j];
+                    if (action == null)
+                    {
+                        action = a;
+                        showModel = i;
+                        showAction = j;
+                    }
+                    System.out.println("Length of action: " + a.getName() + ": " + a.getLength());
+                }
+            }
+        }
+        else
+        {
+            action = scene.models[showModel].actions[showAction];
+        }
     }
 
     /*
@@ -350,11 +417,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      */
     protected void renderLoop(GL gl, GLU glu, GLSLshaders lshaders)
     {
+        if (action == null) updateAction();
 
         int frames = 0;
         long start = System.currentTimeMillis();
 
-        Action action = null;
+        // Action action = null;
         // Log some details of the model
         int lNumberOfModels = 0;
         if (scene != null && scene.models != null)
@@ -369,22 +437,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
         System.out.println("Number of envelopes in the scene: " + lNumberOfEnvelopes);
         System.out.println("Number of images in the scene: " + scene.images.size());
-        System.out.println("Number of maerials in the scene: " + scene.materials.size());
-        // Find all actions in all models in the root of the scene, then store
-        // the first one in the 'action' object
-        for (int i = 0; i < scene.models.length; i++)
-        {
-            System.out.println("Number of actions in model " + i + ": " + scene.models[i].actions.length);
-            for (int j = 0; j < scene.models[i].actions.length; j++)
-            {
-                Action a = scene.models[i].actions[j];
-                if (action == null)
-                {
-                    action = a;
-                }
-                System.out.println("Length of action: " + a.getName() + ": " + a.getLength());
-            }
-        }
+        System.out.println("Number of materials in the scene: " + scene.materials.size());
+
+        System.out.println("Model: " + showModel + "\tAction: " + showAction);
 
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(gl, glu));
@@ -556,7 +611,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 frames = 0;
             }
             // This makes the mouse and key listeners more responsive
-            releaseContextAndMakeItcurrentAgain();
+            Thread.yield();
 
             // Swap buffers
             swapBuffers();
@@ -615,9 +670,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         frame1.setVisible(true);
 
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
-        JFrame frame = new ModelDisplayerFrame("Model Display");
+        JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
         ModelDisplayer canvas = new ModelDisplayer(scene);
-        frame.add(canvas);
+        frame.getContentPane().add(canvas);
         new Thread(canvas).start();
 
         frame.setLocation(200, 30);
