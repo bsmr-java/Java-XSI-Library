@@ -88,12 +88,21 @@ public abstract class Template
 
     public List<Template> templates = new ArrayList<Template>();
 
-    public void parseBlock(Header header, RawTemplate block)
+    public void parseBlock(Header header, RawTemplate block) throws ParseException 
     {
         this.dot_xsi_header = header;
         template_type = block.name;
         template_info = block.info;
-        parse(block);
+        
+        try
+        {
+            parse(block);
+        }
+        catch (ParseException e)
+        {
+            throw e;
+        }
+        
 
         for (Iterator<Object> it = block.values.iterator(); it.hasNext();)
         {
@@ -215,7 +224,7 @@ public abstract class Template
      * @param block
      *            the raw template.
      */
-    public abstract void parse(RawTemplate block);
+    public abstract void parse(RawTemplate block) throws ParseException;
 
     /**
      * Returns the root template.
