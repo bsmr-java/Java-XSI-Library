@@ -135,7 +135,7 @@ public class SI_Texture2D extends Template
      */
     public float roughness;
 
-    public void parse(RawTemplate block)
+    public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
         imageName = (String)it.next();
@@ -171,5 +171,11 @@ public class SI_Texture2D extends Template
         transparency = ((Float)it.next()).floatValue();
         reflectivity = ((Float)it.next()).floatValue();
         roughness = ((Float)it.next()).floatValue();
+        
+        if(mappingType < 0 || mappingType > 7)
+            throw new ParseException("Illegal mappingType in SI_Texture2D: "+mappingType);
+        if(blendingType < 1 || blendingType > 4)
+            throw new ParseException("Illegal blendingType in SI_Texture2D: "+blendingType);
+        
     }
 }
