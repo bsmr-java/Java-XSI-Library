@@ -73,7 +73,7 @@ public class SI_CoordinateSystem extends Template
      */
     public int zAxis;
 
-    public void parse(RawTemplate block)
+    public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
         handRotation = ((Integer)it.next()).intValue();
@@ -82,6 +82,25 @@ public class SI_CoordinateSystem extends Template
         xAxis = ((Integer)it.next()).intValue();
         yAxis = ((Integer)it.next()).intValue();
         zAxis = ((Integer)it.next()).intValue();
+        
+        if(handRotation != 0 &&
+           handRotation != 1)
+            throw new ParseException("Illegal handRotation in SI_CoordinateSystem: "+handRotation);
+        if(uAxis != 0 &&
+           uAxis != 1)
+            throw new ParseException("Illegal uAxis in SI_CoordinateSystem: "+uAxis);
+        if(vAxis != 0 &&
+           vAxis != 1)
+            throw new ParseException("Illegal vAxis in SI_CoordinateSystem: "+vAxis);
+        if(xAxis < 0 ||
+           xAxis > 5)
+                throw new ParseException("Illegal xAxis in SI_CoordinateSystem: "+xAxis);
+        if(yAxis < 0 ||
+           yAxis > 5)
+                throw new ParseException("Illegal yAxis in SI_CoordinateSystem: "+yAxis);
+        if(zAxis < 0 ||
+           zAxis > 5)
+                throw new ParseException("Illegal zAxis in SI_CoordinateSystem: "+zAxis);
     }
 
     public void convertPos(float value, int axis, float[] v)
