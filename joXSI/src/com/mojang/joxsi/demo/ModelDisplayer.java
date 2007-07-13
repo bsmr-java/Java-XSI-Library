@@ -92,8 +92,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     
     private boolean blend = true;
     
-    private boolean drawFloor = true;
-
+    private boolean drawGround = true;
+    private String groundTexture;
+    private TextureLoader textureLoader;
+    
     private Action action;
 
     // Hmm just for testing
@@ -343,7 +345,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 break;
                 
             case 'F':
-                drawFloor = !drawFloor;
+                drawGround = !drawGround;
                 break;
                 
             // Arrow keys movement
@@ -388,6 +390,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 zoomDistance = zoomDistance * 1.1f;
                 break;
 
+            case 27:    // escape
+                stop = true;
+                break;
+                
             default:
                 break;
             }
@@ -462,6 +468,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
 
+        // Create a textureLoader for the displayer
+        textureLoader = new TextureLoader(null, gl, glu);
+        
         // Run main loop until the stop flag is raised.
         while (!stop)
         {
@@ -496,7 +505,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             // Draw a background
             float hs = SIZE/2;
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-            gl.glColor3f(0.6f, 0.75f, 1.0f);
+            gl.glColor3f(0.4f, 0.50f, 0.8f);
             gl.glBegin(GL.GL_QUADS);
                 gl.glVertex3f(-hs, -hs, -hs);
                 gl.glVertex3f(hs, -hs, -hs);
@@ -509,61 +518,74 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glVertex3f(-hs, hs, -hs);
                 gl.glVertex3f(-hs, hs, hs);
             gl.glEnd();
-            // and a floor
-            if (drawFloor)
-            {
-                gl.glColor3f(0.5f, 0.9f, 0.5f);
-                gl.glBegin(GL.GL_QUADS);
-                    gl.glVertex3f(-hs, -0.01f, hs);
-                    gl.glVertex3f(hs, -0.01f, hs);
-                    gl.glVertex3f(hs, -0.01f, -hs);
-                    gl.glVertex3f(-hs, -0.01f, -hs);
-                gl.glEnd();
-            }
             
-            
-            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-            // lshaders.vertexShaderSupported=true;
-            // Programming the GPU with the Vertexshader for the object drawn
-            // later
-            if (lshaders.vertexShaderSupported && vertexshader)
+            // Draw the ground
+            if (drawGround)
             {
-                gl.glUseProgramObjectARB(lshaders.programObject);
-            }
+                int texId = -1;
+                if (groundTexture != null)
+                   texId = textureLoader.loadTexture(groundTexture);
 
-            // Start Drawing Mesh, this is only for learning and testing shaders
-            gl.glColor3f(0.5f, 0.5f, 0.5f);
-            for (int x = 0; x < SIZE - 1; x++)
-            {
-                // Draw A Triangle Strip For Each Column Of Our Mesh
-                gl.glBegin(GL.GL_TRIANGLE_STRIP);
-                for (int z = 0; z < SIZE - 1; z++)
+                if (texId != -1)
                 {
-                    // Test if Shader is supported and activated
-                    if (lshaders.vertexShaderSupported && vertexshader)
-                    {
-                        // Set The Wave Parameter Of Our Shader To The
-                        // Incremented
-                        // Wave Value From Our Main Program
-                        gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
-                        gl.glColor3f(0.5f, 0.0f, 1.0f);
-                    }
-                    // Draw Vertex
-                    gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);
-                    // Draw Vertex
-                    gl.glVertex3f(mesh[x + 1][z][0], mesh[x + 1][z][1], mesh[x + 1][z][2]);
-                    wave_movement += 0.00001f; // Increment Our Wave Movement
-                    if (wave_movement > TWO_PI)
-                    { // Prevent Crashing
-                        wave_movement = 0.0f;
-                    }
+                    gl.glEnable(GL.GL_TEXTURE_2D);
+                    gl.glBindTexture(GL.GL_TEXTURE_2D, texId);
                 }
+                gl.glColor3f(0.3f, 0.7f, 0.4f);
+                gl.glBegin(GL.GL_QUADS);
+                    gl.glTexCoord2f(1.0f*SIZE, 0.0f);       gl.glVertex3f(-hs, 0f, hs);
+                    gl.glTexCoord2f(1.0f*SIZE, 1.0f*SIZE);  gl.glVertex3f(-hs, 0f, -hs);
+                    gl.glTexCoord2f(0.0f, 1.0f*SIZE);       gl.glVertex3f(hs, 0f, -hs);
+                    gl.glTexCoord2f(0.0f, 0.0f);            gl.glVertex3f(hs, 0f, hs);
                 gl.glEnd();
+                if (texId != -1)   
+                    gl.glDisable(GL.GL_TEXTURE_2D);
             }
-            // Setting the GPU shader 0 to object drawn before
-            if (lshaders.vertexShaderSupported && vertexshader)
+            else
             {
-                gl.glUseProgramObjectARB(0);
+                gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+                // lshaders.vertexShaderSupported=true;
+                // Programming the GPU with the Vertexshader for the object drawn
+                // later
+                if (lshaders.vertexShaderSupported && vertexshader)
+                {
+                    gl.glUseProgramObjectARB(lshaders.programObject);
+                }
+    
+                // Start Drawing Mesh, this is only for learning and testing shaders
+                gl.glColor3f(0.5f, 0.5f, 0.5f);
+                for (int x = 0; x < SIZE - 1; x++)
+                {
+                    // Draw A Triangle Strip For Each Column Of Our Mesh
+                    gl.glBegin(GL.GL_TRIANGLE_STRIP);
+                    for (int z = 0; z < SIZE - 1; z++)
+                    {
+                        // Test if Shader is supported and activated
+                        if (lshaders.vertexShaderSupported && vertexshader)
+                        {
+                            // Set The Wave Parameter Of Our Shader To The
+                            // Incremented
+                            // Wave Value From Our Main Program
+                            gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
+                            gl.glColor3f(0.5f, 0.0f, 1.0f);
+                        }
+                        // Draw Vertex
+                        gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);
+                        // Draw Vertex
+                        gl.glVertex3f(mesh[x + 1][z][0], mesh[x + 1][z][1], mesh[x + 1][z][2]);
+                        wave_movement += 0.00001f; // Increment Our Wave Movement
+                        if (wave_movement > TWO_PI)
+                        { // Prevent Crashing
+                            wave_movement = 0.0f;
+                        }
+                    }
+                    gl.glEnd();
+                }
+                // Setting the GPU shader 0 to object drawn before
+                if (lshaders.vertexShaderSupported && vertexshader)
+                {
+                    gl.glUseProgramObjectARB(0);
+                }
             }
             
 
@@ -634,7 +656,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT1);
             gl.glEnable(GL.GL_LIGHTING);
-
+            
             // If an animation was found in the setup, apply it now.
             if (action != null)
             {
@@ -691,7 +713,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     public static void main(String[] args) throws IOException, ParseException
     {
         TimeIt timer = new TimeIt();
-
+        String groundTexture = null;
+        
+        
         Scene scene = null;
         if (args.length == 0)
         {
@@ -706,23 +730,40 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             // measurement
             for (int i = 0; i < args.length; i++)
             {
-                System.out.println("Going to load '" + args[i] + "' as a model");
-                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
-                if (lResourceAsStream != null)
+                if (args[i].startsWith("-"))    // Options
                 {
-                    System.out.println("Going to load '" + args[i] + "' as a model from "
-                            + ModelDisplayer.class.getResource("/" + args[i]));
-
-                    String basePath = null;
-                    int lastSlashIndex = args[i].lastIndexOf('/');
-                    if (lastSlashIndex != -1)
-                        basePath = args[i].substring(0, lastSlashIndex+1);
+                    // -ground texture/terrain/enchanted-grass.jpg
+                    String option = args[i].substring(1).toLowerCase();
                     
-                    scene = Scene.load(lResourceAsStream, basePath);
+                    if (option.equals("ground"))
+                    {
+                        if (i+1 < args.length)
+                        {
+                            groundTexture = args[++i];
+                            continue;
+                        }
+                    }
                 }
-                else
+                else                            // Models
                 {
-                    throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
+                    System.out.println("Going to load '" + args[i] + "' as a model");
+                    final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
+                    if (lResourceAsStream != null)
+                    {
+                        System.out.println("Going to load '" + args[i] + "' as a model from "
+                                + ModelDisplayer.class.getResource("/" + args[i]));
+    
+                        String basePath = null;
+                        int lastSlashIndex = args[i].lastIndexOf('/');
+                        if (lastSlashIndex != -1)
+                            basePath = args[i].substring(0, lastSlashIndex+1);
+                        
+                        scene = Scene.load(lResourceAsStream, basePath);
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
+                    }
                 }
             }
         }
@@ -738,6 +779,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
         JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
         ModelDisplayer canvas = new ModelDisplayer(scene);
+        canvas.groundTexture = groundTexture;
         frame.getContentPane().add(canvas);
         new Thread(canvas).start();
 
