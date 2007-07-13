@@ -114,7 +114,7 @@ public class SI_FCurve extends Template
      * <p>
      * The number of key values is given by (Dimension * NbKeyValues).
      */
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		objectName = (String)it.next();
@@ -125,6 +125,40 @@ public class SI_FCurve extends Template
 		nbKeys = ((Integer)it.next()).intValue();
 		
 		fcurves = new FCurve[nbFcurves];
+		
+		if(!fcurve.equals("INTEREST") &&    // Camera (v2.0, v3.0)
+		   !fcurve.equals("FAR") &&
+		   !fcurve.equals("FOV") &&
+		   !fcurve.equals("NEAR") &&
+		   !fcurve.equals("POSITION") &&
+		   !fcurve.equals("ROLL") && 
+		   !fcurve.equals("CONE") &&        // Lights (v2.0)
+		   !fcurve.equals("SPREAD") &&
+		   !fcurve.equals("COLOR") &&       // Lights (v3.0)
+		   !fcurve.equals("ORIENTATION") &&
+		   !fcurve.equals("SCALING") &&
+		   !fcurve.equals("ROTATION") &&
+		   !fcurve.equals("TRANSLATION") && // Models (v2.0)
+		   !fcurve.equals("NODEVIS") &&     // Models (v3.0)
+		   !fcurve.equals("START") &&       // Fog (v3.0)
+		   !fcurve.equals("END") &&
+		   !fcurve.equals("AMBIENT") &&     // Materials (v3.0)
+		   !fcurve.equals("DIFFUSE") &&
+		   !fcurve.equals("EMMISSIVE") &&
+		   !fcurve.equals("POWER") &&
+		   !fcurve.equals("SPECULAR") &&
+		   !fcurve.endsWith("rotx") &&      // XSI Short Hacks?
+		   !fcurve.endsWith("roty") &&
+		   !fcurve.endsWith("rotz") &&
+		   !fcurve.endsWith("posx") &&
+           !fcurve.endsWith("posy") &&
+           !fcurve.endsWith("posz"))
+		    throw new ParseException("Illegal fcurve in SI_FCurve: "+fcurve);
+		if(!interpolation.equals("CONSTANT") &&
+		   !interpolation.equals("HERMITE") &&
+		   !interpolation.equals("LINEAR") &&
+		   !interpolation.equals("CUBIC"))
+		    throw new ParseException("Illegal interpolation in SI_FCurve: "+interpolation);
 		
 		for (int i=0; i<nbFcurves; i++)
 		{
