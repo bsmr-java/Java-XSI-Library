@@ -382,6 +382,11 @@ public class DotXSILoader
             e.printStackTrace();
             throw new RuntimeException("Couldn't find class: " + e);
         }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't parse file: "+e);
+        }
     }
 
     /**
