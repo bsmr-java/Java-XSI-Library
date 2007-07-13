@@ -27,11 +27,16 @@ public class SI_GlobalMaterial extends Template
      */
     public String propagation;
 
-    public void parse(RawTemplate block)
+    public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
         referencedMaterial = (String)it.next();
         propagation = (String)it.next();
+        
+        if(!propagation.equals("BRANCH") &&
+           !propagation.equals("NODE") &&
+           !propagation.equals("INHERITED"))
+            throw new ParseException("Illegal propagation in SI_GlobalMaterial: "+propagation);
     }
 
     public String toString() {
