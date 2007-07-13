@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -20,6 +21,7 @@ import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
 import com.mojang.joxsi.GLSLshaders;
+import com.mojang.joxsi.Material;
 import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
@@ -87,6 +89,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private int showModel;
 
     private int showAction;
+    
+    private boolean blend = true;
+    
+    private boolean drawFloor = true;
 
     private Action action;
 
@@ -332,6 +338,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 vertexshader = !vertexshader;
                 break;
 
+            case 'B':
+                blend = !blend;
+                break;
+                
+            case 'F':
+                drawFloor = !drawFloor;
+                break;
+                
             // Arrow keys movement
             case 37: // Left arrow
                 xCamera += (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
@@ -446,7 +460,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         System.out.println("Model: " + showModel + "\tAction: " + showAction);
 
         // Create a new JoglSceneRenderer with a default TextureLoader
-        sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(gl, glu));
+        sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
 
         // Run main loop until the stop flag is raised.
         while (!stop)
@@ -479,6 +493,35 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glRotatef(xRot, 0, 1, 0);
             gl.glTranslatef(xCamera, yCamera, zCamera);
 
+            // Draw a background
+            float hs = SIZE/2;
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+            gl.glColor3f(0.6f, 0.75f, 1.0f);
+            gl.glBegin(GL.GL_QUADS);
+                gl.glVertex3f(-hs, -hs, -hs);
+                gl.glVertex3f(hs, -hs, -hs);
+                gl.glVertex3f(hs, hs, -hs);
+                gl.glVertex3f(-hs, hs, -hs);
+            gl.glEnd();
+            gl.glBegin(GL.GL_QUADS);
+                gl.glVertex3f(-hs, -hs, hs);
+                gl.glVertex3f(-hs, -hs, -hs);
+                gl.glVertex3f(-hs, hs, -hs);
+                gl.glVertex3f(-hs, hs, hs);
+            gl.glEnd();
+            // and a floor
+            if (drawFloor)
+            {
+                gl.glColor3f(0.5f, 0.9f, 0.5f);
+                gl.glBegin(GL.GL_QUADS);
+                    gl.glVertex3f(-hs, -0.01f, hs);
+                    gl.glVertex3f(hs, -0.01f, hs);
+                    gl.glVertex3f(hs, -0.01f, -hs);
+                    gl.glVertex3f(-hs, -0.01f, -hs);
+                gl.glEnd();
+            }
+            
+            
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
             // lshaders.vertexShaderSupported=true;
             // Programming the GPU with the Vertexshader for the object drawn
@@ -522,6 +565,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             {
                 gl.glUseProgramObjectARB(0);
             }
+            
 
             // // Draw a grid on the grid for the base plane
             // gl.glBegin(GL.GL_LINES);
@@ -597,9 +641,21 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 action.apply((System.currentTimeMillis() - start) / 4000.0f * action.getLength());
             }
 
+            // Discon - Enable blending
+            if (blend)
+            {
+                gl.glEnable(GL.GL_BLEND);
+                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+            }
+            
             // Render the scene
             sceneRenderer.render(scene);
 
+            if (blend)
+            {
+                gl.glDisable(GL.GL_BLEND);
+            }
+            
             // Disable lighting
             gl.glDisable(GL.GL_LIGHTING);
 
@@ -656,7 +712,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 {
                     System.out.println("Going to load '" + args[i] + "' as a model from "
                             + ModelDisplayer.class.getResource("/" + args[i]));
-                    scene = Scene.load(lResourceAsStream);
+
+                    String basePath = null;
+                    int lastSlashIndex = args[i].lastIndexOf('/');
+                    if (lastSlashIndex != -1)
+                        basePath = args[i].substring(0, lastSlashIndex+1);
+                    
+                    scene = Scene.load(lResourceAsStream, basePath);
                 }
                 else
                 {

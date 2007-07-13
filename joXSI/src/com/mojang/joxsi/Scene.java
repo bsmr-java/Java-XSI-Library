@@ -37,6 +37,8 @@ public class Scene
     public Map<String, Material> materials = new HashMap<String, Material>();;
     /** Map of Images in the Scene. */
     public Map<String, XSI_Image> images = new HashMap<String, XSI_Image>();
+    /** The base path of the Scene, used to convert relative (texture) paths to absolute. */
+    public String basePath;
 
     /**
      * Factory method for loading a Scene from an input stream.
@@ -52,6 +54,34 @@ public class Scene
     {
         return new Scene(DotXSILoader.load(in));
     }
+    
+    /**
+     * Factory method for loading a Scene from an input stream.
+     * 
+     * <p>This method calls new Scene(DotXSILoader.load(in), basePath);
+     * 
+     * @param in the input stream to read the scene from. This input stream needs to contain a valid XSI file
+     * @param basePath the absolute path to the scene, without the filename.
+     * @return a new Scene.
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
+     */
+    public static Scene load(InputStream in, String basePath) throws IOException, ParseException
+    {
+        return new Scene(DotXSILoader.load(in), basePath);
+    }
+
+    /**
+     * Creates a new Scene from the specified root template.
+     * 
+     * @param root the root template to build the scene from
+     * @param basePath the absolute path to the scene, without the filename.
+     */
+    public Scene(RootTemplate root, String basePath)
+    {
+        this.initFromRootTemplate(root);
+        this.basePath = basePath;
+    }
 
     /**
      * Creates a new Scene from the specified root template.
@@ -59,6 +89,11 @@ public class Scene
      * @param root the root template to build the scene from
      */
     public Scene(RootTemplate root)
+    {
+        this.initFromRootTemplate(root);
+    }
+
+    private void initFromRootTemplate(RootTemplate root)
     {
         this.root = root;
 
@@ -119,7 +154,7 @@ public class Scene
             models[i].compile();
         }
     }
-
+    
     /**
      * Searches the tree of models for the model with the specified full name.
      * 

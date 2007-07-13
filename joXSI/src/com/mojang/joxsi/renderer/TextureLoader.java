@@ -23,15 +23,21 @@ public class TextureLoader
     private GL gl;
     private GLU glu;
     private Map<String,Integer> loadedTextures = new HashMap<String,Integer>();
+    private String basePath;
 
     /**
      * Creates a new TextureLoader
      * 
+     * @param baseTexturePath the base path of the textures, or null (i.e. 'models/')
      * @param gl a valid GL object
      * @param glu a valid GLU object
      */
-    public TextureLoader(GL gl, GLU glu)
+    public TextureLoader(String baseTexturePath, GL gl, GLU glu)
     {
+        this.basePath = baseTexturePath;
+        if (this.basePath != null && this.basePath.charAt(this.basePath.length()-1) != '/')
+            this.basePath += '/';
+            
         this.gl = gl;
         this.glu = glu;
     }
@@ -60,10 +66,18 @@ public class TextureLoader
             // Nope.. let's load the texture..
             try
             {
-                final InputStream lTextureAsStream = getClass().getResourceAsStream("/"+textureName);
+                String textureFile = textureName;
+                
+                if (basePath != null && basePath.length() > 0)
+                {
+                    if (textureFile.charAt(0) != '/')   // it's a relative path
+                        textureFile = basePath + textureFile;
+                }
+                
+                final InputStream lTextureAsStream = getClass().getResourceAsStream("/" + textureFile);
                 if (lTextureAsStream == null)
                 {
-                    System.out.println("Could not read texture: " + textureName);
+                    System.out.println("Could not read texture: " + textureFile);
                     loadedTextures.put(textureName, Integer.valueOf(-1));
                     return -1;
                 }
@@ -97,7 +111,7 @@ public class TextureLoader
                 
                 // Put the texture object id in the map, and return it.
                 loadedTextures.put(textureName, Integer.valueOf(id));
-                System.out.println("Loaded texture id: " + id + " - " + textureName);
+                System.out.println("Loaded texture id: " + id + " - " + textureFile);
                 return id;
             }
             catch (IOException e)
