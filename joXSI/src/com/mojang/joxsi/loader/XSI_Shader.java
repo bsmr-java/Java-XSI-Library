@@ -114,7 +114,7 @@ public class XSI_Shader extends Template
 	public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
 	public Map<String, Connection> connectionMap = new HashMap<String, Connection>();
 
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		
@@ -122,6 +122,9 @@ public class XSI_Shader extends Template
 		output = ((Integer)it.next()).intValue();
 		param_number = ((Integer)it.next()).intValue();
 		cnx_number = ((Integer)it.next()).intValue();
+		
+		if(output < 0 || output > 13)
+            throw new ParseException("Illegal output in XSI_Shader: "+output);
 		
 		parameters = new Parameter[param_number];
 		for (int i=0; i<param_number; i++)
@@ -132,6 +135,13 @@ public class XSI_Shader extends Template
 			parameters[i].value = it.next();
 			
 			parameterMap.put(parameters[i].name, parameters[i]);
+			
+			if(!parameters[i].type.equals("BOOLEAN") &&
+			   !parameters[i].type.equals("BYTE") &&
+			   !parameters[i].type.equals("INTEGER") &&
+			   !parameters[i].type.equals("FLOAT") &&
+			   !parameters[i].type.equals("STRING"))
+			    throw new ParseException("Illegal parameter type in XSI_Shader: "+parameters[i].type);
 		}
 
 		connections = new Connection[cnx_number];
@@ -143,6 +153,11 @@ public class XSI_Shader extends Template
 			connections[i].type = (String)it.next();
 
 			connectionMap.put(connections[i].name, connections[i]);
+			
+			if(!connections[i].type.equals("SHADER") &&
+			   !connections[i].type.equals("IMAGE") &&
+			   !connections[i].type.equals(""))
+			    throw new ParseException("Illegal connection type in XSI_Shader: "+connections[i].type);
 		}
 	}
 
