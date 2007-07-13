@@ -7,6 +7,12 @@ import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.demo.TimeIt;
 import com.mojang.joxsi.loader.*;
 
+/**
+ * Simple benchmarker
+ * Parses the model 1,000 times and outputs the speed
+ * 
+ * @author Cheater
+ */
 public class BenchLoader
 {
 	private static final long tries = 1000;
