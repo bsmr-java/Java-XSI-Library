@@ -34,7 +34,7 @@ public class SI_Light extends Template
     /** Spread Angle */
     public float spreadAngle;
 
-    public void parse(RawTemplate block)
+    public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
 
@@ -65,5 +65,8 @@ public class SI_Light extends Template
             coneAngle = ((Float)it.next()).floatValue();
             spreadAngle = ((Float)it.next()).floatValue();
         }
+        
+        if(type < 0 || type > 3)
+            throw new ParseException("Illegal type in SI_Light: "+type);
     }
 }
