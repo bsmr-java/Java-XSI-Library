@@ -27,10 +27,12 @@ public class SI_Angle extends Template
 	public int type;
 
     @Override
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		type = ((Integer)it.next()).intValue();
+		if(type != 0 && type != 1)
+		    throw new ParseException("Illegal SI_Angel: "+type);
 	}
 
     /**
