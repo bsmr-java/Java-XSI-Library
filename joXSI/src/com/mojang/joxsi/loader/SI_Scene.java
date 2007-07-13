@@ -24,12 +24,16 @@ public class SI_Scene extends Template
     /** Frames per second. */
 	public float frameRate;
 	
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		timing = (String)it.next();
 		start = ((Number)it.next()).floatValue();
 		end = ((Number)it.next()).floatValue();
 		frameRate = ((Number)it.next()).floatValue();
+		
+		if(!timing.equals("FRAMES") &&
+		   !timing.equals("SECONDS"))
+		    throw new ParseException("Illegal timing in SI_Scene: "+timing);
 	}
 }
