@@ -23,7 +23,7 @@ public class XSI_ImageFX extends Template
 	public int vertical;  
 	public int conversion; 
 	
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		hue = ((Float)it.next()).floatValue();  
@@ -38,6 +38,29 @@ public class XSI_ImageFX extends Template
 		scaleY = ((Integer)it.next()).intValue();  
 		horizontal = ((Integer)it.next()).intValue();  
 		vertical = ((Integer)it.next()).intValue();  
-		conversion = ((Integer)it.next()).intValue(); 
+		conversion = ((Integer)it.next()).intValue();
+		
+		if(hue < 0.0f || hue > 100.0f)
+		    throw new ParseException("Illegal hue in XSI_ImageFX: "+hue);
+		if(gain < 0.0f || gain > 100.0f)
+            throw new ParseException("Illegal gain in XSI_ImageFX: "+gain);
+		if(saturation < 0.0f || saturation > 100.0f)
+            throw new ParseException("Illegal saturation in XSI_ImageFX: "+saturation);
+		if(brightness < -100.0f || brightness > 100.0f)
+            throw new ParseException("Illegal brightness in XSI_ImageFX: "+brightness);
+		if(radius < 0.0f || radius > 20.0f)
+            throw new ParseException("Illegal radius in XSI_ImageFX: "+radius);
+		if(amount < 0.0f || amount > 1.0f)
+            throw new ParseException("Illegal amount in XSI_ImageFX: "+amount);
+		if(blurAlpha != 0 && blurAlpha != 1)
+            throw new ParseException("Illegal blurAlpha in XSI_ImageFX: "+blurAlpha);
+		if(type < 0 || type > 7)
+            throw new ParseException("Illegal type in XSI_ImageFX: "+type);
+		if(conversion != 0 && conversion != 1)
+            throw new ParseException("Illegal conversion in XSI_ImageFX: "+conversion);
+		// TODO: Add the 16 bits per channel variable
+		//if( < 0.0f ||  > 100.0f)
+        //    throw new ParseException("Illegal  in XSI_ImageFX: "+);
+		
 	}
 }
