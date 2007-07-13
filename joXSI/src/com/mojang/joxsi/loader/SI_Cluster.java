@@ -20,7 +20,7 @@ public class SI_Cluster extends Template
 	public int nbVertices;
 	public int[] vertexIndexes;
 
-	public void parse(RawTemplate block)
+	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		referencedModel = (String)it.next();
@@ -33,5 +33,9 @@ public class SI_Cluster extends Template
 		{
 			vertexIndexes[i] = ((Integer)it.next()).intValue();
 		}
+		
+		if(!weighting.equals("AVERAGE") &&
+		   !weighting.equals("ADDITIVE"))
+		    throw new ParseException("Illegal weighting in SI_Cluster: "+weighting);
 	}
 }
