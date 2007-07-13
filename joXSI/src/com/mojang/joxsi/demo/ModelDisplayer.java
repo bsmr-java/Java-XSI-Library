@@ -171,6 +171,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             action = scene.models[showModel].actions[showAction];
         }
     }
+    
+    public void stopProgram() {
+        stop = true;
+    }
 
     /*
      * (non-Javadoc)

@@ -109,13 +109,26 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener{
 		        selectedModel = Integer.parseInt(nextToDo[1]);
 		    if(nextToDo.length >= 4)
 		        selectedAction = Integer.parseInt(nextToDo[3]);
-		    for(int i=0; i<this.getContentPane().getComponentCount(); i++) {
-		        if(this.getContentPane().getComponent(i).getClass().toString().endsWith("ModelDisplayer")) {
-		            ModelDisplayer md = (ModelDisplayer)this.getContentPane().getComponent(i);
-		            md.setShowModel(selectedModel);
-		            md.setShowAction(selectedAction);
-		        }
+		    ModelDisplayer md = this.getModelDisplayer();
+		    if(md != null) {
+    		    md.setShowModel(selectedModel);
+    		    md.setShowAction(selectedAction);
 		    }
 		}
+		
+		if(action.equals("Exit")) {
+		    ModelDisplayer md = this.getModelDisplayer();
+		    md.stopProgram();
+		}
+ 	}
+ 	
+ 	private ModelDisplayer getModelDisplayer() {
+ 	    ModelDisplayer md = null;
+ 	    for(int i=0; i<this.getContentPane().getComponentCount(); i++) {
+            if(this.getContentPane().getComponent(i).getClass().toString().endsWith("ModelDisplayer")) {
+                md = (ModelDisplayer)this.getContentPane().getComponent(i);
+            }
+        }
+ 	    return md;
  	}
 }
