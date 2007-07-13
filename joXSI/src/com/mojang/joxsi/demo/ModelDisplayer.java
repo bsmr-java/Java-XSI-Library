@@ -611,7 +611,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 frames = 0;
             }
             // This makes the mouse and key listeners more responsive
-            Thread.yield();
+            releaseContextAndMakeItcurrentAgain();
 
             // Swap buffers
             swapBuffers();
