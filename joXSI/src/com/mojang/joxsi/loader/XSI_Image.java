@@ -73,7 +73,7 @@ public class XSI_Image extends Template
 		
 		if(channel_count != 3 && channel_count != 4)
 		    throw new ParseException("Illegal channel_count in XSI_Image: "+channel_count);
-		if(bitsPerPixels != 24 && bitsPerPixels != 32)
+		if(bitsPerPixels != 24 && bitsPerPixels != 32 && bitsPerPixels != 64)
 		    throw new ParseException("Illegal bitsPerPixel in XSI_Image: "+bitsPerPixels);
 	}
 
