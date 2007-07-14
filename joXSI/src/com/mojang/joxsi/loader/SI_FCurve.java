@@ -152,7 +152,10 @@ public class SI_FCurve extends Template
 		   !fcurve.endsWith("rotz") &&
 		   !fcurve.endsWith("posx") &&
            !fcurve.endsWith("posy") &&
-           !fcurve.endsWith("posz"))
+           !fcurve.endsWith("posz") &&
+           !fcurve.endsWith("sclx") &&
+           !fcurve.endsWith("scly") &&
+           !fcurve.endsWith("sclz"))
 		    throw new ParseException("Illegal fcurve in SI_FCurve: "+fcurve);
 		if(!interpolation.equals("CONSTANT") &&
 		   !interpolation.equals("HERMITE") &&
