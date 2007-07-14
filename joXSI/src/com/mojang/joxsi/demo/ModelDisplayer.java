@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -21,7 +20,6 @@ import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
 import com.mojang.joxsi.GLSLshaders;
-import com.mojang.joxsi.Material;
 import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
@@ -63,22 +61,19 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private static long time = 0l;
 
     /** Diffuse scene light zero. */
-    private float[] diffuseSceneLight0 = new float[]
-    { 1, 1, 1, 1 };
+    private float[] diffuseSceneLight0 = new float[] { 1, 1, 1, 1 };
 
     /** Should the Diffuse scene light zero be shown. */
     private boolean diffuseSceneLightFlag0 = true;
 
     /** Ambient scene lighting zero. */
-    private float[] ambientSceneLight0 = new float[]
-    { 0.25f, 0.25f, 0.25f, 1 };
+    private float[] ambientSceneLight0 = new float[] { 0.25f, 0.25f, 0.25f, 1 };
 
     /** Should the Ambient scene light zero be shown. */
     private boolean ambientSceneLightFlag0 = true;
 
     /** Position of the Scene light zero */
-    private float[] positionSceneLight0 = new float[]
-    { 0, 0.7f, 0.7f, 0 };
+    private float[] positionSceneLight0 = new float[] { 0, 0.7f, 0.7f, 0 };
 
     private boolean moreLight;
 
@@ -91,9 +86,17 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private int showAction;
     
     private boolean blend = true;
-    
+    /** If <code>true</code> render the {@link #groundTexture } or a plain colour. If <code>false</code> then draw a grid. */
     private boolean drawGround = true;
+    /** If <code>true</code> render a plain background . If <code>false</code> then draw nothing. */
+    private boolean drawBackground = true;
+    /** Name of texture to render on the ground if {@link #drawGround } is <code>true</code>.  */
     private String groundTexture;
+    /** Enable or disable AntiAliasing. */
+    private boolean useAntiAliasing = false;
+    /** Enable or disable AnisoropicFiltering. */
+    private boolean useAnisotropicFiltering = false;
+    /** The textureLoader. */
     private TextureLoader textureLoader;
     
     private Action action;
@@ -102,11 +105,16 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private static final float TWO_PI = (float) (Math.PI * 2);
 
     private float wave_movement = 0.0f;
-
+    /** Size of the grid on the ground. */
     private int SIZE = 32;
 
     private float[][][] mesh = new float[SIZE][SIZE][3];
 
+    /**
+     * TODO JavaDoc.
+     * 
+     * @param scene
+     */
     public ModelDisplayer(Scene scene)
     {
         this.scene = scene;
@@ -123,6 +131,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         createMesh();
     }
 
+    /**
+     * TODO JavaDoc.
+     * 
+     * @param modelNr
+     */
     public void setShowModel(int modelNr)
     {
         if (modelNr >= scene.models.length)
@@ -136,6 +149,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         showAction = -1;
     }
 
+    /**
+     * TODO JavaDoc.
+     * 
+     * @param actionNr
+     */
     public void setShowAction(int actionNr)
     {
         if (showModel >= 0)
@@ -148,6 +166,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         updateAction();
     }
 
+    /**
+     * TODO JavaDoc.
+     */
     public void updateAction()
     {
         /*
@@ -179,7 +200,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             action = scene.models[showModel].actions[showAction];
         }
     }
-    
+
+    /**
+     * TODO JavaDoc.
+     */
     public void stopProgram() {
         stop = true;
     }
@@ -248,7 +272,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             zoomDistance += e.getUnitsToScroll() * 0.1f;
         }
-        if (zoomDistance < 0.1f) zoomDistance = 0.1f;
+        if (zoomDistance < 0.01f) zoomDistance = 0.01f;
     }
 
     /*
@@ -302,6 +326,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     public void keyPressed(KeyEvent aEvent)
     {
         int keyCode = aEvent.getKeyCode();
+        /*
         String keyString = "key code = " + keyCode + " (" + KeyEvent.getKeyText(keyCode) + ")";
 
         int modifiersEx = aEvent.getModifiersEx();
@@ -315,6 +340,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             modString += " (no extended modifiers)";
         }
+        */
         // System.out.println("keyPressed: " + keyString + ", " + modString);
 
         float xs = (float) Math.sin(xRot * Math.PI / 180.0f);
@@ -343,9 +369,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 'B':
                 blend = !blend;
                 break;
-                
             case 'F':
                 drawGround = !drawGround;
+                break;
+            case 'W':
+                drawBackground = !drawBackground;
                 break;
                 
             // Arrow keys movement
@@ -380,10 +408,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 break;
             case 107: // Numpad +
                 zoomDistance = zoomDistance * 0.9f;
-                if (zoomDistance < 0.1f)
+                if (zoomDistance < 0.01f)
                 {
-                    zoomDistance = 0.1f;
-                    System.out.println("Resetting zoomDistance to 0.1");
+                    zoomDistance = 0.01f;
+                    System.out.println("Resetting zoomDistance to 0.01");
                 }
                 break;
             case 109: // Numpad -
@@ -417,7 +445,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     {
     }
 
-    // Just for testing purposes
+    /**
+     * TODO JavaDoc.
+     * Just for testing purposes.
+     */
     public void createMesh()
     {
         // Create Our Mesh
@@ -438,8 +469,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /**
      * This is where all the rendering magic happens. Only handles two actions
      * at the moment.
+     * TODO JavaDoc.
+     * 
+     * @param gl
+     * @param glu
+     * @param aShaders
+     * 
+     * @see SingleThreadedGlCanvas#renderLoop(GL, GLU, GLSLshaders)
      */
-    protected void renderLoop(GL gl, GLU glu, GLSLshaders lshaders)
+    protected void renderLoop(GL gl, GLU glu, GLSLshaders aShaders)
     {
         if (action == null) updateAction();
 
@@ -502,22 +540,25 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glRotatef(xRot, 0, 1, 0);
             gl.glTranslatef(xCamera, yCamera, zCamera);
 
-            // Draw a background
             float hs = SIZE/2;
-            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-            gl.glColor3f(0.4f, 0.50f, 0.8f);
-            gl.glBegin(GL.GL_QUADS);
-                gl.glVertex3f(-hs, -hs, -hs);
-                gl.glVertex3f(hs, -hs, -hs);
-                gl.glVertex3f(hs, hs, -hs);
-                gl.glVertex3f(-hs, hs, -hs);
-            gl.glEnd();
-            gl.glBegin(GL.GL_QUADS);
-                gl.glVertex3f(-hs, -hs, hs);
-                gl.glVertex3f(-hs, -hs, -hs);
-                gl.glVertex3f(-hs, hs, -hs);
-                gl.glVertex3f(-hs, hs, hs);
-            gl.glEnd();
+            if (drawBackground)
+            {
+                // Draw a background
+                gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+                gl.glColor3f(0.4f, 0.50f, 0.8f);
+                gl.glBegin(GL.GL_QUADS);
+                    gl.glVertex3f(-hs, -hs, -hs);
+                    gl.glVertex3f(hs, -hs, -hs);
+                    gl.glVertex3f(hs, hs, -hs);
+                    gl.glVertex3f(-hs, hs, -hs);
+                gl.glEnd();
+                gl.glBegin(GL.GL_QUADS);
+                    gl.glVertex3f(-hs, -hs, hs);
+                    gl.glVertex3f(-hs, -hs, -hs);
+                    gl.glVertex3f(-hs, hs, -hs);
+                    gl.glVertex3f(-hs, hs, hs);
+                gl.glEnd();
+            }
             
             // Draw the ground
             if (drawGround)
@@ -550,9 +591,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // lshaders.vertexShaderSupported=true;
                 // Programming the GPU with the Vertexshader for the object drawn
                 // later
-                if (lshaders.vertexShaderSupported && vertexshader)
+                if (aShaders.vertexShaderSupported && vertexshader)
                 {
-                    gl.glUseProgramObjectARB(lshaders.programObject);
+                    gl.glUseProgramObjectARB(aShaders.programObject);
                 }
     
                 // Start Drawing Mesh, this is only for learning and testing shaders
@@ -564,12 +605,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     for (int z = 0; z < SIZE - 1; z++)
                     {
                         // Test if Shader is supported and activated
-                        if (lshaders.vertexShaderSupported && vertexshader)
+                        if (aShaders.vertexShaderSupported && vertexshader)
                         {
                             // Set The Wave Parameter Of Our Shader To The
                             // Incremented
                             // Wave Value From Our Main Program
-                            gl.glVertexAttrib1f(lshaders.waveAttrib, wave_movement);
+                            gl.glVertexAttrib1f(aShaders.waveAttrib, wave_movement);
                             gl.glColor3f(0.5f, 0.0f, 1.0f);
                         }
                         // Draw Vertex
@@ -585,7 +626,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     gl.glEnd();
                 }
                 // Setting the GPU shader 0 to object drawn before
-                if (lshaders.vertexShaderSupported && vertexshader)
+                if (aShaders.vertexShaderSupported && vertexshader)
                 {
                     gl.glUseProgramObjectARB(0);
                 }
@@ -793,6 +834,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Add a hook for listening to the windowclose event
         frame.addWindowListener(new WindowAdapter()
         {
+            /*
+             * (non-Javadoc)
+             * @see java.awt.event.WindowAdapter#windowClosing(WindowEvent)
+             */
             public void windowClosing(WindowEvent e)
             {
                 // Set the stop flag to true.
