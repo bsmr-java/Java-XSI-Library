@@ -1,5 +1,6 @@
 package com.mojang.joxsi.renderer;
 
+import java.util.logging.Logger;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -20,10 +21,13 @@ import com.sun.opengl.util.BufferUtil;
  */
 public class TextureLoader
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
     private GL gl;
     private GLU glu;
     private Map<String,Integer> loadedTextures = new HashMap<String,Integer>();
     private String basePath;
+    /* * Classname used in some logging statements. */
+    private static final String CLASS_NAME = TextureLoader.class.getName();
 
     /**
      * Creates a new TextureLoader
@@ -77,7 +81,7 @@ public class TextureLoader
                 final InputStream lTextureAsStream = getClass().getResourceAsStream("/" + textureFile);
                 if (lTextureAsStream == null)
                 {
-                    System.out.println("Could not read texture: " + textureFile);
+                    logger.warning("Could not read texture: " + textureFile);
                     loadedTextures.put(textureName, Integer.valueOf(-1));
                     return -1;
                 }
@@ -111,7 +115,7 @@ public class TextureLoader
                 
                 // Put the texture object id in the map, and return it.
                 loadedTextures.put(textureName, Integer.valueOf(id));
-                System.out.println("Loaded texture id: " + id + " - " + textureFile);
+                logger.info("Loaded texture id: " + id + " - " + textureFile);
                 return id;
             }
             catch (IOException e)

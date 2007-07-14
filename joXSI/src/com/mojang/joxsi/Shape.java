@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import com.mojang.joxsi.loader.SI_Shape;
 
 /**
@@ -9,6 +10,7 @@ import com.mojang.joxsi.loader.SI_Shape;
  */
 public class Shape
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
     public float[] vertexBuffer;
     public float[] normalBuffer;
     public float[] colorBuffer;
@@ -48,7 +50,7 @@ public class Shape
             else
             {
                 // TODO: Store unknown element type in a map
-                System.out.println("Unknown shape element type: " + shapeArray.elements);
+                logger.info("Unknown shape element type: " + shapeArray.elements);
             }
         }
     }

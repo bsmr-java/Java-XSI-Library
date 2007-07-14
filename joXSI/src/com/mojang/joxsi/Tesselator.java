@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import java.util.List;
 
 import com.mojang.joxsi.loader.SI_PolygonList.Polygon;
@@ -12,7 +13,8 @@ import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
  */
 public class Tesselator
 {
-    /**
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+   /**
      * Converts a polygon into triangles, and adds them to a List
      *  
      * @param p the Polygon to tesselate
@@ -74,7 +76,7 @@ public class Tesselator
         else // No longer trivial..
         {
             // TODO: Tesselate polygons with n sides. The special cases for 3 and 4 sided polygons above are probably faster, so leave them.
-            System.out.println("Only three or four sides polygons are supported yet!");
+            logger.info("Only three or four sides polygons are supported yet!");
         }
     }
 }

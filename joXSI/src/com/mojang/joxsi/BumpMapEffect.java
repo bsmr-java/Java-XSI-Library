@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import com.mojang.joxsi.loader.XSI_Image;
 
 public class BumpMapEffect 
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
    // Attribute
    private XSI_Image   img;
    private Image   bump;
@@ -92,7 +94,7 @@ public class BumpMapEffect
    {
 //  	 timer.resetTime();
 //  	 super.paintComponent(graphics);
-  	 System.out.println("painComponent");
+  	 logger.info("painComponent");
   	 
        // Scene is here  
 //       graphics.drawImage(img, 0, 0, null);

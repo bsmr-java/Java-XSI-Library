@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import com.mojang.joxsi.loader.SI_TriangleList;
 
 /**
@@ -12,6 +13,7 @@ import com.mojang.joxsi.loader.SI_TriangleList;
  */
 public class TriangleList
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
     private static final int MAX_ENVELOPES = 4;
     private static final int MAX_TEXTURES = 4;
 
@@ -123,7 +125,7 @@ public class TriangleList
 
                 if (envelopeCounts[index] == MAX_ENVELOPES)
                 {
-                    System.out.println("Warning: More than " + MAX_ENVELOPES + " on vertex " + index + "!");
+                    logger.warning("More than " + MAX_ENVELOPES + " on vertex " + index + "!");
                 }
                 else
                 {

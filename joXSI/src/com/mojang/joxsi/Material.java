@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.mojang.joxsi.loader.XSI_Shader;
  */
 public class Material
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
     public String name;
     /** Name of the image. */
     public String imageName;
@@ -78,7 +80,7 @@ public class Material
                 if (image==null)
                 {
                     Template template = material.getRoot();
-                    System.out.println("Null XSI_Image for \"" + conn.point + "\" in " + template + ". Loading model anyway..");
+                    logger.info("Null XSI_Image for \"" + conn.point + "\" in " + template + ". Loading model anyway..");
                 }
                 else
                 {

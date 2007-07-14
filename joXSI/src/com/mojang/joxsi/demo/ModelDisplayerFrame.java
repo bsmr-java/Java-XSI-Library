@@ -1,5 +1,5 @@
 package com.mojang.joxsi.demo;
-import java.awt.Component;
+import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,7 +11,9 @@ import javax.swing.JMenuItem;
 
 import com.mojang.joxsi.Model;
 
-public class ModelDisplayerFrame extends JFrame implements ActionListener{
+public class ModelDisplayerFrame extends JFrame implements ActionListener
+{
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
 
 	ModelDisplayerFrame(String title, Model[] models)
 	{
@@ -93,11 +95,14 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener{
  	public void actionPerformed(ActionEvent e) {
 
 		String action = e.getActionCommand();
-		if (action == null) {
-				System.out.println("Empty ActionCommand ");
+		if (action == null)
+        {
+		    logger.info("Empty ActionCommand ");
 			return;
-		}else{
-			System.out.println("ActionCommand: " + action+" source: "+((Component) e.getSource()));
+		}
+        else
+        {
+			logger.info("ActionCommand: " + action+" source: "+e.getSource());
 		}
 		
 		if(action.startsWith("model_")) {

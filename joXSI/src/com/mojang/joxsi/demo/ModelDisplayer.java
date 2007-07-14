@@ -1,5 +1,9 @@
 package com.mojang.joxsi.demo;
 
+import java.util.logging.Logger;
+import java.util.logging.FileHandler;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -35,6 +39,14 @@ import com.mojang.joxsi.renderer.TextureLoader;
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    
+    private static ConsoleHandler ch = new ConsoleHandler();
+    
+    private static FileHandler fh;
+    
+    /* * Classname used in some logging statements. */
+    private static final String CLASS_NAME = ModelDisplayer.class.getName();
 
     private Scene scene;
 
@@ -141,7 +153,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         if (modelNr >= scene.models.length)
         {
             showModel = -1;
-            System.out.println("Illegal Model: " + modelNr + " (Model out of bound, max: " + scene.models.length + ")");
+            logger.warning("Illegal Model: " + modelNr + " (Model out of bound, max: " + scene.models.length + ")");
         }
 
         else
@@ -181,7 +193,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             // then store the first one in the 'action' object
             for (int i = 0; i < scene.models.length; i++)
             {
-                System.out.println("Number of actions in model " + i + ": " + scene.models[i].actions.length);
+                logger.info("Number of actions in model " + i + ": " + scene.models[i].actions.length);
                 for (int j = 0; j < scene.models[i].actions.length; j++)
                 {
                     Action a = scene.models[i].actions[j];
@@ -191,7 +203,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                         showModel = i;
                         showAction = j;
                     }
-                    System.out.println("Length of action: " + a.getName() + ": " + a.getLength());
+                    logger.info("Length of action: " + a.getName() + ": " + a.getLength());
                 }
             }
         }
@@ -341,7 +353,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             modString += " (no extended modifiers)";
         }
         */
-        // System.out.println("keyPressed: " + keyString + ", " + modString);
+        // logger.info("keyPressed: " + keyString + ", " + modString);
 
         float xs = (float) Math.sin(xRot * Math.PI / 180.0f);
         float xc = (float) Math.cos(xRot * Math.PI / 180.0f);
@@ -411,7 +423,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 if (zoomDistance < 0.01f)
                 {
                     zoomDistance = 0.01f;
-                    System.out.println("Resetting zoomDistance to 0.01");
+                    logger.info("Resetting zoomDistance to 0.01");
                 }
                 break;
             case 109: // Numpad -
@@ -491,17 +503,17 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             lNumberOfModels = scene.models.length;
         }
-        System.out.println("Number of models: " + lNumberOfModels);
+        logger.info("Number of models: " + lNumberOfModels);
         int lNumberOfEnvelopes = 0;
         if (scene.envelopes != null)
         {
             lNumberOfEnvelopes = scene.envelopes.length;
         }
-        System.out.println("Number of envelopes in the scene: " + lNumberOfEnvelopes);
-        System.out.println("Number of images in the scene: " + scene.images.size());
-        System.out.println("Number of materials in the scene: " + scene.materials.size());
+        logger.info("Number of envelopes in the scene: " + lNumberOfEnvelopes);
+        logger.info("Number of images in the scene: " + scene.images.size());
+        logger.info("Number of materials in the scene: " + scene.materials.size());
 
-        System.out.println("Model: " + showModel + "\tAction: " + showAction);
+        logger.info("Model: " + showModel + "\tAction: " + showAction);
 
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
@@ -733,7 +745,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // This is more precise
                 start = now;
                 // start += 4000;
-                System.out.println(frames / 4 + " fps and Time of creating scene: " + time);
+                logger.finest(frames / 4 + " fps and Time of creating scene: " + time);
                 frames = 0;
             }
             // This makes the mouse and key listeners more responsive
@@ -756,6 +768,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      */
     public static void main(String[] args) throws IOException, ParseException
     {
+        final String methodName = "main";
+        fh = new FileHandler("modeldisplayer.log");
+        logger.addHandler(ch);
+        logger.addHandler(fh);
         TimeIt timer = new TimeIt();
         String groundTexture = null;
         
@@ -763,7 +779,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         Scene scene = null;
         if (args.length == 0)
         {
-            System.out.println("No arguments. We're probably run from webstart, so load the default model");
+            logger.info("No arguments. We're probably run from webstart, so load the default model");
             // No arguments. We're probably run from webstart, so load the
             // default model
             scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
@@ -788,13 +804,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                         }
                     }
                 }
-                else                            // Models
+                // Models
+                else
                 {
-                    System.out.println("Going to load '" + args[i] + "' as a model");
+                    logger.info("Going to load '" + args[i] + "' as a model");
                     final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
                     if (lResourceAsStream != null)
                     {
-                        System.out.println("Going to load '" + args[i] + "' as a model from "
+                        logger.info("Going to load '" + args[i] + "' as a model from "
                                 + ModelDisplayer.class.getResource("/" + args[i]));
     
                         String basePath = null;
@@ -806,14 +823,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     }
                     else
                     {
-                        throw new IllegalArgumentException("Cannot load model from this location: " + args[i]);
+                        logger.throwing(CLASS_NAME, methodName,
+                                new IllegalArgumentException("Cannot load model from this location: " + args[i]));
                     }
                 }
             }
         }
 
         time = timer.getTime();
-        // System.err.println("Time of creating scene: "+time);
+        // logger.info("Time of creating scene: "+time);
         // Set up a JFrame for a TemplateTree showing the entire scene
         JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);

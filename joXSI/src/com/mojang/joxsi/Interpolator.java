@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import com.mojang.joxsi.loader.SI_FCurve;
 import com.mojang.joxsi.loader.SI_Transform;
 
@@ -8,6 +9,7 @@ import com.mojang.joxsi.loader.SI_Transform;
  */
 public class Interpolator
 {
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
     public static final int INTERPOLATION_CONSTANT = 0;
     public static final int INTERPOLATION_LINEAR = 1;
     public static final int INTERPOLATION_HERMITE = 2;
@@ -317,7 +319,7 @@ public class Interpolator
                     break;
                 default:
                     // This really shouldn't happen since the constructor throws an exception if target is none of the above.
-                    System.out.println("Huh?");
+                    logger.warning("Unrecognized transform");
             }
         }
     }

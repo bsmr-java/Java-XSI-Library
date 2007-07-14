@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,6 +25,7 @@ import com.sun.opengl.util.BufferUtil;
  */
 public class GLSLshaders {
 
+    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
 	public boolean fragmentShaderSupported;
 	public boolean vertexShaderSupported;
 	public int programObject;
@@ -46,7 +48,7 @@ public class GLSLshaders {
 	 private void chooseProfiles(GL gl) {
 			
 	    String extensions = gl.glGetString(GL.GL_EXTENSIONS);
-	    System.out.println("Your supported extensions: "+extensions);
+	    logger.info("Your supported extensions: "+extensions);
 	    if(fragmentShaderSupported = extensions.indexOf("GL_ARB_fragment_shader") != -1){
 		    //loadShaders(gl,"someshader",false);	   	 
 	    }
@@ -69,9 +71,9 @@ public class GLSLshaders {
 		String name;
 		String shaderSource;
 		if(Vertex){
-			System.out.println("Loading VertexShader: "+enabledShader);
+			logger.info("Loading VertexShader: "+enabledShader);
 		}else{
-			System.out.println("Loading FragmentShader: "+enabledShader);
+			logger.info("Loading FragmentShader: "+enabledShader);
 		}
 		
 //	   for (int i=0;i<enabledShaders.length;i++){
@@ -145,7 +147,7 @@ public class GLSLshaders {
 	
 	   byte[] infoBytes = new byte[length];
 	   infoLog.get(infoBytes);
-	   System.out.println("GLSL Validation >> " + new String(infoBytes));
+	   logger.info("GLSL Validation >> " + new String(infoBytes));
 	}
 
 	/**
@@ -166,7 +168,7 @@ public class GLSLshaders {
 		try {
 			in = new BufferedReader(new FileReader(url));
 		} catch (FileNotFoundException e1) {
-			System.out.println("GLSLshaders.getBufferedReader; URL: "+url+" couldnt be found: "+e1);
+			logger.warning("GLSLshaders.getBufferedReader; URL: "+url+" couldnt be found: "+e1);
 				in = null;
 			}	
 		}
