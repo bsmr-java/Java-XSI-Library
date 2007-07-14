@@ -530,8 +530,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 {
                     gl.glEnable(GL.GL_TEXTURE_2D);
                     gl.glBindTexture(GL.GL_TEXTURE_2D, texId);
+                    gl.glColor3f(1.0f, 1.0f, 1.0f);
                 }
-                gl.glColor3f(0.3f, 0.7f, 0.4f);
+                else
+                    gl.glColor3f(0.3f, 0.7f, 0.4f);
+                
                 gl.glBegin(GL.GL_QUADS);
                     gl.glTexCoord2f(1.0f*SIZE, 0.0f);       gl.glVertex3f(-hs, 0f, hs);
                     gl.glTexCoord2f(1.0f*SIZE, 1.0f*SIZE);  gl.glVertex3f(-hs, 0f, -hs);
