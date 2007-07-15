@@ -1,5 +1,7 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Logger;
+
 import com.mojang.joxsi.loader.SI_Envelope.VertexWeight;
 
 /**
@@ -9,6 +11,8 @@ import com.mojang.joxsi.loader.SI_Envelope.VertexWeight;
  */
 public class Envelope
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Envelope.class.getName());
     public VertexWeight[] vertexWeights;
     public Model envelopeModel;
     public Model deformerModel;

@@ -9,7 +9,8 @@ import com.mojang.joxsi.loader.SI_Transform;
  */
 public class Interpolator
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Interpolator.class.getName());
     public static final int INTERPOLATION_CONSTANT = 0;
     public static final int INTERPOLATION_LINEAR = 1;
     public static final int INTERPOLATION_HERMITE = 2;

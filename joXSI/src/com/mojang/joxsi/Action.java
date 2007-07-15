@@ -2,6 +2,7 @@ package com.mojang.joxsi;
 
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.SI_FCurve;
 import com.mojang.joxsi.loader.Template;
@@ -15,6 +16,8 @@ import com.mojang.joxsi.loader.XSI_Action;
  */
 public class Action
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Action.class.getName());
     private XSI_Action action;
     private Interpolator[] interpolators;
 

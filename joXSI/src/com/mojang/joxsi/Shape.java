@@ -10,7 +10,8 @@ import com.mojang.joxsi.loader.SI_Shape;
  */
 public class Shape
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Shape.class.getName());
     public float[] vertexBuffer;
     public float[] normalBuffer;
     public float[] colorBuffer;

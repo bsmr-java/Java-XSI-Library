@@ -13,7 +13,8 @@ import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
  */
 public class Tesselator
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Tesselator.class.getName());
    /**
      * Converts a polygon into triangles, and adds them to a List
      *  

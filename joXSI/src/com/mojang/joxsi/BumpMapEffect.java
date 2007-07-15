@@ -17,7 +17,8 @@ import com.mojang.joxsi.loader.XSI_Image;
 
 public class BumpMapEffect 
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(BumpMapEffect.class.getName());
    // Attribute
    private XSI_Image   img;
    private Image   bump;

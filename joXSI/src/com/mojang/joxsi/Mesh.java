@@ -2,6 +2,7 @@ package com.mojang.joxsi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.SI_Mesh;
 import com.mojang.joxsi.loader.SI_PolygonList;
@@ -14,6 +15,9 @@ import com.mojang.joxsi.loader.Template;
  */
 public class Mesh
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Mesh.class.getName());
+    /** Array of TriangleLists. */
     public TriangleList[] triangleLists;
 
     /**

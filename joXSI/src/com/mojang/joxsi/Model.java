@@ -1,6 +1,7 @@
 package com.mojang.joxsi;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.SI_Mesh;
 import com.mojang.joxsi.loader.SI_Model;
@@ -21,6 +22,9 @@ import com.mojang.joxsi.loader.XSI_Mixer;
  */
 public class Model
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Model.class.getName());
+    /** Constant for converting Degrees to Radians = PI/180. */
     private static final float DEG_TO_RAD = (float)Math.PI / 180.0f;
 
     public Model[] models;

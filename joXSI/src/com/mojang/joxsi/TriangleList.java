@@ -13,7 +13,8 @@ import com.mojang.joxsi.loader.SI_TriangleList;
  */
 public class TriangleList
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(TriangleList.class.getName());
     private static final int MAX_ENVELOPES = 4;
     private static final int MAX_TEXTURES = 4;
 

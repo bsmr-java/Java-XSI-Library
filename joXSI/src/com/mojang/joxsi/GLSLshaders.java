@@ -25,7 +25,8 @@ import com.sun.opengl.util.BufferUtil;
  */
 public class GLSLshaders {
 
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(GLSLshaders.class.getName());
 	public boolean fragmentShaderSupported;
 	public boolean vertexShaderSupported;
 	public int programObject;

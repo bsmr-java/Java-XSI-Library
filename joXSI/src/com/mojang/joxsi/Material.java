@@ -20,7 +20,8 @@ import com.mojang.joxsi.loader.XSI_Shader;
  */
 public class Material
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(Material.class.getName());
     public String name;
     /** Name of the image. */
     public String imageName;
