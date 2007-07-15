@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.util.logging.Logger;
 
 import javax.media.opengl.AWTGraphicsConfiguration;
 import javax.media.opengl.AWTGraphicsDevice;
@@ -27,6 +28,9 @@ import com.mojang.joxsi.GLSLshaders;
  */
 public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(SingleThreadedGlCanvas.class.getName());
+
     private GLDrawable drawable;
 
     private GLContext context;
@@ -182,6 +186,11 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             GLU glu = new GLU();
             GLSLshaders gLSLshaders = new GLSLshaders(gl);
             setupGLstates(gl);
+
+            int [] lIntArray = {0, 0};
+            gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, lIntArray, 0);
+            System.out.println("GL_MAX_TEXTURE_COORDS: " + lIntArray[0]);
+
             // Call render loop
             renderLoop(gl, glu, gLSLshaders);
         }

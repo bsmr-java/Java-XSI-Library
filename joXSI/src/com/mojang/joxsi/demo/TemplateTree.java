@@ -12,7 +12,8 @@ import com.mojang.joxsi.loader.Template;
  */
 public class TemplateTree extends JTree
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(TemplateTree.class.getName());
     /**
      * Creates a new TemplateTree, showing the contents of the specified Template.
      * 

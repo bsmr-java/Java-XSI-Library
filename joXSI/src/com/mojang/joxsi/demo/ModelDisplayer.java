@@ -39,7 +39,8 @@ import com.mojang.joxsi.renderer.TextureLoader;
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
     
     private static ConsoleHandler ch = new ConsoleHandler();
     

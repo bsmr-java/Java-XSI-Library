@@ -13,7 +13,8 @@ import com.mojang.joxsi.Model;
 
 public class ModelDisplayerFrame extends JFrame implements ActionListener
 {
-    private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(ModelDisplayerFrame.class.getName());
 
 	ModelDisplayerFrame(String title, Model[] models)
 	{
