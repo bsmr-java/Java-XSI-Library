@@ -36,7 +36,7 @@ public class DotXSILoader
     private InputStream inputStream;
     private LineNumberReader reader;
     private BufferedReader in;
-    private StringBuffer stringBuffer;
+    private StringBuilder stringbBuilder;
     /**
      * Size of the buffer used by the Reader to read the dotXSI file. Use 500
      * Kilobyte instead of the default 8 Kilobyte to improve performance as most
@@ -52,7 +52,7 @@ public class DotXSILoader
     private DotXSILoader(InputStream inputStream)
     {
         this.inputStream = inputStream;
-        stringBuffer = new StringBuffer();
+        stringbBuilder = new StringBuilder();
     }
 
    /**
@@ -113,7 +113,7 @@ public class DotXSILoader
     {
         // Horribly slow method of reading strings..
         // it is called ca 3000 times for the male.xsi
-        StringBuffer st = new StringBuffer();
+        stringbBuilder.setLength(0);
    	    char ch;
         boolean keepReading = true;
 
@@ -125,7 +125,7 @@ public class DotXSILoader
 
             if (ch != DOUBLE_QUOTES) // add to the stringbuffer as long as the current character isn't '"' 
             {
-                st.append(ch);
+                stringbBuilder.append(ch);
             }
             else
             {
@@ -137,7 +137,7 @@ public class DotXSILoader
             }
         }
 
-        return st.toString();
+        return stringbBuilder.toString();
     }
 
     /**
@@ -153,7 +153,7 @@ public class DotXSILoader
         // Needs to be profiled and optimised.
         // TODO: Optimize template parsing in the XSILoader
 
-        StringBuffer st = new StringBuffer();
+        stringbBuilder.setLength(0);
         boolean keepReading = true;
 
         // Create an empty raw template for the root of the file.
@@ -180,7 +180,7 @@ public class DotXSILoader
                 {
                     // Not the start of a string, start or end of a template, or separator between fields,
                     // so add to the current stringbuffer.
-                    st.append(ch);
+                    stringbBuilder.append(ch);
                 }
                 else
                 {
@@ -192,7 +192,7 @@ public class DotXSILoader
                     }
                     else
                     {
-                        str = st.toString().trim();
+                        str = stringbBuilder.toString().trim();
                         if (ch == COMMA)
                         {
                             // Field separator. Find out if it's a float or an int, then add to the template.
@@ -226,7 +226,7 @@ public class DotXSILoader
                             currentTemplate.values.add(template);
                         }
                     }
-                    st = new StringBuffer();
+                    stringbBuilder.setLength(0);
                 }
             }
             else
@@ -247,7 +247,7 @@ public class DotXSILoader
      */
     private RawTemplate parseRawTemplates_MilboMethodTest() throws IOException, ParseException
     {
-        stringBuffer.setLength(0);
+        stringbBuilder.setLength(0);
 //       StringBuffer st = new StringBuffer();
        boolean keepReading = true;
        
@@ -272,7 +272,7 @@ public class DotXSILoader
                {
                    // Not the start of a string, start or end of a template, or separator between fields,
                    // so add to the current stringbuffer.
-                   stringBuffer.append(ch);
+                   stringbBuilder.append(ch);
                }
                else
                {
@@ -286,7 +286,7 @@ public class DotXSILoader
                    }
                    else
                    {
-                       str = stringBuffer.toString().trim();
+                       str = stringbBuilder.toString().trim();
                        if (ch == COMMA)
                        {
                            // Field separator. Find out if it's a float or an int, then add to the template.
@@ -320,7 +320,7 @@ public class DotXSILoader
                            currentTemplate.values.add(template);
                        }
                    }
-                   stringBuffer.setLength(0);
+                   stringbBuilder.setLength(0);
                }
            }
            else
