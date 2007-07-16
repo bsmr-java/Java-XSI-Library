@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.opengl.AWTGraphicsConfiguration;
@@ -187,9 +188,13 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             GLSLshaders gLSLshaders = new GLSLshaders(gl);
             setupGLstates(gl);
 
-            int [] lIntArray = {0, 0};
+            int[] lIntArray =
+            { 0, 0 };
             gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, lIntArray, 0);
-            System.out.println("GL_MAX_TEXTURE_COORDS: " + lIntArray[0]);
+            if (logger.isLoggable(Level.INFO))
+            {
+                logger.info("GL_MAX_TEXTURE_COORDS: " + lIntArray[0]);
+            }
 
             // Call render loop
             renderLoop(gl, glu, gLSLshaders);
