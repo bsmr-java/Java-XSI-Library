@@ -1,9 +1,12 @@
 package com.mojang.joxsi.benchmark;
 
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Logger;
 import java.io.InputStream;
 
 import com.mojang.joxsi.Scene;
+import com.mojang.joxsi.demo.ModelDisplayer;
 import com.mojang.joxsi.demo.TimeIt;
 import com.mojang.joxsi.loader.*;
 
@@ -14,7 +17,11 @@ import com.mojang.joxsi.loader.*;
  */
 public class BenchLoader
 {
-    private static final long tries = 1000;
+    /** The number of loops to perform */
+    private static final long tries = 100;
+    
+    private static Logger logger = Logger.getLogger(BenchLoader.class.getName());
+    private static ConsoleHandler ch = new ConsoleHandler();
 
     /**
      * Main entry point of the application.
@@ -28,33 +35,30 @@ public class BenchLoader
      */
     public static void main(String[] args) throws IOException, ParseException
     {
+        logger.addHandler(ch);
         String path = "";
 
         if (args.length == 0)
         {
-            System.out.println("No arguments. We're probably run from webstart, so load the default model");
+            logger.info("No arguments. We're probably run from webstart, so load the default model");
             // No arguments. We're probably run from webstart, so load the
             // default model
             path = "/DanceMagic.xsi";
         }
         else
         {
-            System.out.println("Going to load '" + args[0] + "' as a model");
+            logger.info("Going to load '" + args[0] + "' as a model");
             path = "/" + args[0];
         }
 
-        for (int x = 0; x < tries; x++)
-        {
-            DotXSILoader.load(BenchLoader.class.getResourceAsStream(path));
-        }
         long starttime = System.currentTimeMillis();
         for (int x = 0; x < tries; x++)
         {
             DotXSILoader.load(BenchLoader.class.getResourceAsStream(path));
         }
         long time = System.currentTimeMillis() - starttime;
-        System.out.println("It took " + time + " milliseconds to load " + tries + " models.");
-        System.out.println((time / tries) + " milliseconds per model.");
+        logger.info("It took " + time + " milliseconds to load " + tries + " models.");
+        logger.info((time / tries) + " milliseconds per model.");
         System.exit(0);
     }
 
