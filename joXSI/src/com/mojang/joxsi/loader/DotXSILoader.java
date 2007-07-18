@@ -1,10 +1,8 @@
 package com.mojang.joxsi.loader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -32,17 +30,20 @@ public class DotXSILoader
     private static final char OPEN_BRACE = '{';
     /** Double quotes character used in parsing the dotXSI files. */
     private static final char DOUBLE_QUOTES = '"';
+    
     private Header header;
     private InputStream inputStream;
-    private LineNumberReader reader;
-    private BufferedReader in;
+    private InputStreamReader reader;
     private StringBuilder stringbBuilder;
-    /**
-     * Size of the buffer used by the Reader to read the dotXSI file. Use 500
-     * Kilobyte instead of the default 8 Kilobyte to improve performance as most
-     * of the models are several hundred kilobytes.
-     */
-    private static final int INPUT_BUFFER_SIZE = 1024 * 1024;
+
+    /** Buffer used when reading from the stream. Used to avoid calling stream.read(). */
+    private char buffer[];
+    /** Current position in the buffer. */
+    private int bufferPos;
+    /** Current length of valid data in the buffer. */
+    private int bufferLength;
+    /** Max capacity of the buffer. 16 KB seems to be enough. */
+    private static final int INPUT_BUFFER_SIZE = 1024 * 16;
 
     /**
      * Private constructor. Use the public static load method.
@@ -52,7 +53,7 @@ public class DotXSILoader
     private DotXSILoader(InputStream inputStream)
     {
         this.inputStream = inputStream;
-        stringbBuilder = new StringBuilder();
+        stringbBuilder = new StringBuilder(1024);
     }
 
    /**
@@ -103,58 +104,76 @@ public class DotXSILoader
     }
 
     /**
-     * Reads a string from the inputstream.
+     * Reads a string from the inputstream (until the next DOUBLE_QUOTES).
+     * Ensures that a COMMA follows the DOUBLE_QUOTES.
      * 
      * @return the parsed string
-     * @throws IOException if there was an io error.
+     * @throws IOException if there was an IO error.
      * @throws ParseException if the parsing fails for any reason
      */
     private String readUntilEndOfString() throws IOException, ParseException
     {
-        // Horribly slow method of reading strings..
-        // it is called ca 3000 times for the male.xsi
         stringbBuilder.setLength(0);
    	    char ch;
-        boolean keepReading = true;
+   	    boolean stop = false;
 
-        while (keepReading)
-        {
-      	  	ch = (char)reader.read();
-      	  	if (ch == -1)
-      	  		throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
+   	    do
+   	    {
+   	        while(bufferPos<bufferLength)
+       	    {
+       	        ch = buffer[bufferPos++];
 
-            if (ch != DOUBLE_QUOTES) // add to the stringbuffer as long as the current character isn't '"' 
-            {
-                stringbBuilder.append(ch);
-            }
-            else
-            {
-                // If it was '"', read another character and make sure it's a ','
-                ch = (char)reader.read();
-                if (ch != COMMA)
-                    throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + ch + "\"");
-                keepReading = false;
-            }
-        }
+       	        if (ch != DOUBLE_QUOTES)
+       	        {
+       	            stringbBuilder.append(ch);
+       	        }
+       	        else
+       	        {
+       	            stop = true;
+       	            break;
+       	        }
+       	    }
+   	    }while(!stop && refillBuffer());
+   	    
+   	    if (!stop)
+            throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
+
+   	    if (bufferPos >= bufferLength)
+   	        if (!refillBuffer())
+   	            throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
+   	    if ((ch = buffer[bufferPos++]) != COMMA)
+            throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + ch + "\"");
 
         return stringbBuilder.toString();
     }
 
     /**
+     * Reads more data from the stream reader.
+     * 
+     * @return true if it read data, false on EOF.
+     * @throws IOException if there's an IO error.
+     */
+    private boolean refillBuffer() throws IOException
+    {
+        bufferLength = reader.read(buffer, 0, INPUT_BUFFER_SIZE);
+        bufferPos = 0;
+        return(bufferLength > 0);
+    }
+    
+    /**
      * Builds a tree of RawTemplates, representing the dotXSI file.
      * 
      * @return the root RawTemplate
-     * @throws IOException if there's an io error.
+     * @throws IOException if there's an IO error.
      * @throws ParseException if the parsing fails for any reason
      */
     private RawTemplate parseRawTemplates() throws IOException, ParseException
     {
         // Horrible way of parsing the tags one byte at the time.
-        // Needs to be profiled and optimised.
+        // Needs to be profiled and optimized.
         // TODO: Optimize template parsing in the XSILoader
 
         stringbBuilder.setLength(0);
-        boolean keepReading = true;
 
         // Create an empty raw template for the root of the file.
         RawTemplate currentTemplate = new RawTemplate(RawTemplate.ROOT_TEMPLATE, "");
@@ -162,89 +181,90 @@ public class DotXSILoader
         // Templates are kept on a stack during the parsing, and pushed/popped as {'s or }'s are encountered.
         List<Object> templateStack = new ArrayList<Object>();
         templateStack.add(currentTemplate);
-        int i;
         char ch;
         String str;
         StringTokenizer stt;
         String name ;
         String info = "";
 
-        while (keepReading)
+        while(refillBuffer())
         {
-            i = reader.read();
-            if (i >= 0) // Not end of stream
+            while(bufferPos < bufferLength)
             {
-                ch = (char)i;
+                ch = buffer[bufferPos++];
+                  
+                switch(ch)
+                {
                 
-                if (ch != DOUBLE_QUOTES && ch != OPEN_BRACE && ch != CLOSE_BRACE && ch != COMMA)
-                {
-                    // Not the start of a string, start or end of a template, or separator between fields,
-                    // so add to the current stringbuffer.
-                    stringbBuilder.append(ch);
-                }
-                else
-                {
-                    if (ch == DOUBLE_QUOTES)
-                    {
+                    case DOUBLE_QUOTES:
                         // Start of a string. Read until the end and add to the list of values for the current template.
                         str = readUntilEndOfString();
                         currentTemplate.values.add(str);
-                    }
-                    else
-                    {
+
+                        stringbBuilder.setLength(0);
+                        break;
+                
+                    case COMMA:
                         str = stringbBuilder.toString().trim();
-                        if (ch == COMMA)
-                        {
-                            // Field separator. Find out if it's a float or an int, then add to the template.
-                            if (str.indexOf(FULL_STOP) >= 0) // is float
-                                currentTemplate.values.add(new Float(str));
-                            else // is int
-                                currentTemplate.values.add(new Integer(str));
-                        }
+                        
+                        // Field separator. Find out if it's a string, a float or an integer, then add to the template.
+                        if (str.indexOf(FULL_STOP) >= 0)   // it's float
+                            currentTemplate.values.add(new Float(str));
+                        else                                    // it's int
+                            currentTemplate.values.add(new Integer(str));
 
-                        if (ch == OPEN_BRACE)
-                        {
-                            // Start a new template. Parse template name and template info.
-                            stt = new StringTokenizer(str);
-                            name = stt.nextToken();
-                            info = "";
-                            if (stt.hasMoreTokens())
-                                info = stt.nextToken();
+                        stringbBuilder.setLength(0);
+                        break;
+                        
+                    case OPEN_BRACE:
+                        str = stringbBuilder.toString().trim();
+                        
+                        // Start a new template. Parse template name and template info.
+                        stt = new StringTokenizer(str);
+                        name = stt.nextToken();
+                        info = "";
+                        if (stt.hasMoreTokens())
+                            info = stt.nextToken();
 
-                            // Push the new template to the stack.
-                            currentTemplate = new RawTemplate(name, info);
-                            templateStack.add(currentTemplate);
-                        }
+                        // Push the new template to the stack.
+                        currentTemplate = new RawTemplate(name, info);
+                        templateStack.add(currentTemplate);
+                        
+                        stringbBuilder.setLength(0);
+                        break;
+                        
+                    case CLOSE_BRACE:
+                        str = stringbBuilder.toString().trim();
 
-                        if (ch == CLOSE_BRACE)
-                        {
-                            // End of a template. Pop it from the stack, and add it to the parent template as a value.
-                            RawTemplate template = currentTemplate;
-                            templateStack.remove(templateStack.size() - 1);
-                            currentTemplate = (RawTemplate)templateStack.get(templateStack.size() - 1);
-
-                            currentTemplate.values.add(template);
-                        }
-                    }
-                    stringbBuilder.setLength(0);
+                        // End of a template. Pop it from the stack, and add it to the parent template as a value.
+                        RawTemplate template = currentTemplate;
+                        templateStack.remove(templateStack.size() - 1);
+                        currentTemplate = (RawTemplate)templateStack.get(templateStack.size() - 1);
+                        currentTemplate.values.add(template);
+                        
+                        stringbBuilder.setLength(0);
+                        break;
+                        
+                    default:
+                        // Not the start of a string, start or end of a template, or separator between fields,
+                        // so add to the current stringbuffer.
+                        stringbBuilder.append(ch);
+                        break;
                 }
-            }
-            else
-            {
-                keepReading = false;
             }
         }
 
         return currentTemplate;
     }
 
-    /**
+    /*
      * Milbo's method for building a tree of RawTemplates, representing the dotXSI file.
      * 
      * @return the root RawTemplate
      * @throws IOException if there's an io error.
      * @throws ParseException if the parsing fails for any reason
-     */
+     *
+    
     private RawTemplate parseRawTemplates_MilboMethodTest() throws IOException, ParseException
     {
         stringbBuilder.setLength(0);
@@ -331,7 +351,8 @@ public class DotXSILoader
        
    	 return currentTemplate;
     }
-
+    */
+    
     /**
      * Builds a Template from a RawTemplate by finding the class that implements the template type,
      * creating a new instance, and running the build method.
@@ -394,7 +415,7 @@ public class DotXSILoader
      * then converting them into instances of their respective classes.
      * 
      * @return the RootTemplate that holds the dotXSI file
-     * @throws IOException if there's an io error
+     * @throws IOException if there's an IO error
      * @throws ParseException if the parsing fails for any reason
      */
     private RootTemplate parse() throws IOException, ParseException
@@ -409,26 +430,23 @@ public class DotXSILoader
             if (!(header.majorVersion == 3))
                 throw new ParseException("Failed to read dotXSI: Only 3.x files supported");
 
-            reader = new LineNumberReader(new InputStreamReader(inputStream), INPUT_BUFFER_SIZE);
+            reader = new InputStreamReader(inputStream);
+            
+            buffer = new char[INPUT_BUFFER_SIZE];
+            bufferLength = 0;
 
             RawTemplate root = parseRawTemplates();
             return (RootTemplate)buildTemplate(root);
         }
         catch (IOException ioe) 
         {
-            int line = 1;
-            if (reader!=null) line = reader.getLineNumber()+1;
-
-            System.out.println("Error occured on line "+line);
+            System.out.println("An I/O error occured.");
             ioe.printStackTrace();
         	throw ioe;
         }
         catch (Exception e)
         {
-            int line = 1;
-            if (reader!=null) line = reader.getLineNumber()+1;
-
-            System.out.println("Error occured on line "+line);
+            System.out.println("An unhandled error occured.");
         	e.printStackTrace();
         	throw new ParseException("Failed to read file: "+e);
         }
@@ -439,12 +457,11 @@ public class DotXSILoader
      * 
      * @param in an input stream that contains a dotXSI file
      * @return a RootTemplate containing the entire scene
-     * @throws IOException if there's an io error
+     * @throws IOException if there's an IO error
      * @throws ParseException if the parsing fails for any reason
      */
     public static RootTemplate load(InputStream in) throws IOException, ParseException
     {
-        // TODO: Add a ParseException or something.. throwing them as ioexceptions isn't right.
         return new DotXSILoader(in).parse();
     }
 }
