@@ -223,19 +223,20 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     private void setupGLstates(GL gl)
     {
         // Setup GL States
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // Black Background
-        gl.glClearDepth(1.0f); // Depth Buffer Setup
-        gl.glDepthFunc(GL.GL_LEQUAL); // The Type Of Depth Testing (Less Or
-        // Equal)
-        gl.glEnable(GL.GL_DEPTH_TEST); // Enable Depth Testing
-        gl.glShadeModel(GL.GL_SMOOTH); // Select Smooth Shading
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST); // Set
-        // Perspective
-        // Calculations
-        // To Most
-        // Accurate
-        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE); // Draw Our Mesh In
-        // Wireframe Mode
+        // Black Background
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+        // Depth Buffer Setup
+        gl.glClearDepth(1.0f);
+        // The Type Of Depth Testing (Less Or Equal)
+        gl.glDepthFunc(GL.GL_LEQUAL);
+        // Enable Depth Testing
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        // Select Smooth Shading
+        gl.glShadeModel(GL.GL_SMOOTH);
+        // Set Perspective Calculations To Most Accurate
+        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+        // Draw Our Mesh In Wireframe Mode
+        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
     }
 
     /**
