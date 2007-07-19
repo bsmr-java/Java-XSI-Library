@@ -109,6 +109,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private boolean useAntiAliasing = false;
     /** Enable or disable AnisoropicFiltering. */
     private boolean useAnisotropicFiltering = false;
+    /** How much Anisotropic Filtering to use. */
+    private float anisotropicFilteringLevel = 0.0F;
     /** The textureLoader. */
     private TextureLoader textureLoader;
     
@@ -363,22 +365,31 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         switch (keyCode)
             {
-            case 65: // A
+            case 'A':
                 ambientSceneLightFlag0 = !ambientSceneLightFlag0;
                 break;
-            case 68: // D
+            case 'D':
                 diffuseSceneLightFlag0 = !diffuseSceneLightFlag0;
                 break;
-            case 76: // l
+            case 'L':
                 moreLight = !moreLight;
                 break;
-            case 71: // g
+            case 'G':
                 grid = !grid;
                 break;
-            case 86: // v
+            case 'V':
                 vertexshader = !vertexshader;
                 break;
-
+            case 'N':
+                useAntiAliasing = !useAntiAliasing;
+                break;
+            case 'I':
+                useAnisotropicFiltering = !useAnisotropicFiltering;
+                if (logger.isLoggable(Level.FINER))
+                {
+                    logger.finer("Anisotropic Filtering level " + anisotropicFilteringLevel + ": " + useAnisotropicFiltering);
+                }
+                break;
             case 'B':
                 blend = !blend;
                 break;
@@ -521,7 +532,22 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
-        
+
+        // Check if Anisotropic filtering is supported by the GPU
+        if( gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic") )   
+        {
+          float max[] = new float[1];
+          gl.glGetFloatv( GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0 );
+          logger.info("GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: " + max[0]);
+          anisotropicFilteringLevel = max[0];
+        }
+        else
+        {
+            // Anisotropic filtering is not supported by the GPU
+            useAnisotropicFiltering = false;
+            anisotropicFilteringLevel = 0.0F;
+        }
+
         // Run main loop until the stop flag is raised.
         while (!stop)
         {
@@ -552,6 +578,38 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glRotatef(yRot, 1, 0, 0);
             gl.glRotatef(xRot, 0, 1, 0);
             gl.glTranslatef(xCamera, yCamera, zCamera);
+
+            if (useAntiAliasing)
+            {
+                // Hint that we want the best smoothing
+                gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
+                gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_NICEST);
+                gl.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_NICEST);
+
+                // Enable Antialiasing
+                gl.glEnable(GL.GL_POINT_SMOOTH);
+                gl.glEnable(GL.GL_LINE_SMOOTH);
+                gl.glEnable(GL.GL_POLYGON_SMOOTH);
+            }
+            else
+            {
+                // Hint that we want the fastest smoothing
+                gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
+                gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_FASTEST);
+                gl.glHint(GL.GL_POLYGON_SMOOTH_HINT, GL.GL_FASTEST);
+                // Disable Antialiasing
+                gl.glDisable(GL.GL_POINT_SMOOTH);
+                gl.glDisable(GL.GL_LINE_SMOOTH);
+                gl.glDisable(GL.GL_POLYGON_SMOOTH);
+            }
+            if (useAnisotropicFiltering && anisotropicFilteringLevel > 0)
+            {
+                gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicFilteringLevel);
+            }
+            else
+            {
+                gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, 0.0F);
+            }
 
             float hs = SIZE/2;
             if (drawBackground)
@@ -746,7 +804,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // This is more precise
                 start = now;
                 // start += 4000;
-                logger.finest(frames / 4 + " fps and Time of creating scene: " + time);
+                if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
+                // TODO
+                logger.info(frames / 4 + " fps");
                 frames = 0;
             }
             // This makes the mouse and key listeners more responsive
@@ -832,7 +892,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
 
         time = timer.getTime();
-        // logger.info("Time of creating scene: "+time);
+        logger.info("Time to create scene: " + time + "ms");
         // Set up a JFrame for a TemplateTree showing the entire scene
         JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);
