@@ -3,12 +3,9 @@ package com.mojang.joxsi.benchmark;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
-import java.io.InputStream;
 
-import com.mojang.joxsi.Scene;
-import com.mojang.joxsi.demo.ModelDisplayer;
-import com.mojang.joxsi.demo.TimeIt;
-import com.mojang.joxsi.loader.*;
+import com.mojang.joxsi.loader.DotXSILoader;
+import com.mojang.joxsi.loader.ParseException;
 
 /**
  * Simple benchmarker Parses the model 1,000 times and outputs the speed
@@ -19,7 +16,7 @@ public class BenchLoader
 {
     /** The number of loops to perform */
     private static final long tries = 100;
-    
+
     private static Logger logger = Logger.getLogger(BenchLoader.class.getName());
     private static ConsoleHandler ch = new ConsoleHandler();
 
@@ -49,6 +46,11 @@ public class BenchLoader
         {
             logger.info("Going to load '" + args[0] + "' as a model");
             path = "/" + args[0];
+        }
+        // Warming up
+        for (int x = 0; x < 10; x++)
+        {
+            DotXSILoader.load(BenchLoader.class.getResourceAsStream(path));
         }
 
         long starttime = System.currentTimeMillis();
