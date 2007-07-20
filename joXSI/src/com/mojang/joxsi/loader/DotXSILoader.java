@@ -187,7 +187,7 @@ public class DotXSILoader
         String name ;
         String info = "";
         
-        StringBuilder tmpStorage = new StringBuilder(1024);
+        StringBuilder tmpStorage = new StringBuilder(16);
         int marker = bufferPos;
         int len = 0;
 
