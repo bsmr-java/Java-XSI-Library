@@ -890,6 +890,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 }
             }
         }
+        
+        if(scene == null)
+        {
+            throw new RuntimeException("No scene stored! (scene == null)");
+        }
 
         time = timer.getTime();
         logger.info("Time to create scene: " + time + "ms");
