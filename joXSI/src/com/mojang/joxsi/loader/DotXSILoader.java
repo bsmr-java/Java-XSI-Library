@@ -114,18 +114,18 @@ public class DotXSILoader
     private String readUntilEndOfString() throws IOException, ParseException
     {
         stringbBuilder.setLength(0);
-   	    char ch;
    	    boolean stop = false;
+        
+        int marker = bufferPos;
+        int len = 0;
 
    	    do
    	    {
    	        while(bufferPos<bufferLength)
        	    {
-       	        ch = buffer[bufferPos++];
-
-       	        if (ch != DOUBLE_QUOTES)
+       	        if (buffer[bufferPos++] != DOUBLE_QUOTES)
        	        {
-       	            stringbBuilder.append(ch);
+       	            len++;
        	        }
        	        else
        	        {
@@ -133,6 +133,9 @@ public class DotXSILoader
        	            break;
        	        }
        	    }
+            stringbBuilder.append(buffer, marker, len);
+            marker = 0;
+            len = 0;
    	    }while(!stop && refillBuffer());
    	    
    	    if (!stop)
@@ -141,9 +144,10 @@ public class DotXSILoader
    	    if (bufferPos >= bufferLength)
    	        if (!refillBuffer())
    	            throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
-   	    if ((ch = buffer[bufferPos++]) != COMMA)
-            throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + ch + "\"");
+   	    if (buffer[bufferPos++] != COMMA)
+            throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + buffer[bufferPos++] + "\"");
 
+        stringbBuilder.append(buffer, marker, len);
         return stringbBuilder.toString();
     }
 
@@ -187,7 +191,6 @@ public class DotXSILoader
         String name ;
         String info = "";
         
-        StringBuilder tmpStorage = new StringBuilder(16);
         int marker = bufferPos;
         int len = 0;
 
@@ -201,8 +204,6 @@ public class DotXSILoader
                 {
                 
                     case DOUBLE_QUOTES:
-                        stringbBuilder.append(tmpStorage);
-                        tmpStorage.setLength(0);
                         stringbBuilder.append(buffer, marker, len);
                         
                         // Start of a string. Read until the end and add to the list of values for the current template.
@@ -216,8 +217,6 @@ public class DotXSILoader
                         break;
                 
                     case COMMA:
-                        stringbBuilder.append(tmpStorage);
-                        tmpStorage.setLength(0);
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
                         len = 0;
@@ -233,8 +232,6 @@ public class DotXSILoader
                         break;
                         
                     case OPEN_BRACE:
-                        stringbBuilder.append(tmpStorage);
-                        tmpStorage.setLength(0);
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
                         len = 0;
@@ -255,8 +252,6 @@ public class DotXSILoader
                         break;
                         
                     case CLOSE_BRACE:
-                        stringbBuilder.append(tmpStorage);
-                        tmpStorage.setLength(0);
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
                         len = 0;
@@ -279,7 +274,7 @@ public class DotXSILoader
                         break;
                 }
             }
-            tmpStorage.append(buffer, marker, len);
+            stringbBuilder.append(buffer, marker, len);
             marker = 0;
             len = 0;
         }
