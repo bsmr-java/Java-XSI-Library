@@ -186,6 +186,10 @@ public class DotXSILoader
         StringTokenizer stt;
         String name ;
         String info = "";
+        
+        StringBuilder tmpStorage = new StringBuilder(1024);
+        int marker = bufferPos;
+        int len = 0;
 
         while(refillBuffer())
         {
@@ -197,14 +201,26 @@ public class DotXSILoader
                 {
                 
                     case DOUBLE_QUOTES:
+                        stringbBuilder.append(tmpStorage);
+                        tmpStorage.setLength(0);
+                        stringbBuilder.append(buffer, marker, len);
+                        
                         // Start of a string. Read until the end and add to the list of values for the current template.
                         str = readUntilEndOfString();
                         currentTemplate.values.add(str);
+                        
+                        marker = bufferPos;
+                        len = 0;
 
                         stringbBuilder.setLength(0);
                         break;
                 
                     case COMMA:
+                        stringbBuilder.append(tmpStorage);
+                        tmpStorage.setLength(0);
+                        stringbBuilder.append(buffer, marker, len);
+                        marker = bufferPos;
+                        len = 0;
                         str = stringbBuilder.toString().trim();
                         
                         // Field separator. Find out if it's a string, a float or an integer, then add to the template.
@@ -217,6 +233,11 @@ public class DotXSILoader
                         break;
                         
                     case OPEN_BRACE:
+                        stringbBuilder.append(tmpStorage);
+                        tmpStorage.setLength(0);
+                        stringbBuilder.append(buffer, marker, len);
+                        marker = bufferPos;
+                        len = 0;
                         str = stringbBuilder.toString().trim();
                         
                         // Start a new template. Parse template name and template info.
@@ -234,6 +255,11 @@ public class DotXSILoader
                         break;
                         
                     case CLOSE_BRACE:
+                        stringbBuilder.append(tmpStorage);
+                        tmpStorage.setLength(0);
+                        stringbBuilder.append(buffer, marker, len);
+                        marker = bufferPos;
+                        len = 0;
                         str = stringbBuilder.toString().trim();
 
                         // End of a template. Pop it from the stack, and add it to the parent template as a value.
@@ -248,10 +274,14 @@ public class DotXSILoader
                     default:
                         // Not the start of a string, start or end of a template, or separator between fields,
                         // so add to the current stringbuffer.
-                        stringbBuilder.append(ch);
+                        //stringbBuilder.append(ch);
+                        len++;
                         break;
                 }
             }
+            tmpStorage.append(buffer, marker, len);
+            marker = 0;
+            len = 0;
         }
 
         return currentTemplate;
