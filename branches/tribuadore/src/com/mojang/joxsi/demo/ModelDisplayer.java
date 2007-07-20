@@ -39,6 +39,9 @@ import com.mojang.joxsi.renderer.TextureLoader;
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
+    static {
+        System.out.print(ModelDisplayer.class.getName());
+    }
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
     
@@ -830,9 +833,6 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     public static void main(String[] args) throws IOException, ParseException
     {
         final String methodName = "main";
-        fh = new FileHandler("modeldisplayer.log");
-        logger.addHandler(ch);
-        logger.addHandler(fh);
         TimeIt timer = new TimeIt();
         String groundTexture = null;
         
