@@ -25,7 +25,7 @@ public class SI_Material extends Template implements Material
     public ColorRGBA faceColor;
     /** Specular decay. */
     public float power;
-    /** Specular color */
+    /** Specular colour. */
     public ColorRGB specularColor;
     /** Emissive color. Not supported by SOFTIMAGE|3D. */
     public ColorRGB emissiveColor;
@@ -42,6 +42,7 @@ public class SI_Material extends Template implements Material
     /** Ambient color. */
     public ColorRGB ambientColor;
 
+    @Override
     public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();

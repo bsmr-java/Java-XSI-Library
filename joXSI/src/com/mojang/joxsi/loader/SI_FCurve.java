@@ -114,7 +114,8 @@ public class SI_FCurve extends Template
      * <p>
      * The number of key values is given by (Dimension * NbKeyValues).
      */
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		objectName = (String)it.next();

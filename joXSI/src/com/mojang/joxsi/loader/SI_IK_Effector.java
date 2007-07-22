@@ -27,7 +27,8 @@ public class SI_IK_Effector extends Template
      */
 	public boolean rotation_flag;
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		rotation_flag = ((Integer)it.next()).intValue()!=0;

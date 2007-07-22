@@ -34,6 +34,7 @@ public class SI_Light extends Template
     /** Spread Angle */
     public float spreadAngle;
 
+    @Override
     public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();

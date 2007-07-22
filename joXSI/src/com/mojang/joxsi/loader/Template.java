@@ -247,6 +247,7 @@ public abstract class Template
         return parent;
     }
 
+    @Override
     public String toString()
     {
         return template_type + " " + template_info;

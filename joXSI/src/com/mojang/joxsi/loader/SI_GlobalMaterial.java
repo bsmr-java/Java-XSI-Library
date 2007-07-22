@@ -27,6 +27,7 @@ public class SI_GlobalMaterial extends Template
      */
     public String propagation;
 
+    @Override
     public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();
@@ -39,6 +40,7 @@ public class SI_GlobalMaterial extends Template
             throw new ParseException("Illegal propagation in SI_GlobalMaterial: "+propagation);
     }
 
+    @Override
     public String toString() {
         return super.toString() + " - referencedMaterial: " + referencedMaterial + ", propagation: " + propagation;
     }

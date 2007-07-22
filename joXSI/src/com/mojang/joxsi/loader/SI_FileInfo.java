@@ -16,7 +16,8 @@ public class SI_FileInfo extends Template
 	public String savedDateTime;
 	public String originator;
 	
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		projectName = (String)it.next();
@@ -25,6 +26,7 @@ public class SI_FileInfo extends Template
 		originator = (String)it.next();
 	}
 
+    @Override
     public String toString() {
         return super.toString() + " - projectName: "
             + projectName + ", userName: " + userName

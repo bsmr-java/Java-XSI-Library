@@ -87,6 +87,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * Overridden to be able to detect this event. Passes the event on to the
      * drawable
      */
+    @Override
     public void addNotify()
     {
         super.addNotify();
@@ -97,6 +98,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     /**
      * Overridden to make sure it's empty.
      */
+    @Override
     public void update(Graphics g)
     {
     }
@@ -104,6 +106,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     /**
      * Overridden to make sure it's empty.
      */
+    @Override
     public void paint(Graphics g)
     {
     }

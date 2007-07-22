@@ -54,7 +54,8 @@ public class XSI_CustomPSet extends Template
 		public String value; 
 	}
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		propagation = (String)it.next();

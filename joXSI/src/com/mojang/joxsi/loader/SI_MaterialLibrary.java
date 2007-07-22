@@ -19,6 +19,7 @@ public class SI_MaterialLibrary extends Template
     /** Array of Materials. */
     public Material[] materials;
 
+    @Override
     public void parse(RawTemplate block)
     {
         Iterator<Object> it = block.values.iterator();
@@ -35,6 +36,7 @@ public class SI_MaterialLibrary extends Template
      * 
      * @return the number of Materials in the Library.
      */
+    @Override
     public String toString()
     {
         return super.toString() + ", Number of Materials: " + nbMaterials;

@@ -75,32 +75,32 @@ public class DotXSILoader
         if (!magicNumber.equals("xsi"))
             throw new ParseException("Corrupt .xsi file: Bad magic number");
 
-        Header header = new Header();
+        Header lHeader = new Header();
 
 		read = 0;
 		while (read<2) read+=inputStream.read(buf, read, 2-read);
-        header.majorVersion = Integer.parseInt(new String(buf, 0, 2));
+        lHeader.majorVersion = Integer.parseInt(new String(buf, 0, 2));
 
 		read = 0;
 		while (read<2) read+=inputStream.read(buf, read, 2-read);
-        header.minorVersion = Integer.parseInt(new String(buf, 0, 2));
+        lHeader.minorVersion = Integer.parseInt(new String(buf, 0, 2));
 
 		read = 0;
 		while (read<4) read+=inputStream.read(buf, read, 4-read);
-        header.formatType = new String(buf, 0, 3);
+        lHeader.formatType = new String(buf, 0, 3);
 
-        if (header.formatType.equals("com"))
+        if (lHeader.formatType.equals("com"))
         {
 			read = 0;
 			while (read<4) read+=inputStream.read(buf, read, 4-read);
-            header.compressionType = new String(buf, 0, 3);
+            lHeader.compressionType = new String(buf, 0, 3);
         }
 
 		read = 0;
 		while (read<4) read+=inputStream.read(buf, read, 4-read);
-        header.floatSize = Integer.parseInt(new String(buf, 0, 4));
+        lHeader.floatSize = Integer.parseInt(new String(buf, 0, 4));
 
-        return header;
+        return lHeader;
     }
 
     /**

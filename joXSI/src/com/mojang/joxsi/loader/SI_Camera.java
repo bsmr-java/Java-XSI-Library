@@ -19,7 +19,8 @@ public class SI_Camera extends Template
 	public float nearPlane;  
 	public float farPlane;  
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		posx = ((Float)it.next()).floatValue();

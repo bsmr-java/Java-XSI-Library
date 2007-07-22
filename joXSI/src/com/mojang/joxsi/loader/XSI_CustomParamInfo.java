@@ -38,7 +38,8 @@ public class XSI_CustomParamInfo extends Template
      */
 	public int capabilities;
 
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		min = ((Number)it.next()).floatValue();

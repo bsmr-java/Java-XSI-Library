@@ -33,6 +33,7 @@ public class XSI_Material extends Template implements Material
          * 
          * @return the name of the connection source.
          */
+        @Override
         public String toString() {
             return source;
         }
@@ -61,6 +62,7 @@ public class XSI_Material extends Template implements Material
      * 
      * @return the clsss name and the number of connections pairs.
      */
+    @Override
     public String toString()
     {
         String lConnectionDetails = "";

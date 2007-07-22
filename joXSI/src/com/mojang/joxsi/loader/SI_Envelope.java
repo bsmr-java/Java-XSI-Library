@@ -32,7 +32,8 @@ public class SI_Envelope extends Template
     /** Array of weight values associated to the vertices of the envelope. */
 	public VertexWeight[] vertexWeights; 
 
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		envelope = (String)it.next();

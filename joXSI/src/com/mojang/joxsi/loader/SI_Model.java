@@ -28,7 +28,8 @@ package com.mojang.joxsi.loader;
  */
 public class SI_Model extends Template
 {
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 	}
 }

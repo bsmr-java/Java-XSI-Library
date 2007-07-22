@@ -17,7 +17,8 @@ public class SI_EnvelopeList extends Template
     /** Array of {@link SI_Envelope }s. */
 	public SI_Envelope[] envelopes;
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		nEnvelopes = ((Integer)it.next()).intValue();

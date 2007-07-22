@@ -17,7 +17,8 @@ public class XSI_ClusterInfo extends Template
     /** Possible values are: “VERTEX” “POLY” “EDGE” “SUBSURFACE”. */
 	public String type;
 
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		type = (String)it.next(); 

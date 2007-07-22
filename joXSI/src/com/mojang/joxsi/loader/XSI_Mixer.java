@@ -46,7 +46,8 @@ public class XSI_Mixer extends Template
      */
 	public boolean maintainContinuity;
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		autoTransition = ((Integer)it.next()).intValue()!=0;

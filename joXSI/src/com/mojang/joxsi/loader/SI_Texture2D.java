@@ -135,6 +135,7 @@ public class SI_Texture2D extends Template
      */
     public float roughness;
 
+    @Override
     public void parse(RawTemplate block) throws ParseException
     {
         Iterator<Object> it = block.values.iterator();

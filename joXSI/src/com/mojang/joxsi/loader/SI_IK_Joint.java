@@ -23,7 +23,8 @@ public class SI_IK_Joint extends Template
 	public float stiffness;
 	
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		solver_type = (String)it.next();

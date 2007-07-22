@@ -17,7 +17,8 @@ public class SI_IK_Root extends Template
     /** Effector name. */
 	public String effectorName;
 
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 		Iterator<Object> it = block.values.iterator();
 		nbJoints = ((Integer)it.next()).intValue();

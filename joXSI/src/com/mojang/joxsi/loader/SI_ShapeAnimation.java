@@ -25,6 +25,7 @@ public class SI_ShapeAnimation extends Template
     public SI_FCurve fcurve;
     String type;
 
+    @Override
     public void parse(RawTemplate block)
     {
         Iterator<Object> it = block.values.iterator();

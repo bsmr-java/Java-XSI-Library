@@ -23,7 +23,8 @@ public class XSI_ImageFX extends Template
 	public int vertical;  
 	public int conversion; 
 	
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 		hue = ((Float)it.next()).floatValue();  

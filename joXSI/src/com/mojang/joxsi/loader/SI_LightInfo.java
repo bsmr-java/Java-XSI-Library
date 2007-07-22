@@ -40,7 +40,8 @@ public class SI_LightInfo extends Template
 	public float photon_factor;
 	public float intensity;
 
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 

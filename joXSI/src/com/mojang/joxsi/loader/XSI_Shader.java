@@ -71,6 +71,7 @@ public class XSI_Shader extends Template
          * 
          * @return a String containing the parameter value and type.
 		 */
+        @Override
         public String toString()
         {
             return value + " (" + type + ")";
@@ -101,6 +102,7 @@ public class XSI_Shader extends Template
          * @return the Connection point and type or an empty String if there is
          *         no connection.
          */
+        @Override
         public String toString() {
             if ((type == null || type.length() == 0) && (point == null || point.length() == 0))
             {
@@ -143,7 +145,8 @@ public class XSI_Shader extends Template
 	public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
 	public Map<String, Connection> connectionMap = new HashMap<String, Connection>();
 
-	public void parse(RawTemplate block) throws ParseException
+	@Override
+    public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
 
@@ -221,6 +224,7 @@ public class XSI_Shader extends Template
      * @return a String that describes the Shader including the Parameters and
      *         Connections.
      */
+    @Override
     public String toString()
     {
         return super.toString()

@@ -14,7 +14,8 @@ package com.mojang.joxsi.loader;
  */
 public class SI_Null extends Template
 {
-	public void parse(RawTemplate block)
+	@Override
+    public void parse(RawTemplate block)
 	{
 	}
 }
