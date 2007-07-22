@@ -41,11 +41,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 {
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
-    
+
     private static ConsoleHandler ch = new ConsoleHandler();
-    
+
     private static FileHandler fh;
-    
+
     /* * Classname used in some logging statements. */
     private static final String CLASS_NAME = ModelDisplayer.class.getName();
 
@@ -97,7 +97,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private int showModel;
 
     private int showAction;
-    
+
     private boolean blend = true;
     /** If <code>true</code> render the {@link #groundTexture } or a plain colour. If <code>false</code> then draw a grid. */
     private boolean drawGround = true;
@@ -110,10 +110,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** Enable or disable AnisoropicFiltering. */
     private boolean useAnisotropicFiltering = false;
     /** How much Anisotropic Filtering to use. */
-    private float anisotropicFilteringLevel = 0.0F;
+    private int anisotropicFilteringLevel = 0;
     /** The textureLoader. */
     private TextureLoader textureLoader;
-    
+
     private Action action;
 
     // Hmm just for testing
@@ -127,7 +127,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
     /**
      * TODO JavaDoc.
-     * 
+     *
      * @param scene
      */
     public ModelDisplayer(Scene scene)
@@ -399,7 +399,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 'W':
                 drawBackground = !drawBackground;
                 break;
-                
+
             // Arrow keys movement
             case 37: // Left arrow
                 xCamera += (2 * xc * zoomDistance) * zoomDistance * zoomDistance / 100;
@@ -445,7 +445,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             case 27:    // escape
                 stop = true;
                 break;
-                
+
             default:
                 break;
             }
@@ -501,6 +501,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * 
      * @see SingleThreadedGlCanvas#renderLoop(GL, GLU, GLSLshaders)
      */
+    @Override
     protected void renderLoop(GL gl, GLU glu, GLSLshaders aShaders)
     {
         if (action == null) updateAction();
@@ -533,11 +534,18 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
 
+        int maxTexture[] = new int[1];
+        gl.glGetIntegerv( GL.GL_MAX_TEXTURE_COORDS, maxTexture, 0 );
+        logger.info("GL_MAX_TEXTURE_COORDS: " + maxTexture[0]);
+        gl.glGetIntegerv( GL.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, maxTexture, 0 );
+        logger.info("GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " + maxTexture[0]);
+
+
         // Check if Anisotropic filtering is supported by the GPU
-        if( gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic") )   
+        if( gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic") )
         {
-          float max[] = new float[1];
-          gl.glGetFloatv( GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0 );
+          int max[] = new int[1];
+          gl.glGetIntegerv( GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0 );
           logger.info("GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: " + max[0]);
           anisotropicFilteringLevel = max[0];
         }
@@ -545,7 +553,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             // Anisotropic filtering is not supported by the GPU
             useAnisotropicFiltering = false;
-            anisotropicFilteringLevel = 0.0F;
+            anisotropicFilteringLevel = 0;
         }
 
         // Run main loop until the stop flag is raised.
@@ -630,7 +638,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     gl.glVertex3f(-hs, hs, hs);
                 gl.glEnd();
             }
-            
+
             // Draw the ground
             if (drawGround)
             {
@@ -646,14 +654,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 }
                 else
                     gl.glColor3f(0.3f, 0.7f, 0.4f);
-                
+
                 gl.glBegin(GL.GL_QUADS);
                     gl.glTexCoord2f(1.0f*SIZE, 0.0f);       gl.glVertex3f(-hs, 0f, hs);
                     gl.glTexCoord2f(1.0f*SIZE, 1.0f*SIZE);  gl.glVertex3f(-hs, 0f, -hs);
                     gl.glTexCoord2f(0.0f, 1.0f*SIZE);       gl.glVertex3f(hs, 0f, -hs);
                     gl.glTexCoord2f(0.0f, 0.0f);            gl.glVertex3f(hs, 0f, hs);
                 gl.glEnd();
-                if (texId != -1)   
+                if (texId != -1)
                     gl.glDisable(GL.GL_TEXTURE_2D);
             }
             else
@@ -666,7 +674,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 {
                     gl.glUseProgramObjectARB(aShaders.programObject);
                 }
-    
+
                 // Start Drawing Mesh, this is only for learning and testing shaders
                 gl.glColor3f(0.5f, 0.5f, 0.5f);
                 for (int x = 0; x < SIZE - 1; x++)
@@ -702,7 +710,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     gl.glUseProgramObjectARB(0);
                 }
             }
-            
+
 
             // // Draw a grid on the grid for the base plane
             // gl.glBegin(GL.GL_LINES);
@@ -724,7 +732,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             // gl.glVertex3f(x * z, 0, 32 * z);
             // gl.glVertex3f(-32 * z, 0, x * z);
             // gl.glVertex3f(32 * z, 0, x * z);
-            //  
+            //
             // }
             // }
             // gl.glEnd();
@@ -771,7 +779,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT1);
             gl.glEnable(GL.GL_LIGHTING);
-            
+
             // If an animation was found in the setup, apply it now.
             if (action != null)
             {
@@ -784,7 +792,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glEnable(GL.GL_BLEND);
                 gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
             }
-            
+
             // Render the scene
             sceneRenderer.render(scene);
 
@@ -792,7 +800,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             {
                 gl.glDisable(GL.GL_BLEND);
             }
-            
+
             // Disable lighting
             gl.glDisable(GL.GL_LIGHTING);
 
@@ -835,8 +843,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         logger.addHandler(fh);
         TimeIt timer = new TimeIt();
         String groundTexture = null;
-        
-        
+
         Scene scene = null;
         if (args.length == 0)
         {
@@ -855,7 +862,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 {
                     // -ground texture/terrain/enchanted-grass.jpg
                     String option = args[i].substring(1).toLowerCase();
-                    
+
                     if (option.equals("ground"))
                     {
                         if (i+1 < args.length)
@@ -874,12 +881,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     {
                         logger.info("Going to load '" + args[i] + "' as a model from "
                                 + ModelDisplayer.class.getResource("/" + args[i]));
-    
+
                         String basePath = null;
                         int lastSlashIndex = args[i].lastIndexOf('/');
                         if (lastSlashIndex != -1)
                             basePath = args[i].substring(0, lastSlashIndex+1);
-                        
+
                         scene = Scene.load(lResourceAsStream, basePath);
                     }
                     else
@@ -890,7 +897,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 }
             }
         }
-        
+
         if(scene == null)
         {
             throw new RuntimeException("No scene stored! (scene == null)");
@@ -922,6 +929,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
              * (non-Javadoc)
              * @see java.awt.event.WindowAdapter#windowClosing(WindowEvent)
              */
+            @Override
             public void windowClosing(WindowEvent e)
             {
                 // Set the stop flag to true.
