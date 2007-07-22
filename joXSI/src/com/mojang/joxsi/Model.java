@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.SI_Mesh;
 import com.mojang.joxsi.loader.SI_Model;
+import com.mojang.joxsi.loader.SI_Scene;
 import com.mojang.joxsi.loader.SI_Transform;
 import com.mojang.joxsi.loader.Template;
 import com.mojang.joxsi.loader.XSI_Action;
@@ -110,19 +111,22 @@ public class Model
             // TODO: If any additional transforms are found, store them in a Map
         }
 
-        // Copy the local transform, if there is one, into the animated transform 
+        // Copy the local transform, if there is one, into the animated transform
         if (transform != null) animated = new SI_Transform(transform);
 
         // Add all actions (animations), if there is an XSI_Mixer
         XSI_Mixer mixer = (XSI_Mixer)model.get(Template.XSI_Mixer);
         if (mixer != null)
         {
+            final SI_Scene si_scene = (SI_Scene)model.getRoot().get(Template.SI_Scene);
+            final float frameRate = si_scene.getFrameRate();
             List<Template> xsiActions = mixer.getAll(Template.XSI_Action);
             actions = new Action[xsiActions.size()];
             for (int i = 0; i < xsiActions.size(); i++)
             {
                 XSI_Action action = (XSI_Action)xsiActions.get(i);
                 actions[i] = new Action(action, this);
+                actions[i].setFrameRate(frameRate);
             }
         }
         else
@@ -139,16 +143,16 @@ public class Model
      * 
      * <p>This method is recursive, and will search all grandchildren as well.
      * 
-     * @param name the short name of the requested sub model
+     * @param aName the short name of the requested sub model
      * @return the sub model, or null if it wasn't found
      */
-    public Model getModel(String name)
+    public Model getModel(String aName)
     {
-        if (name.equals(this.name)) return this;
+        if (aName.equals(this.name)) return this;
 
         for (int i = 0; i < models.length; i++)
         {
-            Model model = models[i].getModel(name);
+            Model model = models[i].getModel(aName);
             if (model != null) return model;
         }
 
@@ -160,16 +164,16 @@ public class Model
      * 
      * <p>This method is recursive, and will search all grandchildren as well.
      * 
-     * @param name the long name of the requested sub model
+     * @param aName the long name of the requested sub model
      * @return the sub model, or null if it wasn't found
      */
-    public Model getModelFullName(String name)
+    public Model getModelFullName(String aName)
     {
-        if (name.equals(this.fullName)) return this;
+        if (aName.equals(this.fullName)) return this;
 
         for (int i = 0; i < models.length; i++)
         {
-            Model model = models[i].getModelFullName(name);
+            Model model = models[i].getModelFullName(aName);
             if (model != null) return model;
         }
 

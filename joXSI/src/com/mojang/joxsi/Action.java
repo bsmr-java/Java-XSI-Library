@@ -2,6 +2,7 @@ package com.mojang.joxsi;
 
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.SI_FCurve;
@@ -20,23 +21,25 @@ public class Action
     private static Logger logger = Logger.getLogger(Action.class.getName());
     private XSI_Action action;
     private Interpolator[] interpolators;
+    /** Frames per second. The default is 30 FPS. */
+    private float frameRate = 30.0F;
 
     /**
      * Creates a new Action object from an XSI_Action and a target Model.
      * 
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
      * 
-     * @param action The XSI_Action template that contains the SI_FCurves in this animation
+     * @param aAction The XSI_Action template that contains the SI_FCurves in this animation
      * @param model The model this Action belongs to
      */
-    public Action(XSI_Action action, Model model)
+    public Action(XSI_Action aAction, Model model)
     {
-        this.action = action;
+        this.action = aAction;
 
         // TODO: Implement other types of animation than FCurves
-        if (action.type == 0) // FCurve action source 
+        if (aAction.type == 0) // FCurve action source
         {
-            List<Template> fcurves = action.getAll(Template.SI_FCurve);
+            List<Template> fcurves = aAction.getAll(Template.SI_FCurve);
             interpolators = new Interpolator[fcurves.size()];
             for (int i=0; i<fcurves.size(); i++)
             {
@@ -48,7 +51,14 @@ public class Action
                 String target = st.nextToken(); // Not used?
 
                 Model targetModel = model.getModel(source);
-                interpolators[i] = new Interpolator(target, fcurve, targetModel, action.template_info.endsWith("L")); 
+                interpolators[i] = new Interpolator(target, fcurve, targetModel, aAction.template_info.endsWith("L"));
+            }
+        }
+        else
+        {
+            if (logger.isLoggable(Level.FINE))
+            {
+                logger.fine("Unexpected action type: " + aAction.type);
             }
         }
     }
@@ -64,8 +74,9 @@ public class Action
     {
         for (int i=0; i<interpolators.length; i++)
         {
-            // TODO HACK: This is just odd. Get the framerate from the scene, and use the length of the Action instead.
-            interpolators[i].apply(time*30.F);
+            // TODO HACK: This is just odd. Use the length of the Action instead.
+            // This Hack is partially fixed by getting the framerate from the scene.
+            interpolators[i].apply(time*frameRate);
         }
     }
 
@@ -89,5 +100,31 @@ public class Action
     public float getLength()
     {
         return (action.end - action.start);
+    }
+
+    /**
+     * Returns the frame rate of this action in frames per second (FPS).
+     *
+     * @return the frame rate of this action in frames per second (FPS).
+     * @pre frameRate >= 0 // Must be positive
+     * @post frameRate > 0 // Must be positive
+     */
+    public float getFrameRate()
+    {
+        return frameRate;
+    }
+
+    /**
+     * Sets the frame rate of this action in frames per second (FPS).
+     *
+     * @param aFrameRate
+     *            the frame rate of this action in frames per second (FPS).
+     * @pre aFrameRate > 0 // Must be positive
+     * @post frameRate > 0 // Must be positive
+     */
+    public void setFrameRate(float aFrameRate)
+    {
+        assert(aFrameRate > 0);
+        frameRate = aFrameRate;
     }
 }
