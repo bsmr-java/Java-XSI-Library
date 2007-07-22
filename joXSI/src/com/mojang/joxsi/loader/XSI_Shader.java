@@ -8,8 +8,8 @@ import java.util.Map;
 /**
  * Defines a SOFTIMAGE|XSI shader.
  * 
- * <p>These are embedded inside the XSI_Material template. The connection name provides 
- * the path to connect the parameter of a particular shader to another shader or image. 
+ * <p>These are embedded inside the XSI_Material template. The connection name provides
+ * the path to connect the parameter of a particular shader to another shader or image.
  * 
  * <p>If the shader parameters are animated, their fcurves are exported to the dotXSI file.
  * 
@@ -21,7 +21,36 @@ import java.util.Map;
  */
 public class XSI_Shader extends Template
 {
-	public class Parameter implements Serializable
+	/**
+     * Indicates that the {@link Connection#type } of this {@link Connection } is an Image.
+     */
+    private static final String CONNECTION_TYPE_IMAGE = "IMAGE";
+    /**
+     * Indicates that the {@link Connection#type } of this {@link Connection } is a Shader.
+     */
+    private static final String CONNECTION_TYPE_SHADER = "SHADER";
+    /**
+     * Indicates that the {@link Parameter#type } of this {@link Parameter } is a String.
+     */
+    private static final String PARAMETER_TYPE_STRING = "STRING";
+    /**
+     * Indicates that the {@link Parameter#type } of this {@link Parameter } is a Float.
+     */
+    private static final String PARAMETER_TYPE_FLOAT = "FLOAT";
+    /**
+     * Indicates that the {@link Parameter#type } of this {@link Parameter } is a Integer.
+     */
+    private static final String PARAMETER_TYPE_INTEGER = "INTEGER";
+    /**
+     * Indicates that the {@link Parameter#type } of this {@link Parameter } is a Byte.
+     */
+    private static final String PARAMETER_TYPE_BYTE = "BYTE";
+    /**
+     * Indicates that the {@link Parameter#type } of this {@link Parameter } is a Boolean.
+     */
+    private static final String PARAMETER_TYPE_BOOLEAN = "BOOLEAN";
+
+    public class Parameter implements Serializable
 	{
         /** Parameter name. */
 		public String name;
@@ -40,14 +69,14 @@ public class XSI_Shader extends Template
 		/**
          * Returns a String containing the parameter value and type.
          * 
-         * @return a String containing the parameter value and type. 
+         * @return a String containing the parameter value and type.
 		 */
         public String toString()
         {
             return value + " (" + type + ")";
         }
 	}
-	
+
 	public class Connection implements Serializable
 	{
         /**
@@ -117,15 +146,15 @@ public class XSI_Shader extends Template
 	public void parse(RawTemplate block) throws ParseException
 	{
 		Iterator<Object> it = block.values.iterator();
-		
+
 		path = (String)it.next();
 		output = ((Integer)it.next()).intValue();
 		param_number = ((Integer)it.next()).intValue();
 		cnx_number = ((Integer)it.next()).intValue();
-		
+
 		if(output < 0 || output > 13)
             throw new ParseException("Illegal output in XSI_Shader: "+output);
-		
+
 		parameters = new Parameter[param_number];
 		for (int i=0; i<param_number; i++)
 		{
@@ -133,14 +162,14 @@ public class XSI_Shader extends Template
 			parameters[i].name = (String)it.next();
 			parameters[i].type = (String)it.next();
 			parameters[i].value = it.next();
-			
+
 			parameterMap.put(parameters[i].name, parameters[i]);
-			
-			if(!parameters[i].type.equals("BOOLEAN") &&
-			   !parameters[i].type.equals("BYTE") &&
-			   !parameters[i].type.equals("INTEGER") &&
-			   !parameters[i].type.equals("FLOAT") &&
-			   !parameters[i].type.equals("STRING"))
+
+			if(!parameters[i].type.equals(PARAMETER_TYPE_BOOLEAN) &&
+			   !parameters[i].type.equals(PARAMETER_TYPE_BYTE) &&
+			   !parameters[i].type.equals(PARAMETER_TYPE_INTEGER) &&
+			   !parameters[i].type.equals(PARAMETER_TYPE_FLOAT) &&
+			   !parameters[i].type.equals(PARAMETER_TYPE_STRING))
 			    throw new ParseException("Illegal parameter type in XSI_Shader: "+parameters[i].type);
 		}
 
@@ -153,9 +182,9 @@ public class XSI_Shader extends Template
 			connections[i].type = (String)it.next();
 
 			connectionMap.put(connections[i].name, connections[i]);
-			
-			if(!connections[i].type.equals("SHADER") &&
-			   !connections[i].type.equals("IMAGE") &&
+
+			if(!connections[i].type.equals(CONNECTION_TYPE_SHADER) &&
+			   !connections[i].type.equals(CONNECTION_TYPE_IMAGE) &&
 			   !connections[i].type.equals(""))
 			    throw new ParseException("Illegal connection type in XSI_Shader: "+connections[i].type);
 		}
