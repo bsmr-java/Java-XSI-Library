@@ -1,4 +1,4 @@
-#Sat Jul 14 11:09:54 CEST 2007
+#Sun Jul 22 09:34:11 CEST 2007
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
@@ -93,7 +93,7 @@ org.eclipse.jdt.core.formatter.blank_lines_before_package=0
 org.eclipse.jdt.core.formatter.blank_lines_between_type_declarations=1
 org.eclipse.jdt.core.formatter.brace_position_for_annotation_type_declaration=next_line
 org.eclipse.jdt.core.formatter.brace_position_for_anonymous_type_declaration=next_line
-org.eclipse.jdt.core.formatter.brace_position_for_array_initializer=next_line
+org.eclipse.jdt.core.formatter.brace_position_for_array_initializer=end_of_line
 org.eclipse.jdt.core.formatter.brace_position_for_block=next_line
 org.eclipse.jdt.core.formatter.brace_position_for_block_in_case=next_line
 org.eclipse.jdt.core.formatter.brace_position_for_constructor_declaration=next_line
