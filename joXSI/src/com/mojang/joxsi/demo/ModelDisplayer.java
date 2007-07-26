@@ -110,7 +110,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** Enable or disable AnisoropicFiltering. */
     private boolean useAnisotropicFiltering = false;
     /** How much Anisotropic Filtering to use. */
-    private int anisotropicFilteringLevel = 0;
+    private float anisotropicFilteringLevel = 0;
     /** The textureLoader. */
     private TextureLoader textureLoader;
 
@@ -534,26 +534,19 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
 
-        int maxTexture[] = new int[1];
-        gl.glGetIntegerv( GL.GL_MAX_TEXTURE_COORDS, maxTexture, 0 );
-        logger.info("GL_MAX_TEXTURE_COORDS: " + maxTexture[0]);
-        gl.glGetIntegerv( GL.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, maxTexture, 0 );
-        logger.info("GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " + maxTexture[0]);
-
-
         // Check if Anisotropic filtering is supported by the GPU
-        if( gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic") )
+        if( gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic") )   
         {
-          int max[] = new int[1];
-          gl.glGetIntegerv( GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0 );
+          float max[] = new float[1];
+          gl.glGetFloatv( GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0 );
           logger.info("GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: " + max[0]);
-          anisotropicFilteringLevel = max[0];
+          anisotropicFilteringLevel = (int) max[0];
         }
         else
         {
             // Anisotropic filtering is not supported by the GPU
             useAnisotropicFiltering = false;
-            anisotropicFilteringLevel = 0;
+            anisotropicFilteringLevel = 0.0F;
         }
 
         // Run main loop until the stop flag is raised.
@@ -638,10 +631,19 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     gl.glVertex3f(-hs, hs, hs);
                 gl.glEnd();
             }
-
-            // Draw the ground
-            if (drawGround)
-            {
+            
+            if(drawGround){
+                
+                //Both walls in the Background should stay filled. Grid is interesting for model and ground
+                if (grid)
+                {
+                    gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+                }
+                else
+                {
+                    gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+                }
+                
                 int texId = -1;
                 if (groundTexture != null)
                    texId = textureLoader.loadTexture(groundTexture);
@@ -649,36 +651,25 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 if (texId != -1)
                 {
                     gl.glEnable(GL.GL_TEXTURE_2D);
+                    gl.glActiveTexture(GL.GL_TEXTURE0);
                     gl.glBindTexture(GL.GL_TEXTURE_2D, texId);
                     gl.glColor3f(1.0f, 1.0f, 1.0f);
-                }
-                else
-                    gl.glColor3f(0.3f, 0.7f, 0.4f);
-
-                gl.glBegin(GL.GL_QUADS);
-                    gl.glTexCoord2f(1.0f*SIZE, 0.0f);       gl.glVertex3f(-hs, 0f, hs);
-                    gl.glTexCoord2f(1.0f*SIZE, 1.0f*SIZE);  gl.glVertex3f(-hs, 0f, -hs);
-                    gl.glTexCoord2f(0.0f, 1.0f*SIZE);       gl.glVertex3f(hs, 0f, -hs);
-                    gl.glTexCoord2f(0.0f, 0.0f);            gl.glVertex3f(hs, 0f, hs);
-                gl.glEnd();
-                if (texId != -1)
+                }else{
+                    //Only if there is no texture it should be disabled
                     gl.glDisable(GL.GL_TEXTURE_2D);
-            }
-            else
-            {
-                gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-                // lshaders.vertexShaderSupported=true;
-                // Programming the GPU with the Vertexshader for the object drawn
-                // later
+                }
+                      
+                // Programming the GPU with the Vertexshader for the object drawn later
                 if (aShaders.vertexShaderSupported && vertexshader)
                 {
-                    gl.glUseProgramObjectARB(aShaders.programObject);
+                    gl.glUseProgramObjectARB(aShaders.programObjectVertex);           
                 }
 
-                // Start Drawing Mesh, this is only for learning and testing shaders
-                gl.glColor3f(0.5f, 0.5f, 0.5f);
+                float colorslide=0.0f;
                 for (int x = 0; x < SIZE - 1; x++)
                 {
+                    colorslide=colorslide+0.1f;
+                    
                     // Draw A Triangle Strip For Each Column Of Our Mesh
                     gl.glBegin(GL.GL_TRIANGLE_STRIP);
                     for (int z = 0; z < SIZE - 1; z++)
@@ -686,16 +677,29 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                         // Test if Shader is supported and activated
                         if (aShaders.vertexShaderSupported && vertexshader)
                         {
-                            // Set The Wave Parameter Of Our Shader To The
-                            // Incremented
-                            // Wave Value From Our Main Program
+                            // Set The Wave Parameter Of Our Shader To The Incremented  Wave Value From Our Main Program
                             gl.glVertexAttrib1f(aShaders.waveAttrib, wave_movement);
-                            gl.glColor3f(0.5f, 0.0f, 1.0f);
+//                            gl.glColor3f(1.0f, 0.0f, 0.5f);
                         }
+                   
+//                        gl.glColor3f(1/colorslide, 0.5f, 0.5f);
                         // Draw Vertex
-                        gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);
+                        if(z%2!=1){
+                            gl.glTexCoord2f(1.0f, 1.0f);
+                        }else{
+                            gl.glTexCoord2f(1.0f, 0.0f);
+                        }
+                        
+                        gl.glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);       
+                   
                         // Draw Vertex
+                        if(z%2!=1){
+                            gl.glTexCoord2f(0.0f, 1.0f);
+                        }else{
+                            gl.glTexCoord2f(0.0f, 0.0f); 
+                        }
                         gl.glVertex3f(mesh[x + 1][z][0], mesh[x + 1][z][1], mesh[x + 1][z][2]);
+                        
                         wave_movement += 0.00001f; // Increment Our Wave Movement
                         if (wave_movement > TWO_PI)
                         { // Prevent Crashing
@@ -704,38 +708,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     }
                     gl.glEnd();
                 }
-                // Setting the GPU shader 0 to object drawn before
+                // Setting the GPU shader 0 it is like null
                 if (aShaders.vertexShaderSupported && vertexshader)
                 {
                     gl.glUseProgramObjectARB(0);
                 }
             }
-
-
-            // // Draw a grid on the grid for the base plane
-            // gl.glBegin(GL.GL_LINES);
-            // {
-            // float z = 10;
-            // for (int x = -32; x <= 32; x++)
-            // {
-            //
-            // if ((x & 3) == 0)
-            // {
-            // gl.glColor3f(0.5f, 0.5f, 0.5f);
-            // }
-            // else
-            // {
-            // gl.glColor3f(0.25f, 0.25f, 0.25f);
-            // }
-            //
-            // gl.glVertex3f(x * z, 0, -32 * z);
-            // gl.glVertex3f(x * z, 0, 32 * z);
-            // gl.glVertex3f(-32 * z, 0, x * z);
-            // gl.glVertex3f(32 * z, 0, x * z);
-            //
-            // }
-            // }
-            // gl.glEnd();
 
             // Set up the lights
             if (diffuseSceneLightFlag0)
@@ -766,20 +744,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 { 0.1f, 0.1f, 0.1f }, 0);
 
             }
-            if (grid)
-            {
-                gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-            }
-            else
-            {
-                gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-            }
+
             gl.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT0);
             gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, positionSceneLight0, 0);
             gl.glEnable(GL.GL_LIGHT1);
             gl.glEnable(GL.GL_LIGHTING);
-
+            
             // If an animation was found in the setup, apply it now.
             if (action != null)
             {
@@ -792,31 +763,26 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glEnable(GL.GL_BLEND);
                 gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
             }
-
+            
             // Render the scene
             sceneRenderer.render(scene);
-
-            if (blend)
-            {
-                gl.glDisable(GL.GL_BLEND);
-            }
-
+            
             // Disable lighting
             gl.glDisable(GL.GL_LIGHTING);
 
             // Calculate the fps.
-            frames++;
-            long now = System.currentTimeMillis();
-            if (now - start > 4000)
-            {
-                // This is more precise
-                start = now;
-                // start += 4000;
-                if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
-                // TODO
-                logger.info(frames / 4 + " fps");
-                frames = 0;
-            }
+//            frames++;
+//            long now = System.currentTimeMillis();
+//            if (now - start > 4000)
+//            {
+//                // This is more precise
+//                start = now;
+//                // start += 4000;
+//                if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
+//                // TODO
+//                logger.info(frames / 4 + " fps");
+//                frames = 0;
+//            }
             // This makes the mouse and key listeners more responsive
             releaseContextAndMakeItcurrentAgain();
 
