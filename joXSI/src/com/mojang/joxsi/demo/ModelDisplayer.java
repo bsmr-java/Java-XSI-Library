@@ -665,11 +665,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     gl.glUseProgramObjectARB(aShaders.programObjectVertex);           
                 }
 
-                float colorslide=0.0f;
                 for (int x = 0; x < SIZE - 1; x++)
-                {
-                    colorslide=colorslide+0.1f;
-                    
+                {                   
                     // Draw A Triangle Strip For Each Column Of Our Mesh
                     gl.glBegin(GL.GL_TRIANGLE_STRIP);
                     for (int z = 0; z < SIZE - 1; z++)
@@ -679,10 +676,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                         {
                             // Set The Wave Parameter Of Our Shader To The Incremented  Wave Value From Our Main Program
                             gl.glVertexAttrib1f(aShaders.waveAttrib, wave_movement);
-//                            gl.glColor3f(1.0f, 0.0f, 0.5f);
                         }
                    
-//                        gl.glColor3f(1/colorslide, 0.5f, 0.5f);
                         // Draw Vertex
                         if(z%2!=1){
                             gl.glTexCoord2f(1.0f, 1.0f);
@@ -771,18 +766,18 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glDisable(GL.GL_LIGHTING);
 
             // Calculate the fps.
-//            frames++;
-//            long now = System.currentTimeMillis();
-//            if (now - start > 4000)
-//            {
-//                // This is more precise
-//                start = now;
-//                // start += 4000;
-//                if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
-//                // TODO
-//                logger.info(frames / 4 + " fps");
-//                frames = 0;
-//            }
+            frames++;
+            long now = System.currentTimeMillis();
+            if (now - start > 4000)
+            {
+                // This is more precise
+                start = now;
+                // start += 4000;
+                if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
+                // TODO
+                logger.info(frames / 4 + " fps");
+                frames = 0;
+            }
             // This makes the mouse and key listeners more responsive
             releaseContextAndMakeItcurrentAgain();
 
