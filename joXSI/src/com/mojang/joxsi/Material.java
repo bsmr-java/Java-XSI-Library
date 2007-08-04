@@ -46,13 +46,23 @@ public class Material
     public Material(SI_Material material)
     {
         name = material.template_info;
-        imageName = ((SI_Texture2D)material.get(Template.SI_Texture2D)).imageName;
+        final SI_Texture2D lTexture2D = (SI_Texture2D)material.get(Template.SI_Texture2D);
+        if (lTexture2D != null)
+        {
+            imageName = lTexture2D.imageName;
+        }
+        else
+        {
+            // This was discovered in the models/sellsman.xsi model
+            logger.warning("SI_Material does not contain a SI_Texture2D template so cannot get the image name of the texture. material: "
+                            + material);
+        }
         ambientColor = material.ambientColor;
         diffuseColor = material.faceColor;
         emissiveColor = material.emissiveColor;
         specularColor = material.specularColor;
     }
-    
+
     /**
      * Creates a new material based on an XSI_Material.
      * 
@@ -86,7 +96,7 @@ public class Material
                 else
                 {
                     imageName = image.filename;
-                    
+
                     if(bumpInUse) new BumpMapEffect(image).generateBumpMap();
                 }
             }
