@@ -1,5 +1,6 @@
 package com.mojang.joxsi;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.mojang.joxsi.loader.SI_Shape;
 
@@ -45,7 +46,28 @@ public class Shape
             }
             else if (shapeArray.elements.startsWith("TEX_COORD_UV"))
             {
-                int uvCoordSet = Integer.parseInt(shapeArray.elements.substring("TEX_COORD_UV".length()));
+                // Some dotXSI formats do not append a number if there is only one UV coordinate set
+                // Example in the tools\spindle-pile.xsi model
+                final String lUvCoordString = shapeArray.elements.substring("TEX_COORD_UV".length());
+                int uvCoordSet = 0;
+                try
+                {
+                    uvCoordSet = Integer.parseInt(lUvCoordString);
+                }
+                catch (NumberFormatException e)
+                {
+                    // Only log the exception if FINE is enabled as the stack trace can be confusing and worrying for normal users.
+                    if (logger.isLoggable(Level.FINE))
+                    {
+                        logger.log(Level.WARNING, "Shape - possibly an old dotXSI format as the TEX_COORD_UV does not have a number, "
+                                + shape, e);
+                    }
+                    else
+                    {
+                        logger.warning("Shape - possibly an old dotXSI format as the TEX_COORD_UV does not have a number, "
+                                + shape);
+                    }
+                }
                 texCoordBuffer[uvCoordSet] = shapeArray.values;
             }
             else

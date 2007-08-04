@@ -45,7 +45,7 @@ public class TriangleList
      *
      * @param scene the scene this TriangleList belongs to
      * @param shape the shape this TriangleList reads data from
-     * @param triangleList the SI_TriangleList to use to build the TriangleList 
+     * @param triangleList the SI_TriangleList to use to build the TriangleList
      */
     public TriangleList(Scene scene, Shape shape, SI_TriangleList triangleList)
     {
@@ -54,7 +54,7 @@ public class TriangleList
 
         material = triangleList.material;
         vertices = triangleList.nbTriangles * 3;
-        
+
         String elements = triangleList.elements + "|";
         // Add a pipe at the end to be able to look for "TEX_COORD_UV1|" and "TEX_COORD_UV10|".
         // Not that I think xsi files with more than 9 texture units are common..
@@ -62,14 +62,16 @@ public class TriangleList
         // Create buffers
         hasNormals = elements.indexOf("NORMAL|") >= 0;
         hasColors = elements.indexOf("COLOR|") >= 0;
-        
+
         vertexIndexes = new int[vertices];
         if (hasNormals) normalIndexes = new int[vertices];
         if (hasColors) colorIndexes = new int[vertices];
         texCoordIndexes = new int[MAX_TEXTURES][];
         for (int t = 0; t < MAX_TEXTURES; t++)
         {
-            hasTexCoords[t] = elements.indexOf("TEX_COORD_UV" + t + "|") >= 0;
+            // It is also possible for old dotXSI to use just "TEX_COORD_UV" without a number
+            hasTexCoords[t] = (elements.indexOf("TEX_COORD_UV" + t + "|") >= 0)
+                    || (t == 0 && elements.indexOf("TEX_COORD_UV|") >= 0);
             if (hasTexCoords[t])
             {
                 texCoordIndexes[t] = new int[vertices];
