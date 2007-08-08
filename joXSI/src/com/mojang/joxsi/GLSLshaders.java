@@ -78,7 +78,13 @@ public class GLSLshaders
             // loadShaders(gl,"shaderthatneedsmultitexture",true);
         }
 
-        loadShaderProgram(vertexSURL, fragmentSURL);
+        // TODO:  Make a graceful message if the shader doesn't work correctly
+        // this is just a hack to make it not load shader atm
+        // lando
+        if (vertexSURL != null && fragmentSURL != null)
+        {
+                  loadShaderProgram(vertexSURL, fragmentSURL);
+        }
     }
 
     private void loadShaderProgram(String[] vertexSURL, String[] fragmentSURL)
