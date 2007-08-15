@@ -1,9 +1,5 @@
 package com.mojang.joxsi.demo;
 
-import java.util.logging.Logger;
-import java.util.logging.FileHandler;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,6 +12,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -31,7 +30,7 @@ import com.mojang.joxsi.renderer.TextureLoader;
 
 /**
  * A simple model displayer demo application.
- * 
+ *
  * @author Notch
  * @author Egal
  * @author Milbo
@@ -42,7 +41,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
 
-    private static ConsoleHandler ch = new ConsoleHandler();
+    //private static ConsoleHandler ch = new ConsoleHandler();
 
     private static FileHandler fh;
 
@@ -120,6 +119,18 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private boolean useAnisotropicFiltering = false;
     /** How much Anisotropic Filtering to use. */
     private int anisotropicFilteringLevel = 0;
+    /**
+     * Determines the value for calling glLightModel with parameter
+     * GL_LIGHT_MODEL_COLOR_CONTROL. <code>false</code> (GL.GL_SINGLE_COLOR)
+     * specifies that a single color is generated from the lighting computation
+     * for a vertex. <code>true</code> (G.#GL_SEPARATE_SPECULAR_COLOR)
+     * specifies that the specular color computation of lighting be stored
+     * separately from the remainder of the lighting computation. The specular
+     * color is summed into the generated fragment's color after the application
+     * of texture mapping (if enabled). The initial value is false
+     * (GL.GL_SINGLE_COLOR).
+     */
+    private boolean useSeparateSpecularColour = false;
     /** The textureLoader. */
     private TextureLoader textureLoader;
 
@@ -136,7 +147,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
     /**
      * TODO JavaDoc.
-     * 
+     *
      * @param scene
      */
     public ModelDisplayer(Scene scene)
@@ -311,14 +322,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         int xDrag = e.getX() - xDragStart;
         int yDrag = e.getY() - yDragStart;
-        if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) > 0)
+        if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) > 0)
         {
             xRot += xDrag;
             yRot += yDrag;
             if (yRot < -90) yRot = -90;
             if (yRot > 90) yRot = 90;
         }
-        if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) > 0)
+        if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) > 0)
         {
             float xs = (float) Math.sin(xRot * Math.PI / 180.0f);
             float xc = (float) Math.cos(xRot * Math.PI / 180.0f);
@@ -354,7 +365,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         /*
          * String keyString = "key code = " + keyCode + " (" +
          * KeyEvent.getKeyText(keyCode) + ")";
-         * 
+         *
          * int modifiersEx = aEvent.getModifiersEx(); String modString =
          * "extended modifiers = " + modifiersEx; String tmpString =
          * KeyEvent.getModifiersExText(modifiersEx); if (tmpString.length() > 0) {
@@ -399,6 +410,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 break;
             case 'F':
                 drawGround = !drawGround;
+                break;
+            case 'S':
+                useSeparateSpecularColour = !useSeparateSpecularColour;
+                if (logger.isLoggable(Level.FINER))
+                {
+                    logger.finer("Use separate specular colour: " + useSeparateSpecularColour);
+                }
                 break;
             case 'W':
                 drawBackground = !drawBackground;
@@ -541,6 +559,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         logger.info("GL_MAX_TEXTURE_COORDS: " + maxTexture[0]);
         gl.glGetIntegerv(GL.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, maxTexture, 0);
         logger.info("GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " + maxTexture[0]);
+
+        // Log the Minimum and Maximum OpenGL Point Size
+        float val[] = new float[2];
+        gl.glGetFloatv( GL.GL_POINT_SIZE_RANGE, val, 0  );
+        logger.info("min point size=" + val[0] + " max=" + val[1]);
 
         // Check if Anisotropic filtering is supported by the GPU
         if (gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic"))
@@ -798,6 +821,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glEnd();
             }
 
+            if (useSeparateSpecularColour)
+            {
+                gl.glLightModeli(GL.GL_LIGHT_MODEL_COLOR_CONTROL, GL.GL_SEPARATE_SPECULAR_COLOR);
+            }
+            else
+            {
+                gl.glLightModeli(GL.GL_LIGHT_MODEL_COLOR_CONTROL, GL.GL_SINGLE_COLOR);
+            }
+
             // Set up the lights
             if (diffuseSceneLightFlag0)
             {
@@ -884,7 +916,6 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
         }
-
     }
 
     /**
@@ -901,7 +932,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     {
         final String methodName = "main";
         fh = new FileHandler("modeldisplayer.log");
-        logger.addHandler(ch);
+        //logger.addHandler(ch);
         logger.addHandler(fh);
         TimeIt timer = new TimeIt();
         String groundTexture = null;
