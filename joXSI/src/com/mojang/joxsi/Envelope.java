@@ -1,8 +1,9 @@
 package com.mojang.joxsi;
 
-import java.util.logging.Logger;
-
 import com.mojang.joxsi.loader.SI_Envelope.VertexWeight;
+// ** Logging Imports not used yet
+// import java.util.logging.Logger;
+// import java.util.logging.Level;
 
 /**
  * An Envelope is used for skinned animation. It maps a bone ("deformer" in XSI) to a target mesh ("envelope").
@@ -11,8 +12,8 @@ import com.mojang.joxsi.loader.SI_Envelope.VertexWeight;
  */
 public class Envelope
 {
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(Envelope.class.getName());
+    /** logger - Logging instance. Not used yet just a placeholder for later use*/
+    // private static Logger logger = Logger.getLogger(Envelope.class.getName());
     public VertexWeight[] vertexWeights;
     public Model envelopeModel;
     public Model deformerModel;
