@@ -30,10 +30,10 @@ public class BumpMapEffect
    private int     w;
    private int     h;
    
-   public BumpMapEffect(XSI_Image img)
+   public BumpMapEffect(XSI_Image incomingImg)
    {
 
-       this.img = img;
+       img = incomingImg;
 
        w = img.imageX;
        h = img.imageY;
