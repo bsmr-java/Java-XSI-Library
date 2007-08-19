@@ -26,8 +26,8 @@ public class TextureLoader
     private GLU glu;
     private Map<String,Integer> loadedTextures = new HashMap<String,Integer>();
     private String basePath;
-    /* * Classname used in some logging statements. */
-    private static final String CLASS_NAME = TextureLoader.class.getName();
+    /* * Classname used in some logging statements. disabled since logging isn't using it*/
+    // private static final String CLASS_NAME = TextureLoader.class.getName();
 
     /**
      * Creates a new TextureLoader
