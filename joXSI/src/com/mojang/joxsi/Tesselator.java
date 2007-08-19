@@ -1,10 +1,11 @@
 package com.mojang.joxsi;
 
-import java.util.logging.Logger;
 import java.util.List;
 
 import com.mojang.joxsi.loader.SI_PolygonList.Polygon;
 import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
+//Commented out until used
+//import java.util.logging.Logger;
 
 /**
  * The Tesselator class converts a polygon into a list of triangles.
@@ -14,8 +15,8 @@ import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
  */
 public class Tesselator
 {
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(Tesselator.class.getName());
+    /** logger - Logging instance. Commented out until used*/
+    // private static Logger logger = Logger.getLogger(Tesselator.class.getName());
 
     /**
      * Converts a polygon into triangles, and adds them to a List. In case of

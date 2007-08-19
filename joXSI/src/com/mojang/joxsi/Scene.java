@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+// commented out until used
+// import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.DotXSILoader;
 import com.mojang.joxsi.loader.ParseException;
@@ -28,8 +29,8 @@ import com.mojang.joxsi.loader.XSI_Material;
  */
 public class Scene
 {
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(Scene.class.getName());
+    /** logger - Logging instance. Commented out until used*/
+    // private static Logger logger = Logger.getLogger(Scene.class.getName());
     /** Array of Models in the Scene. */
     public Model[] models;
     /** The RootTemplate of the Scene. */
