@@ -1,6 +1,7 @@
 package com.mojang.joxsi;
 
 import java.util.logging.Logger;
+
 import com.mojang.joxsi.loader.SI_FCurve;
 import com.mojang.joxsi.loader.SI_Transform;
 
@@ -37,9 +38,9 @@ public class Interpolator
 
     /**
      * Creates a new Interpolator.
-     * 
+     *
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
-     * 
+     *
      * @param curve
      *        the FCurve containing the interpolation targets
      * @param model
@@ -54,9 +55,11 @@ public class Interpolator
 
     /**
      * Creates a new Interpolator.
-     * 
+     *
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
-     * 
+     *
+     * <p>Throws {@link IllegalArgumentException } if the <code>model</code> argument is <code>null</code>.
+     *
      * @param targetName
      *        what property of the model to animate
      * @param curve
@@ -68,6 +71,12 @@ public class Interpolator
      */
     public Interpolator(String targetName, SI_FCurve curve, Model model, boolean loop)
     {
+        if (model == null)
+        {
+            // TODO Egal
+            logger.warning("Cannot create an Interpolator with a null Model. targetName: " + targetName);
+            throw new IllegalArgumentException("Cannot create an Interpolator with a null Model. targetName: " + targetName);
+        }
         this.loop = loop;
         this.curve = curve;
         this.model = model;
@@ -138,7 +147,7 @@ public class Interpolator
     }
 
     /**
-     * Cubic interpolation.. Might be right, might be wrong. 
+     * Cubic interpolation.. Might be right, might be wrong.
      * @return the interpolated value.
      */
     private float cubic(float xA, float yA, float xB, float yB, float xC, float yC, float xD, float yD, float t)
@@ -155,7 +164,7 @@ public class Interpolator
 
     /**
      * Hermite interpolation. How does this work?
-     * 
+     *
      * @param vPrev
      * @param vNext
      * @param in
@@ -163,7 +172,7 @@ public class Interpolator
      * @param t
      *            How far along are we between last time and next time?
      * @return the interpolated value
-     * 
+     *
      * TODO describe what is actually happening
      */
     private float hermite(float vPrev, float vNext, float in, float out, float t)
@@ -177,27 +186,32 @@ public class Interpolator
 
     /**
      * Sets the interpolation method to be used by this interpolator.
-     * 
+     *
      * <p>Must be one of the INTERPOLATION_* constants defined in this class.
-     * 
+     *
      * @param interpolation
      *        the interpolation to be used
      */
     public void setInterpolation(int interpolation)
     {
-        if (interpolation < 0 || interpolation > 3) 
+        if (interpolation < 0 || interpolation > 3)
             throw new IllegalArgumentException("Bad interpolation type: " + interpolation);
         this.interpolation = interpolation;
     }
 
     /**
      * Applies the animation to the target model.
-     * 
+     *
      * @param time
      *        how far into the animation we should interpolate
      */
     public void apply(float time)
     {
+        if (model == null)
+        {
+            // TODO Egal
+            logger.warning("Cannot apply an animation to a null model");
+        }
         SI_Transform result = model.animated;
         SI_FCurve.FCurve curCurve = curve.fcurves[0];
 
@@ -213,18 +227,18 @@ public class Interpolator
             else
             {
                 int pos = 0;
-    
+
                 // Find the current frame position.
                 while (pos < curCurve.frames.length && time > curCurve.frames[pos])
                     pos++;
-    
+
                 // Set up last value, next value, last time, and next time.
                 float prevVal = curCurve.keyValues[pos - 1][0];
                 float nextVal = 0;
-    
+
                 float prevTime = curCurve.frames[pos - 1];
                 float nextTime = 0;
-    
+
                 if (pos < curCurve.frames.length)
                 {
                     nextVal = curCurve.keyValues[pos][0];
@@ -235,10 +249,10 @@ public class Interpolator
                     nextVal = curCurve.keyValues[0][0];
                     nextTime = curCurve.frames[0];
                 }
-    
+
                 // How far along are we between last time and next time?
                 float interp = (time - prevTime) / (nextTime - prevTime);
-    
+
                 // Apply interpolation. Inline the hermite and cubic methods?
                 switch (interpolation)
                 {
@@ -272,12 +286,12 @@ public class Interpolator
                                 nextXa = curCurve.keyValues[0][1];
                                 nextYa = curCurve.keyValues[0][2];
                             }
-    
+
                             val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
                         } catch (ArrayIndexOutOfBoundsException e)
                         {
                             val = prevVal;
-    
+
                             System.err.println("INTERPOLATION_CUBIC pos: " + pos);
                             e.printStackTrace();
                             throw e;
@@ -287,7 +301,7 @@ public class Interpolator
                         val = prevVal;
                 }
             }
-    
+
             // Copy the value to the correct value of the target transform
             switch (target)
             {

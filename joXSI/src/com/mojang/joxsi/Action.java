@@ -12,7 +12,7 @@ import com.mojang.joxsi.loader.XSI_Action;
 
 /**
  * An Action contains and controls an animation.
- * 
+ *
  * <p>To play an animation, get it from a Model, then call Apply before rendering the model.
  */
 public class Action
@@ -26,9 +26,9 @@ public class Action
 
     /**
      * Creates a new Action object from an XSI_Action and a target Model.
-     * 
+     *
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
-     * 
+     *
      * @param aAction The XSI_Action template that contains the SI_FCurves in this animation
      * @param model The model this Action belongs to
      */
@@ -40,6 +40,10 @@ public class Action
         if (aAction.type == 0) // FCurve action source
         {
             List<Template> fcurves = aAction.getAll(Template.SI_FCurve);
+            if (logger.isLoggable(Level.FINER))
+            {
+                logger.finer("Action has " + fcurves.size() + " fcurves");
+            }
             interpolators = new Interpolator[fcurves.size()];
             for (int i=0; i<fcurves.size(); i++)
             {
@@ -51,7 +55,15 @@ public class Action
                 String target = st.nextToken(); // Not used?
 
                 Model targetModel = model.getModel(source);
-                interpolators[i] = new Interpolator(target, fcurve, targetModel, aAction.template_info.endsWith("L"));
+                if (targetModel == null)
+                {
+                    logger.warning("Cannot create an Interpolator for SI_FCurve " + source + ".kine.local." + target
+                            + " as there is no SI_Model whose name is: " + source);
+                }
+                else
+                {
+                    interpolators[i] = new Interpolator(target, fcurve, targetModel, aAction.template_info.endsWith("L"));
+                }
             }
         }
         else
@@ -65,24 +77,29 @@ public class Action
 
     /**
      * Applies the animation at a specific time to the target Model.
-     * 
+     *
      * <p>The resulting transformation is stored in the animated SI_Transform
-     * 
+     *
      * @param time How far into the animation the animation should be applied
      */
     public void apply(float time)
     {
         for (int i=0; i<interpolators.length; i++)
         {
-            // TODO HACK: This is just odd. Use the length of the Action instead.
-            // This Hack is partially fixed by getting the framerate from the scene.
-            interpolators[i].apply(time*frameRate);
+            // The interpolator could be null if there was a problem creating the animation
+            // The problem should already have been logged
+            if (interpolators[i] != null)
+            {
+                // TODO HACK: This is just odd. Use the length of the Action instead.
+                // This Hack is partially fixed by getting the framerate from the scene.
+                interpolators[i].apply(time*frameRate);
+            }
         }
     }
 
     /**
      * Gets the name of the animation.
-     * 
+     *
      * @return the name of the animation.
      */
     public String getName()
@@ -92,9 +109,9 @@ public class Action
 
     /**
      * Returns the length of the animation.
-     * 
+     *
      * <p>The type of the returned value is either in seconds or frames, depending on the timing of the scene.
-     * 
+     *
      * @return the length of the animation.
      */
     public float getLength()
