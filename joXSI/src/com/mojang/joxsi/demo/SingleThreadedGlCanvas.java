@@ -213,6 +213,8 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             context.destroy();
 
             // Shut down the jvm.. This probably shouldn't be here.
+            // TODO Make sure the rest of the system shuts down 
+            // Using more than one canvas so we have to force program shutdown.
             System.exit(0);
         }
     }
