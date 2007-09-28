@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-// commented out until used
-// import java.util.logging.Logger;
 
 import com.mojang.joxsi.loader.DotXSILoader;
 import com.mojang.joxsi.loader.ParseException;
@@ -17,6 +15,7 @@ import com.mojang.joxsi.loader.SI_EnvelopeList;
 import com.mojang.joxsi.loader.SI_Material;
 import com.mojang.joxsi.loader.SI_MaterialLibrary;
 import com.mojang.joxsi.loader.SI_Model;
+import com.mojang.joxsi.loader.SI_Scene;
 import com.mojang.joxsi.loader.Template;
 import com.mojang.joxsi.loader.XSI_Image;
 import com.mojang.joxsi.loader.XSI_ImageLibrary;
@@ -24,8 +23,8 @@ import com.mojang.joxsi.loader.XSI_Material;
 
 /**
  * A Scene is result of any loaded XSI file.
- * 
- * <p>It contains a list of models, a list of envelopes, a list of materials, and a list of images to be used by the materials. 
+ *
+ * <p>It contains a list of models, a list of envelopes, a list of materials, and a list of images to be used by the materials.
  */
 public class Scene
 {
@@ -43,12 +42,18 @@ public class Scene
     public Map<String, XSI_Image> images = new HashMap<String, XSI_Image>();
     /** The base path of the Scene, used to convert relative (texture) paths to absolute. */
     public String basePath;
+    /**
+     * Template_info field from the <code>SI_Scene</code>, which normally contains a unique
+     * identifier or name, which is very useful when logging an error so the
+     * problematic dotXSI model can be found.
+     */
+    public String template_info;
 
     /**
      * Factory method for loading a Scene from an input stream.
-     * 
+     *
      * <p>This method calls new Scene(DotXSILoader.load(in));
-     * 
+     *
      * @param in the input stream to read the scene from. This input stream needs to contain a valid XSI file
      * @return a new Scene.
      * @throws IOException if there's an io error.
@@ -58,12 +63,12 @@ public class Scene
     {
         return new Scene(DotXSILoader.load(in));
     }
-    
+
     /**
      * Factory method for loading a Scene from an input stream.
-     * 
+     *
      * <p>This method calls new Scene(DotXSILoader.load(in), basePath);
-     * 
+     *
      * @param in the input stream to read the scene from. This input stream needs to contain a valid XSI file
      * @param basePath the absolute path to the scene, without the filename.
      * @return a new Scene.
@@ -77,7 +82,7 @@ public class Scene
 
     /**
      * Creates a new Scene from the specified root template.
-     * 
+     *
      * @param root the root template to build the scene from
      * @param basePath the absolute path to the scene, without the filename.
      */
@@ -89,7 +94,7 @@ public class Scene
 
     /**
      * Creates a new Scene from the specified root template.
-     * 
+     *
      * @param root the root template to build the scene from
      */
     public Scene(RootTemplate root)
@@ -100,6 +105,10 @@ public class Scene
     private void initFromRootTemplate(RootTemplate root)
     {
         this.root = root;
+
+        // Get some information from the SI_Scene template
+        final SI_Scene si_scene = (SI_Scene)root.get(Template.SI_Scene);
+        template_info = si_scene.template_info;
 
         // Add all models
         List<Template> modelTemplates = root.getAll(Template.SI_Model);
@@ -134,7 +143,7 @@ public class Scene
                 images.put(image.template_info, image);
             }
         }
-        
+
         // Add all materials, if there is a materiallibrary. Both SI_Material and XSI_Materials get added.
         SI_MaterialLibrary materialLibrary = (SI_MaterialLibrary)root.get(Template.SI_MaterialLibrary);
         if (materialLibrary != null)
@@ -150,7 +159,7 @@ public class Scene
                 XSI_Material material = (XSI_Material)it.next();
                 materials.put(material.template_info, new Material(material, images));
             }
-        }        
+        }
 
         // Compile all models
         for (int i = 0; i < models.length; i++)
@@ -158,10 +167,10 @@ public class Scene
             models[i].compile();
         }
     }
-    
+
     /**
      * Searches the tree of models for the model with the specified full name.
-     * 
+     *
      * @param name the full name of the model
      * @return the model with the specified full name, or null if it can't be found
      */
@@ -178,12 +187,19 @@ public class Scene
 
     /**
      * Returns the material with the specified name
-     * 
+     *
      * @param materialName the name of the requested material
      * @return the material with the specified name
      */
     public Material getMaterial(String materialName)
     {
         return materials.get(materialName);
+    }
+
+    @Override
+    public String toString()
+    {
+        // TODO Auto-generated method stub
+        return "Scene Info: " + template_info + ", path: " + basePath;
     }
 }

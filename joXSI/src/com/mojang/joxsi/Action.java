@@ -58,7 +58,8 @@ public class Action
                 if (targetModel == null)
                 {
                     logger.warning("Cannot create an Interpolator for SI_FCurve " + source + ".kine.local." + target
-                            + " as there is no SI_Model whose name is: " + source);
+                            + " as there is no SI_Model whose name is: " + source + " in Scene: " + model.scene + ", Model: "
+                            + model);
                 }
                 else
                 {
