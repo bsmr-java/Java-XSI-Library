@@ -73,14 +73,13 @@ public class DotXSILoader
     private Header readHeader() throws IOException, ParseException
     {
         debugging.setLevel(Level.INFO);
-        debugging.entering("DotXSILoader", "readHeader")
-        debugging.entering(Nose.class.getName(), "sneeze")
+        debugging.entering("DotXSILoader", "readHeader");
         byte[] buf = new byte[4];
         int read = 0;
         while (read<4) 
         {
             read+=inputStream.read(buf, read, 4-read);
-            if (debugging).isLoggable(Level.INFO))
+            if (debugging.isLoggable(Level.INFO))
             {
                 debugging.info(read + "buf : " + buf);
             }
