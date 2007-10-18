@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.*;
 
+import basics.logging.Nose;
+
 /**
  * Parses dotXSI file from an InputStream and returns a RootTemplate containing the entire scene.
  * 
@@ -71,12 +73,17 @@ public class DotXSILoader
     private Header readHeader() throws IOException, ParseException
     {
         debugging.setLevel(Level.INFO);
+        debugging.entering("DotXSILoader", "readHeader")
+        debugging.entering(Nose.class.getName(), "sneeze")
         byte[] buf = new byte[4];
         int read = 0;
         while (read<4) 
         {
             read+=inputStream.read(buf, read, 4-read);
-            debugging.info(read + "buf : " + buf);
+            if (debugging).isLoggable(Level.INFO))
+            {
+                debugging.info(read + "buf : " + buf);
+            }
         }
         String magicNumber = new String(buf, 0, 3);
 
