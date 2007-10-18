@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.*;
 
-import basics.logging.Nose;
 
 /**
  * Parses dotXSI file from an InputStream and returns a RootTemplate containing the entire scene.
