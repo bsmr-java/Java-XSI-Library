@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.*;
 
 /**
  * Parses dotXSI file from an InputStream and returns a RootTemplate containing the entire scene.
@@ -30,6 +31,9 @@ public class DotXSILoader
     private static final char OPEN_BRACE = '{';
     /** Double quotes character used in parsing the dotXSI files. */
     private static final char DOUBLE_QUOTES = '"';
+
+    // load up a logger
+    private static Logger debugging = Logger.getLogger("com.mojang.joxsi.loader.debugging");
     
     private Header header;
     private InputStream inputStream;
@@ -66,9 +70,14 @@ public class DotXSILoader
     */
     private Header readHeader() throws IOException, ParseException
     {
+        debugging.setLevel(Level.INFO);
         byte[] buf = new byte[4];
         int read = 0;
-        while (read<4) read+=inputStream.read(buf, read, 4-read);
+        while (read<4) 
+        {
+            read+=inputStream.read(buf, read, 4-read);
+            debugging.info(read + "buf : " + buf);
+        }
         String magicNumber = new String(buf, 0, 3);
 
         // "xsi" in the start of the file means it's a dotXSI file.
