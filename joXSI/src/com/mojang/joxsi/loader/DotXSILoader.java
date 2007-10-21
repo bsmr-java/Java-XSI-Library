@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -33,9 +34,11 @@ public class DotXSILoader
     /** Double quotes character used in parsing the dotXSI files. */
     private static final char DOUBLE_QUOTES = '"';
 
-    // load up a logger
-    private static Logger debugging = Logger.getLogger("com.mojang.joxsi.loader.debugging");
-    
+    /** Name of the class used for logging. */
+    private static final String CLASS_NAME = DotXSILoader.class.getName();
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(DotXSILoader.class.getName());
+
     private Header header;
     private InputStream inputStream;
     private InputStreamReader reader;
@@ -71,16 +74,19 @@ public class DotXSILoader
     */
     private Header readHeader() throws IOException, ParseException
     {
-        debugging.setLevel(Level.INFO);
-        debugging.entering("DotXSILoader", "readHeader");
+        if (logger.isLoggable(Level.FINER))
+        {
+            logger.entering(CLASS_NAME, "readHeader", new Object[] {});
+        }
         byte[] buf = new byte[4];
         int read = 0;
-        while (read<4) 
+        while (read<4)
         {
             read+=inputStream.read(buf, read, 4-read);
-            if (debugging.isLoggable(Level.INFO))
+            if (logger.isLoggable(Level.FINE))
             {
-                debugging.info(read + "buf : " + buf);
+                // Log number of bytes read and the characters in the buffer
+                logger.fine("Read " + read + " bytes, buf : " + new String(buf));
             }
         }
         String magicNumber = new String(buf, 0, 3);
@@ -177,7 +183,7 @@ public class DotXSILoader
         bufferPos = 0;
         return(bufferLength > 0);
     }
-    
+
     /**
      * Builds a tree of RawTemplates, representing the dotXSI file.
      * 
@@ -195,7 +201,7 @@ public class DotXSILoader
 
         // Create an empty raw template for the root of the file.
         RawTemplate currentTemplate = new RawTemplate(RawTemplate.ROOT_TEMPLATE, "");
-        
+
         // Templates are kept on a stack during the parsing, and pushed/popped as {'s or }'s are encountered.
         List<Object> templateStack = new ArrayList<Object>();
         templateStack.add(currentTemplate);
@@ -204,7 +210,7 @@ public class DotXSILoader
         StringTokenizer stt;
         String name ;
         String info = "";
-        
+
         int marker = bufferPos;
         int len = 0;
 
@@ -213,29 +219,29 @@ public class DotXSILoader
             while(bufferPos < bufferLength)
             {
                 ch = buffer[bufferPos++];
-                  
+
                 switch(ch)
                 {
-                
+
                     case DOUBLE_QUOTES:
                         stringbBuilder.append(buffer, marker, len);
-                        
+
                         // Start of a string. Read until the end and add to the list of values for the current template.
                         str = readUntilEndOfString();
                         currentTemplate.values.add(str);
-                        
+
                         marker = bufferPos;
                         len = 0;
 
                         stringbBuilder.setLength(0);
                         break;
-                
+
                     case COMMA:
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
                         len = 0;
                         str = stringbBuilder.toString().trim();
-                        
+
                         // Field separator. Find out if it's a string, a float or an integer, then add to the template.
                         if (str.indexOf(FULL_STOP) >= 0)   // it's float
                             currentTemplate.values.add(new Float(str));
@@ -244,13 +250,13 @@ public class DotXSILoader
 
                         stringbBuilder.setLength(0);
                         break;
-                        
+
                     case OPEN_BRACE:
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
                         len = 0;
                         str = stringbBuilder.toString().trim();
-                        
+
                         // Start a new template. Parse template name and template info.
                         stt = new StringTokenizer(str);
                         name = stt.nextToken();
@@ -261,10 +267,10 @@ public class DotXSILoader
                         // Push the new template to the stack.
                         currentTemplate = new RawTemplate(name, info);
                         templateStack.add(currentTemplate);
-                        
+
                         stringbBuilder.setLength(0);
                         break;
-                        
+
                     case CLOSE_BRACE:
                         stringbBuilder.append(buffer, marker, len);
                         marker = bufferPos;
@@ -276,10 +282,10 @@ public class DotXSILoader
                         templateStack.remove(templateStack.size() - 1);
                         currentTemplate = (RawTemplate)templateStack.get(templateStack.size() - 1);
                         currentTemplate.values.add(template);
-                        
+
                         stringbBuilder.setLength(0);
                         break;
-                        
+
                     default:
                         // Not the start of a string, start or end of a template, or separator between fields,
                         // so add to the current stringbuffer.
@@ -303,20 +309,20 @@ public class DotXSILoader
      * @throws IOException if there's an io error.
      * @throws ParseException if the parsing fails for any reason
      *
-    
+
     private RawTemplate parseRawTemplates_MilboMethodTest() throws IOException, ParseException
     {
         stringbBuilder.setLength(0);
 //       StringBuffer st = new StringBuffer();
        boolean keepReading = true;
-       
+
        // Create an empty raw template for the root of the file.
        RawTemplate currentTemplate = new RawTemplate("RootTemplate", "");
-       
+
        // Templates are kept on a stack during the parsing, and pushed/popped as {'s or }'s are encountered.
        List<RawTemplate> templateStack = new ArrayList<RawTemplate>();
        templateStack.add(currentTemplate);
-       
+
        String str;
        int i;
        char ch ;
@@ -326,7 +332,7 @@ public class DotXSILoader
            if (i >= 0) // Not end of stream
            {
                ch = (char)i;
-               
+
                if (ch != DOUBLE_QUOTES && ch != OPEN_BRACE && ch != CLOSE_BRACE && ch != COMMA)
                {
                    // Not the start of a string, start or end of a template, or separator between fields,
@@ -387,11 +393,11 @@ public class DotXSILoader
                keepReading = false;
            }
        }
-       
+
    	 return currentTemplate;
     }
     */
-    
+
     /**
      * Builds a Template from a RawTemplate by finding the class that implements the template type,
      * creating a new instance, and running the build method.
@@ -470,7 +476,7 @@ public class DotXSILoader
                 throw new ParseException("Failed to read dotXSI: Only 3.x files supported");
 
             reader = new InputStreamReader(inputStream);
-            
+
             buffer = new char[INPUT_BUFFER_SIZE];
             bufferLength = 0;
 
