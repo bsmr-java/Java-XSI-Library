@@ -26,7 +26,7 @@ import java.util.Iterator;
  * format, as specified by XSIFTK template reference.
  * <p>
  * It's very sparsely documented.
- * 
+ *
  * @author Notch
  * @author Egal
  */
@@ -48,7 +48,7 @@ public class SI_FCurve extends Template
 		public float[] frames;
 		public float[][] keyValues;
 	}
-	
+
     /** Name of the object to which the function curves apply. */
 	public String objectName;
     /**
@@ -124,21 +124,27 @@ public class SI_FCurve extends Template
 		nbFcurves = ((Integer)it.next()).intValue();
 		nbKeyValues = ((Integer)it.next()).intValue();
 		nbKeys = ((Integer)it.next()).intValue();
-		
+
 		fcurves = new FCurve[nbFcurves];
-		
+
 		if(!fcurve.equals("INTEREST") &&    // Camera (v2.0, v3.0)
 		   !fcurve.equals("FAR") &&
 		   !fcurve.equals("FOV") &&
 		   !fcurve.equals("NEAR") &&
 		   !fcurve.equals("POSITION") &&
-		   !fcurve.equals("ROLL") && 
+		   !fcurve.equals("ROLL") &&
 		   !fcurve.equals("CONE") &&        // Lights (v2.0)
 		   !fcurve.equals("SPREAD") &&
 		   !fcurve.equals("COLOR") &&       // Lights (v3.0)
 		   !fcurve.equals("ORIENTATION") &&
+           !fcurve.equals("SCALING-X") &&
+           !fcurve.equals("SCALING-Y") &&
+           !fcurve.equals("SCALING-Z") &&
 		   !fcurve.equals("SCALING") &&
 		   !fcurve.equals("ROTATION") &&
+           !fcurve.equals("TRANSLATION-X") &&
+           !fcurve.equals("TRANSLATION-Y") &&
+           !fcurve.equals("TRANSLATION-Z") &&
 		   !fcurve.equals("TRANSLATION") && // Models (v2.0)
 		   !fcurve.equals("NODEVIS") &&     // Models (v3.0)
 		   !fcurve.equals("START") &&       // Fog (v3.0)
@@ -148,6 +154,9 @@ public class SI_FCurve extends Template
 		   !fcurve.equals("EMMISSIVE") &&
 		   !fcurve.equals("POWER") &&
 		   !fcurve.equals("SPECULAR") &&
+           !fcurve.equals("ROTATION-X") &&
+           !fcurve.equals("ROTATION-Y") &&
+           !fcurve.equals("ROTATION-Z") &&
 		   !fcurve.endsWith("rotx") &&      // XSI Short Hacks?
 		   !fcurve.endsWith("roty") &&
 		   !fcurve.endsWith("rotz") &&
@@ -163,13 +172,13 @@ public class SI_FCurve extends Template
 		   !interpolation.equals("LINEAR") &&
 		   !interpolation.equals("CUBIC"))
 		    throw new ParseException("Illegal interpolation in SI_FCurve: "+interpolation);
-		
+
 		for (int i=0; i<nbFcurves; i++)
 		{
 			fcurves[i] = new FCurve();
 			fcurves[i].frames = new float[nbKeys];
 			fcurves[i].keyValues = new float[nbKeys][nbKeyValues];
-			
+
 			for (int j=0; j<nbKeys; j++)
 			{
 				fcurves[i].frames[j] = ((Float)it.next()).floatValue();
@@ -188,5 +197,5 @@ public class SI_FCurve extends Template
                 + " ObjectName: " + objectName + ", fcurve: " + fcurve + ", interpolation: " + interpolation
                 + ", number of Fcurves: " + nbFcurves + ", number of keyvalues: " + nbKeyValues + ", nmber of keys: " + nbKeys;
     }
-    
+
 }
