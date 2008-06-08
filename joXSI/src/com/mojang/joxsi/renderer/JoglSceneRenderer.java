@@ -1,5 +1,8 @@
 package com.mojang.joxsi.renderer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.media.opengl.GL;
 
 import com.mojang.joxsi.Envelope;
@@ -17,6 +20,7 @@ public class JoglSceneRenderer
     private EnvelopeBuilder envelopeBuilder;
     private TextureLoader textureLoader;
     private GL gl;
+    private Map<String, Scene> nullattachmentMap =  new HashMap<String, Scene>();
 
     /**
      * Creates a new JoglSceneRenderer
@@ -47,7 +51,11 @@ public class JoglSceneRenderer
             gl.glPushMatrix();
             applyTransform(model.animated);
         }
-
+        if (nullattachmentMap.containsKey(model.name)) 
+        {
+           render(nullattachmentMap.get(model.name));
+        }
+        
         // Render all trianglelists in all meshes.
         for (int i = 0; i < model.meshes.length; i++)
         {
@@ -258,4 +266,22 @@ public class JoglSceneRenderer
             renderModel(scene.models[i]);
         }
     }
+    
+    /**
+     * Add an attachment to the list of attachments for NULL attaching
+     * @param name the short name of the NULL
+     * @param scene containing the model(s) to be attached to a NULL 
+     */
+    public void addNullAttachment(String name, Scene scene) {
+        nullattachmentMap.put(name, scene);
+    }
+    
+    /**
+     * Remove an attachment from the list of attachments for NULL attaching
+     * @param name the short name of the NULL
+     */
+    public void removeNullAttachment(String name) {
+        nullattachmentMap.remove(name);
+    }
+    
 }

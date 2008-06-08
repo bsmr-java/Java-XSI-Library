@@ -49,6 +49,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private static final String CLASS_NAME = ModelDisplayer.class.getName();
 
     private Scene scene;
+    private Scene tool;
+    private Scene tool2;
 
     private int xDragStart;
 
@@ -550,7 +552,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
-
+        if (tool!=null)
+            sceneRenderer.addNullAtachment("R_hand_null", tool); //MDL-Model
+        if (tool2!=null)
+            sceneRenderer.addNullAtachment("L_hand_null", tool2); //MDL-Model
+        
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
 
@@ -938,6 +944,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         String groundTexture = null;
 
         Scene scene = null;
+        Scene tool = null;
+        Scene tool2 = null;
         if (args.length == 0)
         {
             logger.info("No arguments. We're probably run from webstart, so load the default model");
@@ -962,6 +970,28 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                         {
                             groundTexture = args[++i];
                             continue;
+                        }
+                    }
+                    if (option.startsWith("tool")) {
+                        if (i + 1 < args.length)
+                        {
+                            logger.info("Going to load '" + args[++i] + "' as a tool model");
+                            final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
+                            if (lResourceAsStream != null)
+                            {
+                                logger.info("Going to load '" + args[i] + "' as a tool model from "
+                                        + ModelDisplayer.class.getResource("/" + args[i]));
+
+                                String basePath = null;
+                                int lastSlashIndex = args[i].lastIndexOf('/');
+                                if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
+
+                                if (option.equals("tool"))
+                                    tool = Scene.load(lResourceAsStream, basePath);
+                                else if (option.equals("tool2"))
+                                    tool2 = Scene.load(lResourceAsStream, basePath); 
+                                    
+                            }                            
                         }
                     }
                 }
@@ -1006,6 +1036,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
         JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
         ModelDisplayer canvas = new ModelDisplayer(scene);
+        canvas.tool = tool;
+        canvas.tool2 = tool2;
         canvas.groundTexture = groundTexture;
         frame.getContentPane().add(canvas);
         new Thread(canvas).start();
