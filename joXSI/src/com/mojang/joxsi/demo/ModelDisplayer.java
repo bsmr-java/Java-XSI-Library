@@ -553,9 +553,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Create a new JoglSceneRenderer with a default TextureLoader
         sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
         if (tool!=null)
-            sceneRenderer.addNullAtachment("R_hand_null", tool); //MDL-Model
+            sceneRenderer.addNullAttachment("R_hand_null", tool); //MDL-Model
         if (tool2!=null)
-            sceneRenderer.addNullAtachment("L_hand_null", tool2); //MDL-Model
+            sceneRenderer.addNullAttachment("L_hand_null", tool2); //MDL-Model
         
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
