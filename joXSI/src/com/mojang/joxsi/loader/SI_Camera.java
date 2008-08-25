@@ -34,4 +34,12 @@ public class SI_Camera extends Template
 		nearPlane = ((Float)it.next()).floatValue();
 		farPlane = ((Float)it.next()).floatValue();
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", pos(xyz): " + posx + ", " + posy + ", " + posz + ", int(xyz): " + intx
+                + ", " + inty + ", " + intz + ", roll: " + roll + ", fieldOfView: " + fieldOfView + ", nearPlane: " + nearPlane
+                + ", farPlane: " + farPlane;
+    }
 }

@@ -14,7 +14,7 @@ import com.mojang.joxsi.loader.XSI_Mixer;
 
 /**
  * A model is a container for any number of meshes, and any number of sub models.
- * 
+ *
  * <p>Each model has three transformations:
  * <ul>
  * <li>basepose - The default position of the model, relative to the scene root.
@@ -45,7 +45,7 @@ public class Model
 
     /**
      * Creates a new Model.
-     * 
+     *
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
 
      * @param scene the Scene this model belongs to
@@ -58,9 +58,9 @@ public class Model
 
     /**
      * Creates a new Model.
-     * 
+     *
      * <p>This is called automatically when the Scene is created, so there's rarely any need to call this manually.
-     * 
+     *
      * @param scene the Scene this model belongs to
      * @param parent the parent model of this model
      * @param model the SI_Model data to read the model information from
@@ -138,12 +138,12 @@ public class Model
 
     /**
      * Gets a sub model of this model, based on its short name.
-     * 
+     *
      * <p>The short name is everything in the long name after the last period, and without the "MDL-" prefix, if there is one.
      * So if the long name is "foo.bar.MDL-hello", the short name is "hello".
-     * 
+     *
      * <p>This method is recursive, and will search all grandchildren as well.
-     * 
+     *
      * @param aName the short name of the requested sub model
      * @return the sub model, or null if it wasn't found
      */
@@ -162,9 +162,9 @@ public class Model
 
     /**
      * Gets a sub model of this model, based on its long name name.
-     * 
+     *
      * <p>This method is recursive, and will search all grandchildren as well.
-     * 
+     *
      * @param aName the long name of the requested sub model
      * @return the sub model, or null if it wasn't found
      */
@@ -183,9 +183,9 @@ public class Model
 
     /**
      * Adds an Envelope to the list of envelopes that applies to this model.
-     * 
+     *
      * <p>After calling this model, you need to call compile() to rebuild the envelope data.
-     * 
+     *
      * @param envelope the Envelope that should be added
      */
     public void addEnvelope(Envelope envelope)
@@ -208,7 +208,7 @@ public class Model
 
     /**
      * Compiles any data about the model that can be pre-computed.
-     * 
+     *
      * <p>This needs to be called after any important data about the model has changed, such as the list of envelopes.
      */
     public void compile()
@@ -235,5 +235,11 @@ public class Model
     public void resetAnimation()
     {
         animated.set(transform);
+    }
+
+    @Override
+    public String toString()
+    {
+        return name + " " + fullName;
     }
 }

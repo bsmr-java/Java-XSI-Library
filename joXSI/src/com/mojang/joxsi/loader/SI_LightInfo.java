@@ -63,4 +63,12 @@ public class SI_LightInfo extends Template
 		    throw new ParseException("Illegal photon_factor in SI_LightInfo: "+photon_factor);
 		
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", mode: " + mode + ", start: " + start + ", end: " + end
+                + ", shadows_active: " + shadows_active + ", umbra: " + umbra + ", useLightAsEnergy: " + useLight_as_energy
+                + ", photonFactor: " + photon_factor + ", intensity: " + intensity + ", falloff_active: " + falloff_active;
+    }
 }

@@ -64,4 +64,13 @@ public class XSI_ImageFX extends Template
         //    throw new ParseException("Illegal  in XSI_ImageFX: "+);
 		
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", hue: " + hue + ", gain: " + gain + ", saturation: " + saturation
+                + ", brightness: " + brightness + ", radius: " + radius + ", amount: " + amount + ", blurAlpha: " + blurAlpha
+                + ", type: " + type + ", scaleX: " + scaleX + ", scaleY: " + scaleY + ", horizontal: " + horizontal
+                + ", vertical: " + vertical + ", conversion: " + conversion;
+    }
 }

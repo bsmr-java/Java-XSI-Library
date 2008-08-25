@@ -43,5 +43,4 @@ public class XSI_MaterialInfo extends Template
     public String toString() {
         return super.toString() + ", U-Wrapping: " + uWrap + ", V-Wrapping: " + vWrap;
     }
-    
 }

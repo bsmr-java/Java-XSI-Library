@@ -57,4 +57,11 @@ public class XSI_Mixer extends Template
 		removeSpins = ((Integer)it.next()).intValue()!=0;
 		maintainContinuity = ((Integer)it.next()).intValue()!=0;
 	}
+
+	@Override
+    public String toString() {
+        return super.toString() + ", autoTransition: " + autoTransition + ", active: " + active + ", normalize: " + normalize
+                + ", quaternionMixing: " + quaternionMixing + ", removeSpins: " + removeSpins + ", maintainContinuity: "
+                + maintainContinuity;
+    }
 }

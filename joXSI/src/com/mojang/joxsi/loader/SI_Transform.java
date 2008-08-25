@@ -60,4 +60,11 @@ public class SI_Transform extends Template
 		transY = ((Float)it.next()).floatValue();
 		transZ = ((Float)it.next()).floatValue();
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", scal(xyz): " + scalX + ", " + scalY + ", " + scalZ + ", rot(xyz): "
+                + rotX + ", " + rotY + ", " + rotZ + ", trans(xyz): " + transX + ", " + transY + ", " + transZ;
+    }
 }

@@ -1,6 +1,7 @@
 package com.mojang.joxsi.loader;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.ListIterator;
 
 /**
@@ -103,6 +104,15 @@ public class SI_Shape extends Template
 		{
 			return elements.startsWith(type);
 		}
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString()
+        {
+            return "ShapeArray [nbElements: " + nbElements + ", type: " + elements + ']';
+        }
 	}
 
     @Override
@@ -159,7 +169,7 @@ public class SI_Shape extends Template
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString() + ", Number of Shapes: " + nbShapeArrays;
+        return super.toString() + ", Number of Shapes: " + nbShapeArrays + ", layout: " + layout + ", isIndexed: " + isIndexed
+                + ", Shapes: " + Arrays.toString(shapeArrays);
     }
 }

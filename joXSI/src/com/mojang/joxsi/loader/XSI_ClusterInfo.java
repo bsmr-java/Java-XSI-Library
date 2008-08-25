@@ -29,4 +29,10 @@ public class XSI_ClusterInfo extends Template
 		    throw new ParseException("Illegal XSI_ClusterInfo: "+type);
 		
 	}	
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", type: " + type;
+    }
 }

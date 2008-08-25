@@ -1,6 +1,7 @@
 package com.mojang.joxsi.loader;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -52,6 +53,12 @@ public class XSI_CustomPSet extends Template
 		public String type;
         /** Value for the parameter. */
 		public String value; 
+
+	    @Override
+	    public String toString()
+	    {
+	        return "Field [name: " + name + ", value: " + value + ", type: " + type + ']';
+	    }
 	}
 
 	@Override
@@ -70,4 +77,11 @@ public class XSI_CustomPSet extends Template
 			fields[i].value = it.next().toString();
 		}
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", propagation: " + propagation + ", fieldCount: " + field_count
+                + ", type: " + Arrays.toString(fields);
+    }
 }

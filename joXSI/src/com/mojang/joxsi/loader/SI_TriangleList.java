@@ -127,4 +127,10 @@ public class SI_TriangleList extends Template
 			}
 		}
 	}
+
+	@Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", triangles: " + nbTriangles + ", element type: " + elements;
+    }
 }

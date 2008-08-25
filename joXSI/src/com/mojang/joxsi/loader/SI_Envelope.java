@@ -51,4 +51,11 @@ public class SI_Envelope extends Template
 			    throw new ParseException("Illegal vertex weight in SI_Envelope: "+vertexWeights[i].weight);
 		}
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", envelope: " + envelope + ", deformer: " + deformer + ", nVertices: "
+                + nVertices;
+    }
 }

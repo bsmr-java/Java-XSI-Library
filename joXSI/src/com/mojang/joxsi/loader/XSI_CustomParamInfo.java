@@ -48,4 +48,10 @@ public class XSI_CustomParamInfo extends Template
 		if(capabilities < 0 || capabilities > 415)
 		    throw new ParseException("Illegal capabilities in XSI_CustomParamInfo: "+capabilities); 
 	}
+
+    @Override
+    public String toString()
+    {
+        return template_type + " " + template_info + ", min: " + min + ", max: " + max + ", capabilities: " + capabilities;
+    }
 }
