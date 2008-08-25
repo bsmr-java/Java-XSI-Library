@@ -91,7 +91,8 @@ public class Material
                 if (image==null)
                 {
                     Template template = material.getRoot();
-                    logger.info("Null XSI_Image for \"" + conn.point + "\" in " + template + ". Loading model anyway..");
+                    logger.info("Null XSI_Image for \"" + conn.point + "\" in " + template + " of material: " + material
+                            + ". Loading model anyway.");
                 }
                 else
                 {
