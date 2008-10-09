@@ -796,6 +796,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     }
                     gl.glEnd();
                 }
+                
                 // Setting the GPU shader 0 it is like setting on null
                 if (aShaders.vertexShaderSupported && vertexshader)
                 {
@@ -1013,6 +1014,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     }
                     else
                     {
+                        logger.info("Model does not exist at location " + args[i]); 
                         logger.throwing(CLASS_NAME, methodName, new IllegalArgumentException(
                                 "Cannot load model from this location: " + args[i]));
                     }
