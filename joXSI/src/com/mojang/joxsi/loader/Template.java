@@ -196,6 +196,27 @@ public abstract class Template
     }
 
     /**
+     * Returns a List of all Templates in the current model with
+     * the given Class.
+     * 
+     * Works like getAll(String), but without string matching and casting.
+     * 
+     * @param type the Class of templates to list
+     * @return a List of all Templates in the current model whose class matches.
+     * 
+     */
+    public <T extends Template> List<T> getAll(Class<T> type) {
+        List<T> result = new ArrayList<T>();
+        for (Template t : templates)
+        {
+            if (type.isInstance(t)) {
+                result.add(type.cast(t));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a List of all Templates in the current model whose name starts
      * with the given String.
      * 

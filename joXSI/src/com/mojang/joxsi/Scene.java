@@ -37,7 +37,7 @@ public class Scene
     /** Array of Envelopes in the Scene. */
     public Envelope[] envelopes;
     /** Map of Materials in the Scene. */
-    public Map<String, Material> materials = new HashMap<String, Material>();;
+    public Map<String, Material> materials = new HashMap<String, Material>();
     /** Map of Images in the Scene. */
     public Map<String, XSI_Image> images = new HashMap<String, XSI_Image>();
     /** The base path of the Scene, used to convert relative (texture) paths to absolute. */
