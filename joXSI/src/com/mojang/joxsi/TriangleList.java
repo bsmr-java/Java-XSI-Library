@@ -16,7 +16,7 @@ public class TriangleList
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(TriangleList.class.getName());
     private static final int MAX_ENVELOPES = 4;
-    private static final int MAX_TEXTURES = 4;
+    public static final int MAX_TEXTURES = 4;
 
     public Shape shape;
 

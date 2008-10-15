@@ -68,6 +68,23 @@ public class Shape
                                 + shape);
                     }
                 }
+                
+                if (uvCoordSet >= TriangleList.MAX_TEXTURES)
+                {
+                    logger.warning("Shape - TEX_COORD_UV indexes should be less than " + TriangleList.MAX_TEXTURES
+                            + ", was " + uvCoordSet);
+                }
+                
+                boolean nonNull = false;
+                for (float f : shapeArray.values)
+                {
+                    if (f != 0) { nonNull = true; break; }
+                }
+                if (! nonNull)
+                {
+                    logger.warning("Shape - TEX_COORD_UV" + uvCoordSet + " contains only zeroes.");
+                }
+                
                 texCoordBuffer[uvCoordSet] = shapeArray.values;
             }
             else
