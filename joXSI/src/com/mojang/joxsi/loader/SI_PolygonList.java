@@ -101,14 +101,28 @@ public class SI_PolygonList extends Template
             }
         }
 
-        if (elements.indexOf(NORMAL) >= 0)
+        // The same polygons can represent Normal, Colour, or both
+        final boolean lHasNormals = elements.indexOf(NORMAL) >= 0;
+        final boolean lHasColours = elements.indexOf(COLOR) >= 0;
+        if (lHasNormals || lHasColours)
         {
             for (int i = 0; i < nbPolygons; i++)
             {
-                polygons[i].n = new int[polygons[i].nbVertices];
+                if (lHasNormals)
+                    polygons[i].n = new int[polygons[i].nbVertices];
+                if (lHasColours)
+                    polygons[i].c = new int[polygons[i].nbVertices];
                 for (int j = 0; j < polygons[i].nbVertices; j++)
                 {
-                    polygons[i].n[j] = ((Integer)it.next()).intValue();
+                    if (lHasNormals)
+                        polygons[i].n[j] = ((Integer)it.next()).intValue();
+                    if (lHasColours)
+                    {
+                        if (lHasNormals)
+                            polygons[i].c[j] = polygons[i].n[j];
+                        else
+                            polygons[i].c[j] = ((Integer)it.next()).intValue();
+                    }
                 }
             }
         }

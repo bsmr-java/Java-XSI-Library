@@ -90,14 +90,28 @@ public class SI_TriangleList extends Template
 			}
 		}
 
-		if (elements.indexOf(NORMAL) >= 0)
+		// The same triangles can represent Normal, Colour, or both
+		final boolean lHasNormals = elements.indexOf(NORMAL) >= 0;
+        final boolean lHasColours = elements.indexOf(COLOR) >= 0;
+		if (lHasNormals || lHasColours)
 		{
 			for (int i = 0; i < nbTriangles; i++)
 			{
-				triangles[i].n = new int[3];
+			    if (lHasNormals)
+			        triangles[i].n = new int[3];
+                if (lHasColours)
+                    triangles[i].c = new int[3];
 				for (int j = 0; j < 3; j++)
 				{
-					triangles[i].n[j] = ((Integer)it.next()).intValue();
+	                if (lHasNormals)
+	                    triangles[i].n[j] = ((Integer)it.next()).intValue();
+	                if (lHasColours)
+	                {
+	                    if (lHasNormals)
+	                        triangles[i].c[j] = triangles[i].n[j];
+	                    else
+	                        triangles[i].c[j] = ((Integer)it.next()).intValue();
+	                }
 				}
 			}
 		}

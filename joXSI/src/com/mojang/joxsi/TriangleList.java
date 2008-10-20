@@ -86,8 +86,10 @@ public class TriangleList
             for (int j = 0; j < 3; j++)
             {
                 vertexIndexes[i * 3 + j] = triangle.v[j];
-                if (hasNormals) normalIndexes[i * 3 + j] = triangle.n[j];
-                if (hasColors) colorIndexes[i * 3 + j] = triangle.c[j];
+                if (hasNormals)
+                    normalIndexes[i * 3 + j] = triangle.n[j];
+                if (hasColors)
+                    colorIndexes[i * 3 + j] = triangle.c[j];
                 for (int t = 0; t < MAX_TEXTURES; t++)
                 {
                     if (hasTexCoords[t])
