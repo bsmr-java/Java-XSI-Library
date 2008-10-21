@@ -268,6 +268,22 @@ public abstract class Template
         return parent;
     }
 
+    /**
+     * @return the template_type
+     */
+    public String getTemplate_type()
+    {
+        return template_type;
+    }
+
+    /**
+     * @return the template_info
+     */
+    public String getTemplate_info()
+    {
+        return template_info;
+    }
+
     @Override
     public String toString()
     {

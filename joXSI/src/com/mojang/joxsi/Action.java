@@ -42,7 +42,7 @@ public class Action
             List<Template> fcurves = aAction.getAll(Template.SI_FCurve);
             if (logger.isLoggable(Level.FINER))
             {
-                logger.finer("Action has " + fcurves.size() + " fcurves");
+                logger.finer("Action, " + aAction.getTemplate_info() + ", has " + fcurves.size() + " fcurves");
             }
             interpolators = new Interpolator[fcurves.size()];
             for (int i=0; i<fcurves.size(); i++)
