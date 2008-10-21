@@ -5,8 +5,17 @@ import java.util.Iterator;
 /**
  * Describes the camera data.
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
- * 
- * <p>It's very sparsely documented.
+ * <pre>
+ * SI_Camera &lt;cameraName&gt; {
+ *    &lt;posx&gt;; &lt;posy&gt;; &lt;posz&gt;;;
+ *    &lt;intx&gt;; &lt;inty&gt;; &lt;intz&gt;;;
+ *    &lt;roll&gt;;
+ *    &lt;fieldOfView&gt;;
+ *    &lt;nearPlane&gt;;
+ *    &lt;farPlane&gt;;
+ * }
+ * </pre>
+ * It's very sparsely documented.
  * @author Notch
  * @author Egal
  */

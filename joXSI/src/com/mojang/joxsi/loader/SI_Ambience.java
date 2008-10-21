@@ -5,8 +5,22 @@ import java.util.Iterator;
 /**
  * Describes the ambient color in the scene.
  * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * <pre>
+ * SI_Ambience
+ * {
+ *    &lt;red&gt;, 
+ *    &lt;green&gt;, 
+ *    &lt;blue&gt;,
+ * }
  * 
- * <p>It's very sparsely documented.
+ * SI_Ambience
+ * {
+ *    0.300000, 
+ *    0.300000, 
+ *    0.300000, 
+ * }
+ * </pre>
+ * It's very sparsely documented.
  * @author Notch
  * @author Egal
  */

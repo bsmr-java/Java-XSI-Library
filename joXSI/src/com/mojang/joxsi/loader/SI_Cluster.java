@@ -7,17 +7,38 @@ import java.util.Iterator;
  * This is a sublevel template of the {@link SI_Model } template. 
  * See also {@link XSI_ClusterInfo }.
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
- * 
- * <p>It's very sparsely documented.
+ * <pre>
+ * SI_Cluster &lt;cluster name&gt; {
+ *    &lt;refmodel&gt;,
+ *    &lt;weighting&gt;,
+ *    &lt;cls_ctr_ref&gt;,
+ *    &lt;iVertices&gt;,
+ *    // indices of vertices; see example below
+ * }
+ * </pre>
+ * It's very sparsely documented.
  * @author Notch
  * @author Egal
  */
 public class SI_Cluster extends Template
 {
+    /** Name of the reference model. */
 	public String referencedModel;
+    /** Weighting. Possible values include:
+     * <ul>
+     * <li>AVERAGE</li> 
+     * <li>ADDITIVE</li>
+     * </ul>
+     */
 	public String weighting;
+    /**
+     * Cluster center reference. If there is no cluster center, use an empty
+     * string instead.
+     */
 	public String clusterCenterReference;
+    /** Number of vertices. */
 	public int nbVertices;
+    /**  . */
 	public int[] vertexIndexes;
 
 	@Override

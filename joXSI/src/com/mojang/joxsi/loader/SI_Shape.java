@@ -25,24 +25,70 @@ import java.util.ListIterator;
  * <p>
  * Indexed</span>—used to specify shape animation in SI_ShapeAnimation
  * </p>
- * <p>
+ * <pre>
+ * Ordered form used to define original shape 
+ * SI_Shape SHP-&lt;objectName&gt;-ORG
+ * {
+ *    &lt;nbShapeArrays&gt;,
+ *    &lt;layout&gt;,
+ * 
+ *    // Arrays for each element (vertex positions, 
+ *    // normals, colors, texure UV coordinates) being 
+ *    // described in the template. There are always at 
+ *    // least two (one for positions and normals each)
+ *    &lt;nbElements&gt;,
+ *    &lt;elements&gt;,
+ *    &lt;value_array1&gt;,
+ *    ...
+ *    &lt;value_array[nbElements]&gt;,
+ * }
+ * 
+ * Indexed form used in SI_ShapeAnimation to specify shape animation 
+ * 
+ * SI_Shape SHP-&lt;objectName&gt;-&lt;shapeIndex&gt;
+ * {
+ *    &lt;nbShapeArrays&gt;,
+ *    &lt;layout&gt;,
+ * 
+ *    // Arrays for each element (vertex positions, 
+ *    // normals, colors, texure UV coordinates) being 
+ *    // described in the template. There are always at 
+ *    // least two (one for positions and normals each)
+ *    &lt;nbElements&gt;,
+ *    &lt;elements&gt;,
+ *    &lt;index1&gt;&lt;value_array1&gt;,
+ *    ...
+ *    &lt;index[nbElements]&gt;&lt;value_array[nbElements]&gt;,
+ * }
+ * </pre>
  * It's very sparsely documented.
  * @author Notch
  * @author Egal
  */
 public class SI_Shape extends Template
 {
+    /** Array of positions for vertices. */
 	public static final String POSITION = "POSITION";
+	/** Array of normals information. */
 	public static final String NORMAL = "NORMAL";
+	/** . */
 	public static final String COLOR = "COLOR";
+    /**
+     * Template contains texture UV coordinates information (see uvi below). The
+     * number sign (#) represents the number of the texture UV coordinates
+     * starting at 0.
+     */
 	public static final String TEX_COORD_UV = "TEX_COORD_UV";
-	
+    /** Specifies shape animation in SI_ShapeAnimation. */
 	public static final String INDEXED  = "INDEXED";
+    /** Defines an original shape. */
 	public static final String ORDERED = "ORDERED";
 
     /**
      * Number of arrays in the template. There is one array for every kind of
-     * information.
+     * information. For example, a simple cube without any texture projections
+     * or color indices contains 2 arrays: one for POSITION (the array of vertex
+     * positions) and one for NORMALS (the index of normals).
      */
     public int nbShapeArrays;
     /**
