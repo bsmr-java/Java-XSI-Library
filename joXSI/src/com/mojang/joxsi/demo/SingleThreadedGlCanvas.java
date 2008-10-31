@@ -17,7 +17,7 @@ import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.glu.GLU;
 
-import com.mojang.joxsi.GLSLshaders;
+import com.mojang.joxsi.renderer.shaders.Program;
 
 /**
  * An abstract baseclass for a singlethreaded opengl canvas.
@@ -147,7 +147,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      *            a valid GLU object
      * @param lshaders
      */
-    protected abstract void renderLoop(GL gl, GLU glu, GLSLshaders lshaders);
+    protected abstract void renderLoop(GL gl, GLU glu, Program shaderProgram);
 
     /**
      * Swaps the opengl buffers.
@@ -187,10 +187,10 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
         {
             // Create GL and GLU objects
             GL gl = context.getGL();
-            GLU glu = new GLU();
-            GLSLshaders gLSLshaders = new GLSLshaders(gl);
+            GLU glu = new GLU();            
+            Program shaderProgram = new Program();           
+            
             setupGLstates(gl);
-
             int[] lIntArray =
             { 0, 0 };
             gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, lIntArray, 0);
@@ -200,7 +200,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             }
 
             // Call render loop
-            renderLoop(gl, glu, gLSLshaders);
+            renderLoop(gl, glu, shaderProgram);
         }
         catch (RuntimeException e)
         {

@@ -22,11 +22,11 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
-import com.mojang.joxsi.GLSLshaders;
 import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
+import com.mojang.joxsi.renderer.shaders.*;
 
 /**
  * A simple model displayer demo application.
@@ -524,7 +524,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * @see SingleThreadedGlCanvas#renderLoop(GL, GLU, GLSLshaders)
      */
     @Override
-    protected void renderLoop(GL gl, GLU glu, GLSLshaders aShaders)
+    protected void renderLoop(GL gl, GLU glu, Program shaderProgram)
     {
         if (action == null) updateAction();
 
@@ -585,6 +585,26 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             useAnisotropicFiltering = false;
             anisotropicFilteringLevel = 0;
         }
+        
+        //SHADER CODE
+        int shaderWaveAttrib = 0;        
+        int waveProgram = 0;
+        
+        try 
+        {
+            ShaderSourceCode vertexShaderSource = ShaderSourceCode.fromResource("/wave.glsl");
+
+            shaderProgram.addVertexShader(gl, vertexShaderSource);
+            waveProgram = shaderProgram.link(gl);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        logger.info("Compiled and Linked shader");
+        shaderWaveAttrib = shaderProgram.getAttribLocation(gl, waveProgram, "wave");        
+        // END SHADER CODE
+        
 
         // Run main loop until the stop flag is raised.
         while (!stop)
@@ -740,13 +760,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
                 // Programming the GPU with the Vertexshader for the object
                 // drawn later
-                if (aShaders.vertexShaderSupported && vertexshader)
+                if (vertexshader)
                 {
-                    gl.glUseProgramObjectARB(aShaders.programObjectVertex);
-                }
-                else
-                {
-                    gl.glUseProgramObjectARB(0);
+                    //shaderProgram.Enable;
+                    shaderProgram.Enable(gl, waveProgram);
                 }
 
                 for (int x = 0; x < SIZE - 1; x++)
@@ -756,11 +773,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     for (int z = 0; z < SIZE - 1; z++)
                     {
                         // Test if Shader is supported and activated
-                        if (aShaders.vertexShaderSupported && vertexshader)
+                        if (vertexshader)
                         {
                             // Set The Wave Parameter Of Our Shader To The
                             // Incremented Wave Value From Our Main Program
-                            gl.glVertexAttrib1f(aShaders.waveAttrib, wave_movement);
+                            gl.glVertexAttrib1f(shaderWaveAttrib, wave_movement);
 
                             // Increment Our Wave Movement
                             wave_movement += 0.00001f;
@@ -798,9 +815,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 }
                 
                 // Setting the GPU shader 0 it is like setting on null
-                if (aShaders.vertexShaderSupported && vertexshader)
+                if (vertexshader)
                 {
-                    gl.glUseProgramObjectARB(0);
+                    shaderProgram.Disable(gl);
                 }
             }
             else

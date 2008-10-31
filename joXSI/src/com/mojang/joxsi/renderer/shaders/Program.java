@@ -12,6 +12,7 @@ import javax.media.opengl.GL;
  * @author Egal TODO if driver supports OpenGL 2.0 then use new functions for
  *         compiling, linking, attaching programs. gl.glGetString(GL.GL_VERSION)
  *         returns the OpenGL version
+ * @author Martinus added Enable, Disable and getAttribLocation to be for more generic use
  */
 public class Program
 {
@@ -257,6 +258,61 @@ public class Program
             lastCompilationResult = report;
         }
         return shaderObject;
+    }
+    
+    /**
+     * Gets location (index) of the attribute in the shaderObject
+     * 
+     * @param gl
+     * @param index of the shaderObject, returned by link(gl);
+     * @param name of the attribute
+     * @return Shader object ID
+     */
+    public int getAttribLocation(GL gl, int shaderIndex, String attribName)
+    {
+        if (hasOpenGL2)
+        {
+            //TODO add openGL2 way of enabling shader here
+        }
+        else 
+        {
+            return gl.glGetAttribLocationARB(shaderIndex, attribName);
+        }    
+        return 0;
+    }
+    
+    /**
+     * Enables shader based on openGL version.
+     * 
+     */
+    
+    public void Enable(GL gl, int shaderIndex)
+    {
+        if (hasOpenGL2)
+        {
+            //TODO add openGL2 way of enabling shader here
+        }
+        else 
+        {
+            gl.glUseProgramObjectARB(shaderIndex);
+        }        
+    }
+    
+    /**
+     * Disables shader based on openGL version.
+     * 
+     */
+    
+    public void Disable(GL gl)
+    {
+        if (hasOpenGL2)
+        {
+            //TODO add openGL2 way of disabling shader here
+        }
+        else
+        {
+            gl.glUseProgramObjectARB(0);
+        }
     }
 
     /**
