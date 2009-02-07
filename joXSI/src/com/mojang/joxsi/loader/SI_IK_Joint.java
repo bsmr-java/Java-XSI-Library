@@ -5,7 +5,44 @@ import java.util.Iterator;
 /**
  * Stores IK joint information.
  * <p>This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
+ * <pre>
+ * SI_IK_Joint &lt;joint name&gt;
+ * {
+ * &lt;solver type (2D | 3D | DEFAULT)&gt;,
+ * &lt;length&gt;
+ * &lt;preferred rotation x&gt;, 
+ * &lt;preferred rotation y&gt;, 
+ * &lt;preferred rotation z&gt;,
+ * &lt;rotation limit activation&gt;,
+ * &lt;rotation limit min x&gt;, 
+ * &lt;rotation limit min y&gt;, 
+ * &lt;rotation limit min z&gt;,
+ * &lt;rotation limit max x&gt;, 
+ * &lt;rotation limit max y&gt;, 
+ * &lt;rotation limit max z&gt;,
+ * &lt;pseudo-root&gt;,
+ * &lt;stiffness activation&gt;,
+ * &lt;stiffness&gt;,
+ * }
  * 
+ * SI_IK_Joint R_foot { 
+ *                      "2D", 
+ *                      1.297064, 
+ *                      0.000000, 
+ *                      -0.000000, 
+ *                      -152.342743, 
+ *                      0, 
+ *                      -180.000000, 
+ *                      -180.000000, 
+ *                      -180.000000, 
+ *                      180.000000, 
+ *                      180.000000, 
+ *                      180.000000, 
+ *                      0, 
+ *                      0, 
+ *                      0.000000, 
+ *                  }
+ * </pre>
  * <p>It's very sparsely documented.
  * @author Notch
  * @author Egal

@@ -45,8 +45,10 @@ public class XSI_CustomParamInfo extends Template
 		min = ((Number)it.next()).floatValue();
 		max = ((Number)it.next()).floatValue();
 		capabilities = ((Integer)it.next()).intValue();
-		if(capabilities < 0 || capabilities > 415)
+		if(capabilities < 0) // TODO xwalk.chm shows very large numbers || capabilities > 415)
+		{
 		    throw new ParseException("Illegal capabilities in XSI_CustomParamInfo: "+capabilities); 
+		}
 	}
 
     @Override

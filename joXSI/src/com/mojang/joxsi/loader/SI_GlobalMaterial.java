@@ -22,8 +22,8 @@ public class SI_GlobalMaterial extends Template
      * such thing as a NODE propagated material). In the case of SOFTIMAGE|XSI,
      * the material propagation can be any of the following:<br>
      * • BRANCH = material is shared throughout the branch (ie., object and all its nodes)<br>
-     * • NODE = material is applied only to the object’s node • INHERITED = material has
-     *  been inherited from a parent object
+     * • NODE = material is applied only to the object’s node <br>
+     * • INHERITED = material has been inherited from a parent object
      */
     public String propagation;
 

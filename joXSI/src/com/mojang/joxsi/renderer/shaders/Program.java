@@ -7,6 +7,13 @@ import java.util.logging.Logger;
 import javax.media.opengl.GL;
 
 /**
+ * Wrapper for a GLSL shader program.
+ * <code>
+ * Program program = new Program();
+ * program.addVertexShader(gl, ShaderSourceCode.fromResource("/programs/sample.vertex.shader"));
+ * program.addFragmentShader(gl, ShaderSourceCode.fromResource("/programs/sample.fragment.shader"));
+ * this.program = program.link(gl);
+ * </code>
  * 
  * @author Notch
  * @author Egal TODO if driver supports OpenGL 2.0 then use new functions for
@@ -36,23 +43,37 @@ public class Program
      * Does this graphics driver support OpenGL so we can use the new functions
      * for using shaders and programs, including creating, linking, and
      * compiling.<br>
-     * TODO Set this by checking if the functions are available.
      */
     private static boolean hasOpenGL2 = false;
 
     /**
-     *
+     * Use OpenGL 1 Extension functions for compiling and linking GLSL shaders
+     * and programs.
      */
     public Program()
     {
-        if (logger.isLoggable(Level.CONFIG))
-        {
-            if (hasOpenGL2)
-                logger.config("Will use OpenGL 2 functions for compiling and linking GLSL shaders and programs");
-            else
-                logger.config("Will use OpenGL 1 Extension functions for compiling and linking GLSL shaders and programs");
-        }
+        this(false);
     }
+
+    /**
+     * 
+     * @param useOpenGL2
+     *            when <code>true</code> then use OpenGL 2 functions for
+     *            compiling and linking GLSL shaders and programs. When
+     *            <code>false</code> use OpenGL 1 Extension functions for
+     *            compiling and linking GLSL shaders and programs.
+     */
+   public Program(final boolean useOpenGL2)
+   {
+       hasOpenGL2 = useOpenGL2;
+       if (logger.isLoggable(Level.CONFIG))
+       {
+           if (hasOpenGL2)
+               logger.config("Will use OpenGL 2 functions for compiling and linking GLSL shaders and programs");
+           else
+               logger.config("Will use OpenGL 1 Extension functions for compiling and linking GLSL shaders and programs");
+       }
+   }
 
     /**
      * 

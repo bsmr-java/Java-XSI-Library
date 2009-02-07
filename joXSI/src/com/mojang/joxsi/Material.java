@@ -91,12 +91,17 @@ public class Material
                 if (image==null)
                 {
                     Template template = material.getRoot();
-                    logger.info("Null XSI_Image for \"" + conn.point + "\" in " + template + " of material: " + material
-                            + ". Loading model anyway.");
+                    logger.info("Null XSI_Image for tex \"" + conn.point + "\" in XSI_Shader part of " + template
+                            + " of material: " + material + ". Loading model anyway.");
                 }
                 else
                 {
                     imageName = image.filename;
+                    
+                    // TODO Egal
+//                    Template template = material.getRoot();
+//                    logger.warning("OK XSI_Image " + image + " for tex \"" + conn.point + "\" in XSI_Shader part of " + template
+//                            + " of material: " + material + ". Loading model anyway.");
 
                     if(bumpInUse) new BumpMapEffect(image).generateBumpMap();
                 }

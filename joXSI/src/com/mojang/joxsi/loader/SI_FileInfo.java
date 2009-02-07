@@ -1,6 +1,8 @@
 package com.mojang.joxsi.loader;
 
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is a container for a template in the dotXSI file format, as specified by XSIFTK template reference.
@@ -11,6 +13,8 @@ import java.util.Iterator;
  */
 public class SI_FileInfo extends Template
 {
+    /** logger - Logging instance. */
+    private static Logger logger = Logger.getLogger(SI_FileInfo.class.getName());
 	public String projectName;
 	public String userName;
 	public String savedDateTime;
@@ -24,6 +28,11 @@ public class SI_FileInfo extends Template
 		userName = (String)it.next();
 		savedDateTime = (String)it.next();
 		originator = (String)it.next();
+		
+		if (logger.isLoggable(Level.FINER))
+        {
+            logger.finer("FileInfo: " + this);
+        }
 	}
 
     @Override
