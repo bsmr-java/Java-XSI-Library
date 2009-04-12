@@ -83,25 +83,25 @@ public class SI_CoordinateSystem extends Template
         xAxis = ((Integer)it.next()).intValue();
         yAxis = ((Integer)it.next()).intValue();
         zAxis = ((Integer)it.next()).intValue();
-        
+
         if(handRotation != 0 &&
-           handRotation != 1)
+                handRotation != 1)
             throw new ParseException("Illegal handRotation in SI_CoordinateSystem: "+handRotation);
         if(uAxis != 0 &&
-           uAxis != 1)
+                uAxis != 1)
             throw new ParseException("Illegal uAxis in SI_CoordinateSystem: "+uAxis);
         if(vAxis != 0 &&
-           vAxis != 1)
+                vAxis != 1)
             throw new ParseException("Illegal vAxis in SI_CoordinateSystem: "+vAxis);
         if(xAxis < 0 ||
-           xAxis > 5)
-                throw new ParseException("Illegal xAxis in SI_CoordinateSystem: "+xAxis);
+                xAxis > 5)
+            throw new ParseException("Illegal xAxis in SI_CoordinateSystem: "+xAxis);
         if(yAxis < 0 ||
-           yAxis > 5)
-                throw new ParseException("Illegal yAxis in SI_CoordinateSystem: "+yAxis);
+                yAxis > 5)
+            throw new ParseException("Illegal yAxis in SI_CoordinateSystem: "+yAxis);
         if(zAxis < 0 ||
-           zAxis > 5)
-                throw new ParseException("Illegal zAxis in SI_CoordinateSystem: "+zAxis);
+                zAxis > 5)
+            throw new ParseException("Illegal zAxis in SI_CoordinateSystem: "+zAxis);
     }
 
     public void convertPos(float value, int axis, float[] v)
@@ -131,7 +131,7 @@ public class SI_CoordinateSystem extends Template
 
     public float[] convertPos(float[] v)
     {
-/*      float x = v[0];
+        /*      float x = v[0];
         float y = v[1];
         float z = v[2];
 
@@ -142,27 +142,27 @@ public class SI_CoordinateSystem extends Template
         return v;
     }
 
-	public float[] convertAndNormalizePos(float[] v)
-	{
-		float len = v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
-		if (len>1.01 || len<0.99)
-		{
-			System.out.println("Normalizing normal with length "+len);
-			len = 1/(float)Math.sqrt(len);
-			v[0]*=len;
-			v[1]*=len;
-			v[2]*=len;
-		} 
-/*      float x = v[0];
-		float y = v[1];
-		float z = v[2];
+    public float[] convertAndNormalizePos(float[] v)
+    {
+        float len = v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
+        if (len>1.01 || len<0.99)
+        {
+            System.out.println("Normalizing normal with length "+len);
+            len = 1/(float)Math.sqrt(len);
+            v[0]*=len;
+            v[1]*=len;
+            v[2]*=len;
+        } 
+        /*      float x = v[0];
+        float y = v[1];
+        float z = v[2];
 
-		convertPos(x, xAxis, v);
-		convertPos(y, yAxis, v);
-		convertPos(z, zAxis, v);*/
+        convertPos(x, xAxis, v);
+        convertPos(y, yAxis, v);
+        convertPos(z, zAxis, v);*/
 
-		return v;
-	}
+        return v;
+    }
 
     public float[] convertTex(float[] t)
     {
@@ -181,7 +181,7 @@ public class SI_CoordinateSystem extends Template
      */
     public void convert(SI_Transform transform)
     {
-/*      float[] scale = new float[3];
+        /*      float[] scale = new float[3];
         float[] translate = new float[3];
         float[] rotate = new float[3];
 
@@ -220,10 +220,11 @@ public class SI_CoordinateSystem extends Template
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         // TODO Auto-generated method stub
         return super.toString()
-                + "handRotation: " + handRotation + ", uAxis: " + uAxis + ", vAxis: " + vAxis + "xAxis: " + xAxis + ", yAxis: "
-                + yAxis + ", zAxis: " + zAxis;
+            + "handRotation: " + handRotation + ", uAxis: " + uAxis + ", vAxis: " + vAxis + "xAxis: " + xAxis + ", yAxis: "
+            + yAxis + ", zAxis: " + zAxis;
     }
 }

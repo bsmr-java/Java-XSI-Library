@@ -21,12 +21,12 @@ import java.util.Iterator;
  */
 public class XSI_Material extends Template implements Material
 {
-	public class Connection implements Serializable
-	{
+    public class Connection implements Serializable
+    {
         /** Name of connection. */
-		public String name;
+        public String name;
         /** Name of connection source. */
-		public String source;
+        public String source;
 
         /**
          * Returns the name of the connection source.
@@ -34,28 +34,29 @@ public class XSI_Material extends Template implements Material
          * @return the name of the connection source.
          */
         @Override
-        public String toString() {
+        public String toString()
+        {
             return source;
         }
-	}
+    }
 
     /** Number of connections (that is, <cnx_name, <cnx_source> pairs) listed in this template. */
-	public int cnx_number;
-	public Connection[] connections;
+    public int cnx_number;
+    public Connection[] connections;
 
     @Override
-	public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		cnx_number = ((Integer)it.next()).intValue();
-		connections = new Connection[cnx_number];
-		for (int i=0; i<cnx_number; i++)
-		{
-			connections[i] = new Connection();
-			connections[i].name = (String)it.next();
-			connections[i].source = (String)it.next();
-		}
-	}
+    public void parse(RawTemplate block)
+    {
+        Iterator<Object> it = block.values.iterator();
+        cnx_number = ((Integer)it.next()).intValue();
+        connections = new Connection[cnx_number];
+        for (int i=0; i<cnx_number; i++)
+        {
+            connections[i] = new Connection();
+            connections[i].name = (String)it.next();
+            connections[i].source = (String)it.next();
+        }
+    }
 
     /**
      * Returns the clsss name and the number of connections pairs.
@@ -66,7 +67,8 @@ public class XSI_Material extends Template implements Material
     public String toString()
     {
         String lConnectionDetails = "";
-        for (Connection item : connections) {
+        for (Connection item : connections)
+        {
             if (item != null && item.toString().length() > 0)
             {
                 lConnectionDetails += item;

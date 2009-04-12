@@ -14,13 +14,13 @@ import java.util.Iterator;
 public class ColorRGBA
 {
     /** The red value of this colour. */
-	public float r;
+    public float r;
     /** The green value of this colour. */
-	public float g;
+    public float g;
     /** The blue value of this colour. */
-	public float b;
+    public float b;
     /** The alpha value of this colour. */
-	public float a;
+    public float a;
 
     /**
      * Construct a new ColorRGBA instance with the specified Red, Green, Blue, and Alpha
@@ -35,13 +35,13 @@ public class ColorRGBA
      * @param a
      *            The alpha value of this colour.
      */
-	public ColorRGBA(float r, float g, float b, float a)
-	{
-		this.r = r;
-		this.g = g;
-		this.b = b;
-		this.a = a;
-	}
+    public ColorRGBA(float r, float g, float b, float a)
+    {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
 
     /**
      * Construct a new ColorRGBA instance with the Red, Green, Blue, Alpha
@@ -50,13 +50,14 @@ public class ColorRGBA
      * @param it
      *            an Iterator.
      */
-	public ColorRGBA(Iterator<Object> it)
-	{
-		this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
-	}
+    public ColorRGBA(Iterator<Object> it)
+    {
+        this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + " - Red: " + r + ", Green: " + g + ", Blue: " + b + ", Alpha: " + a;
     }
 }

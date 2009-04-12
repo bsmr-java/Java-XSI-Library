@@ -23,12 +23,12 @@ public class SI_MaterialLibrary extends Template
     public void parse(RawTemplate block)
     {
         Iterator<Object> it = block.values.iterator();
-		nbMaterials = ((Integer)it.next()).intValue();
-		materials = new Material[nbMaterials];
-		for (int i=0; i<nbMaterials; i++)
-		{
-			materials[i] = (Material)it.next();
-		}
+        nbMaterials = ((Integer)it.next()).intValue();
+        materials = new Material[nbMaterials];
+        for (int i=0; i<nbMaterials; i++)
+        {
+            materials[i] = (Material)it.next();
+        }
     }
 
     /**

@@ -18,7 +18,7 @@ public class Matrix4x4 implements Serializable
         {
             for (int x = 0; x < 4; x++)
             {
-            	matrix[x][y] = ((Float)it.next()).floatValue();
+                matrix[x][y] = ((Float)it.next()).floatValue();
             }
         }
     }

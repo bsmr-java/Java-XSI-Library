@@ -35,8 +35,8 @@ public class SI_Visibility extends Template
     }
 
     @Override
-    public String toString() {
-        // TODO Auto-generated method stub
+    public String toString()
+    {
         return super.toString() + "visibility: " + visibility;
     }
 }

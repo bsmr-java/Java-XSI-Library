@@ -79,9 +79,13 @@ public class Shape
                 boolean nonNull = false;
                 for (float f : shapeArray.values)
                 {
-                    if (f != 0) { nonNull = true; break; }
+                    if (f != 0)
+                    {
+                        nonNull = true;
+                        break;
+                    }
                 }
-                if (! nonNull)
+                if (!nonNull)
                 {
                     logger.warning("Shape, " + shape.template_info + ", TEX_COORD_UV" + uvCoordSet + " contains only zeroes.");
                 }

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * <p>While the DotXSILoader and the templates can be used directly, it's probably easier to use the Scene class instead.
  * @see com.mojang.joxsi.Scene
  */
-public class DotXSILoader
+public final class DotXSILoader
 {
     /**
      * Prefixed to the template name to load the class to parse the file:
@@ -45,7 +45,7 @@ public class DotXSILoader
     private StringBuilder stringbBuilder;
 
     /** Buffer used when reading from the stream. Used to avoid calling stream.read(). */
-    private char buffer[];
+    private char[] buffer;
     /** Current position in the buffer. */
     private int bufferPos;
     /** Current length of valid data in the buffer. */
@@ -64,14 +64,14 @@ public class DotXSILoader
         stringbBuilder = new StringBuilder(1024);
     }
 
-   /**
-    * Reads the header from the dotXSI file, and makes sure it's valid.
-    * 
-    * @return the header.
-    * @throws IOException if there's an io error.
-    * @throws ParseException if the parsing fails for any reason
-    *  Standard Headerformat  (program) (export version)(format) (xsi bit version)
-    */
+    /**
+     * Reads the header from the dotXSI file, and makes sure it's valid.
+     * 
+     * @return the header.
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
+     *  Standard Headerformat  (program) (export version)(format) (xsi bit version)
+     */
     private Header readHeader() throws IOException, ParseException
     {
         if (logger.isLoggable(Level.FINER))
@@ -97,27 +97,27 @@ public class DotXSILoader
 
         Header lHeader = new Header();
 
-		read = 0;
-		while (read<2) read+=inputStream.read(buf, read, 2-read);
+        read = 0;
+        while (read<2) read+=inputStream.read(buf, read, 2-read);
         lHeader.majorVersion = Integer.parseInt(new String(buf, 0, 2));
 
-		read = 0;
-		while (read<2) read+=inputStream.read(buf, read, 2-read);
+        read = 0;
+        while (read<2) read+=inputStream.read(buf, read, 2-read);
         lHeader.minorVersion = Integer.parseInt(new String(buf, 0, 2));
 
-		read = 0;
-		while (read<4) read+=inputStream.read(buf, read, 4-read);
+        read = 0;
+        while (read<4) read+=inputStream.read(buf, read, 4-read);
         lHeader.formatType = new String(buf, 0, 3);
 
         if (lHeader.formatType.equals("com"))
         {
-			read = 0;
-			while (read<4) read+=inputStream.read(buf, read, 4-read);
+            read = 0;
+            while (read<4) read+=inputStream.read(buf, read, 4-read);
             lHeader.compressionType = new String(buf, 0, 3);
         }
 
-		read = 0;
-		while (read<4) read+=inputStream.read(buf, read, 4-read);
+        read = 0;
+        while (read<4) read+=inputStream.read(buf, read, 4-read);
         lHeader.floatSize = Integer.parseInt(new String(buf, 0, 4));
 
         return lHeader;
@@ -134,37 +134,37 @@ public class DotXSILoader
     private String readUntilEndOfString() throws IOException, ParseException
     {
         stringbBuilder.setLength(0);
-   	    boolean stop = false;
-        
+        boolean stop = false;
+
         int marker = bufferPos;
         int len = 0;
 
-   	    do
-   	    {
-   	        while(bufferPos<bufferLength)
-       	    {
-       	        if (buffer[bufferPos++] != DOUBLE_QUOTES)
-       	        {
-       	            len++;
-       	        }
-       	        else
-       	        {
-       	            stop = true;
-       	            break;
-       	        }
-       	    }
+        do
+        {
+            while(bufferPos<bufferLength)
+            {
+                if (buffer[bufferPos++] != DOUBLE_QUOTES)
+                {
+                    len++;
+                }
+                else
+                {
+                    stop = true;
+                    break;
+                }
+            }
             stringbBuilder.append(buffer, marker, len);
             marker = 0;
             len = 0;
-   	    }while(!stop && refillBuffer());
-   	    
-   	    if (!stop)
+        }while(!stop && refillBuffer());
+
+        if (!stop)
             throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
 
-   	    if (bufferPos >= bufferLength)
-   	        if (!refillBuffer())
-   	            throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
-   	    if (buffer[bufferPos++] != COMMA)
+        if (bufferPos >= bufferLength)
+            if (!refillBuffer())
+                throw new ParseException("Corrupt .xsi file: Unexpected EOF in string");
+        if (buffer[bufferPos++] != COMMA)
             throw new ParseException("Corrupt .xsi file: Expected \",\", got \"" + buffer[bufferPos++] + "\"");
 
         stringbBuilder.append(buffer, marker, len);
@@ -208,7 +208,7 @@ public class DotXSILoader
         char ch;
         String str;
         StringTokenizer stt;
-        String name ;
+        String name;
         String info = "";
 
         int marker = bufferPos;
@@ -394,9 +394,9 @@ public class DotXSILoader
            }
        }
 
-   	 return currentTemplate;
+    return currentTemplate;
     }
-    */
+     */
 
     /**
      * Builds a Template from a RawTemplate by finding the class that implements the template type,
@@ -410,8 +410,8 @@ public class DotXSILoader
      */
     private Template buildTemplate(RawTemplate rawTemplate) throws ParseException
     {
-   	    Template template;
-   	    Class<?> c;
+        Template template;
+        Class<?> c;
         // Depth first. Iterate over all values and replace all RawTemplates with them with the real Templates
         for (int i=0; i<rawTemplate.values.size(); i++)
         {
@@ -487,13 +487,13 @@ public class DotXSILoader
         {
             System.out.println("An I/O error occured.");
             ioe.printStackTrace();
-        	throw ioe;
+            throw ioe;
         }
         catch (Exception e)
         {
             System.out.println("An unhandled error occured.");
-        	e.printStackTrace();
-        	throw new ParseException("Failed to read file: "+e);
+            e.printStackTrace();
+            throw new ParseException("Failed to read file: "+e);
         }
     }
 

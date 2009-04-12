@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Vector;
 
 import javax.media.opengl.GL;
@@ -36,7 +37,7 @@ public class GLSLshaders
     public int waveAttrib;
     public int textureAttrib;
 
-    public Vector<GLSLshaders> shaderVector = new Vector<GLSLshaders>();
+    public List<GLSLshaders> shaderVector = new Vector<GLSLshaders>();
 
     public GLSLshaders(GL gl)
     {
@@ -83,7 +84,7 @@ public class GLSLshaders
         // lando
         if (vertexSURL != null && fragmentSURL != null)
         {
-                  loadShaderProgram(vertexSURL, fragmentSURL);
+            loadShaderProgram(vertexSURL, fragmentSURL);
         }
     }
 

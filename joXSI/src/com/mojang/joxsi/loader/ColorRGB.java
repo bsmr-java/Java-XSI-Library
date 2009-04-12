@@ -14,11 +14,11 @@ import java.util.Iterator;
 public class ColorRGB
 {
     /** The red value of this colour. */
-	public float r;
+    public float r;
     /** The green value of this colour. */
-	public float g;
+    public float g;
     /** The blue value of this colour. */
-	public float b;
+    public float b;
 
     /**
      * Construct a new ColorRGB instance with the specified Red, Green, and Blue
@@ -31,13 +31,13 @@ public class ColorRGB
      * @param b
      *            The blue value of this colour.
      */
-	public ColorRGB(float r, float g, float b)
-	{
-		this.r = r;
-		this.g = g;
-		this.b = b;
-	}
-	
+    public ColorRGB(float r, float g, float b)
+    {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
     /**
      * Construct a new ColorRGB instance with the Red, Green, and Blue
      * values specified in the Iterator.
@@ -45,13 +45,14 @@ public class ColorRGB
      * @param it
      *            an Iterator.
      */
-	public ColorRGB(Iterator<Object> it)
-	{
-		this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
-	}
+    public ColorRGB(Iterator<Object> it)
+    {
+        this(((Float)it.next()).floatValue(), ((Float)it.next()).floatValue(), ((Float)it.next()).floatValue());
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + " - Red: " + r + ", Green: " + g + ", Blue: " + b;
     }
 }

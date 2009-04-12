@@ -13,10 +13,15 @@ import com.mojang.joxsi.loader.SI_TriangleList.Triangle;
  * <p>
  * It is used to convert an SI_PolygonList into an SI_TriangleList
  */
-public class Tesselator
+public final class Tesselator
 {
     /** logger - Logging instance. Commented out until used*/
     // private static Logger logger = Logger.getLogger(Tesselator.class.getName());
+
+    private Tesselator()
+    {
+        super();
+    }
 
     /**
      * Converts a polygon into triangles, and adds them to a List. In case of
@@ -28,12 +33,12 @@ public class Tesselator
      * @param triangles
      *            the list to add the triangles to
      */
-    public static void tesselate(Polygon p, List<Triangle> triangles)
+    public static void tesselate(final Polygon p, final List<Triangle> triangles)
     {
         if (p.nbVertices == 3) // Three vertices/sides! Trivial case, just
                                 // create a new triangle.
         {
-            Triangle t0 = new Triangle();
+            final Triangle t0 = new Triangle();
             t0.v = new int[]
             { p.v[0], p.v[1], p.v[2] };
             if (p.n != null) // Has normals?
@@ -60,8 +65,8 @@ public class Tesselator
         else if (p.nbVertices == 4) // Four vertices/sides! Also trivial. Make
                                     // two triangles.
         {
-            Triangle t0 = new Triangle();
-            Triangle t1 = new Triangle();
+            final Triangle t0 = new Triangle();
+            final Triangle t1 = new Triangle();
             t0.v = new int[]
             { p.v[0], p.v[1], p.v[2] };
             t1.v = new int[]
@@ -99,7 +104,7 @@ public class Tesselator
         {
             for (int i = 1; i + 1 < p.nbVertices; i++)
             {
-                Triangle tri = new Triangle();
+                final Triangle tri = new Triangle();
                 tri.v = new int[]
                 { p.v[0], p.v[i], p.v[i + 1] };
                 if (p.n != null)

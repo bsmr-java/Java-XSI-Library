@@ -48,42 +48,42 @@ SI_MaterialLibrary MATLIB-tex_test {
  */
 public class XSI_ShaderInstanceData extends Template
 {
-	public class Parameter implements Serializable
-	{
-		public String name;
-		public String type;
-		public Object value;
-	}
-	
-	public String objectName;
-	public int output;
-	public int param_number;
-	public Parameter[] parameters;
-	public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
+    public class Parameter implements Serializable
+    {
+        public String name;
+        public String type;
+        public Object value;
+    }
+
+    public String objectName;
+    public int output;
+    public int param_number;
+    public Parameter[] parameters;
+    public Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
 
     @Override
-	public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		
+    public void parse(RawTemplate block)
+    {
+        Iterator<Object> it = block.values.iterator();
+
         objectName = (String)it.next();
-		param_number = ((Integer)it.next()).intValue();
-		
-		parameters = new Parameter[param_number];
-		for (int i=0; i<param_number; i++)
-		{
-			parameters[i] = new Parameter();
-			parameters[i].name = (String)it.next();
-			parameters[i].type = (String)it.next();
-			parameters[i].value = it.next();
-			
-			parameterMap.put(parameters[i].name, parameters[i]);
-		}
+        param_number = ((Integer)it.next()).intValue();
+
+        parameters = new Parameter[param_number];
+        for (int i=0; i<param_number; i++)
+        {
+            parameters[i] = new Parameter();
+            parameters[i].name = (String)it.next();
+            parameters[i].type = (String)it.next();
+            parameters[i].value = it.next();
+
+            parameterMap.put(parameters[i].name, parameters[i]);
+        }
     }
 
     @Override
-    public String toString() {
-        // TODO Auto-generated method stub
+    public String toString()
+    {
         return super.toString() + " - objectName: " + objectName + ", Output: " + output + ", Number of parameters: " + param_number;
     }
 }

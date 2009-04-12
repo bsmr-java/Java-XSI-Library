@@ -17,9 +17,9 @@ import java.util.Iterator;
 public class XSI_Action extends Template
 {
     /** Start time. */
-	public float start;
+    public float start;
     /** End time. */
-	public float end;
+    public float end;
     /**
      * 0 = FCurve action source<br>
      * 1 = Static value action source<br>
@@ -30,19 +30,19 @@ public class XSI_Action extends Template
      * 6 = Shape compound action item source<br>
      * 7 = no flagged source
      */
-	public int type;
+    public int type;
 
     @Override
-	public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		start = ((Float)it.next()).floatValue();
-		end = ((Float)it.next()).floatValue();
-		type = ((Integer)it.next()).intValue();
-		
-		if(type < 0 || type > 7)
-		    throw new ParseException("Illegal type in XSI_Action: "+type);
-	}
+    public void parse(RawTemplate block) throws ParseException
+    {
+        Iterator<Object> it = block.values.iterator();
+        start = ((Float)it.next()).floatValue();
+        end = ((Float)it.next()).floatValue();
+        type = ((Integer)it.next()).intValue();
+
+        if(type < 0 || type > 7)
+            throw new ParseException("Illegal type in XSI_Action: "+type);
+    }
 
     /**
      * Returns the type of action as descriptive text.
@@ -53,44 +53,46 @@ public class XSI_Action extends Template
      * @pre $aType >= 0 && aType <= 7
      * @post $none
      */
-	public String getTypeDescription(int aType) {
-	    String lDescription;
-        
+    public String getTypeDescription(int aType)
+    {
+        String lDescription;
+
         switch (aType)
         {
-        case 0:
-            lDescription = "FCurve action source";
-            break;
-        case 1:
-            lDescription = "Static value action source";
-            break;
-        case 2:
-            lDescription = "Expression source";
-            break;
-        case 3:
-            lDescription = "ClusterKey source";
-            break;
-        case 4:
-            lDescription = "Constraint source";
-            break;
-        case 5:
-            lDescription = "Compound action item source";
-            break;
-        case 6:
-            lDescription = "Shape compound action item";
-            break;
-        case 7:
-            lDescription = "Fno flagged source";
-            break;
-        default:
-            lDescription = "Unknown action source type: " + aType;
-            break;
+            case 0:
+                lDescription = "FCurve action source";
+                break;
+            case 1:
+                lDescription = "Static value action source";
+                break;
+            case 2:
+                lDescription = "Expression source";
+                break;
+            case 3:
+                lDescription = "ClusterKey source";
+                break;
+            case 4:
+                lDescription = "Constraint source";
+                break;
+            case 5:
+                lDescription = "Compound action item source";
+                break;
+            case 6:
+                lDescription = "Shape compound action item";
+                break;
+            case 7:
+                lDescription = "Fno flagged source";
+                break;
+            default:
+                lDescription = "Unknown action source type: " + aType;
+                break;
         }
         return lDescription;
-	}
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         // TODO Auto-generated method stub
         return super.toString() + ", type: " + getTypeDescription(type) + ", start: " + start + ", end: " + end;
     }    

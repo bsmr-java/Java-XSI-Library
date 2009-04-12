@@ -18,29 +18,30 @@ public class XSI_MaterialInfo extends Template
      * • 0 = Clamp<br>
      * • 1 = Repeat
      */
-	public int uWrap;
+    public int uWrap;
     /**
      * V-Wrapping information. Possible values are:<br>
      * • 0 = Clamp<br>
      * • 1 = Repeat
      */
-	public int vWrap;
+    public int vWrap;
 
     @Override
-	public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		uWrap = ((Integer)it.next()).intValue();
-		vWrap = ((Integer)it.next()).intValue();
-		
-		if(uWrap != 0 && uWrap != 1)
-		    throw new ParseException("Illegal uWrap in XSI_MaterialInfo: "+uWrap);
-		if(vWrap != 0 && vWrap != 1)
-		    throw new ParseException("Illegal vWrap in XSI_MaterialInfo: "+vWrap);
-	}
+    public void parse(RawTemplate block) throws ParseException
+    {
+        Iterator<Object> it = block.values.iterator();
+        uWrap = ((Integer)it.next()).intValue();
+        vWrap = ((Integer)it.next()).intValue();
+
+        if(uWrap != 0 && uWrap != 1)
+            throw new ParseException("Illegal uWrap in XSI_MaterialInfo: "+uWrap);
+        if(vWrap != 0 && vWrap != 1)
+            throw new ParseException("Illegal vWrap in XSI_MaterialInfo: "+vWrap);
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + ", U-Wrapping: " + uWrap + ", V-Wrapping: " + vWrap;
     }
 }

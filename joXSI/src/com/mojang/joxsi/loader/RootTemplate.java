@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 public class RootTemplate extends Template implements Serializable
 {
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-	}
+    {
+    }
 }

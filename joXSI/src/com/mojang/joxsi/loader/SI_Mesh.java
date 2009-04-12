@@ -16,8 +16,8 @@ package com.mojang.joxsi.loader;
  */
 public class SI_Mesh extends Template
 {
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-	}
+    {
+    }
 }

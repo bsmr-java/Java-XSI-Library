@@ -205,11 +205,13 @@ public abstract class Template
      * @return a List of all Templates in the current model whose class matches.
      * 
      */
-    public <T extends Template> List<T> getAll(Class<T> type) {
+    public <T extends Template> List<T> getAll(Class<T> type)
+    {
         List<T> result = new ArrayList<T>();
         for (Template t : templates)
         {
-            if (type.isInstance(t)) {
+            if (type.isInstance(t))
+            {
                 result.add(type.cast(t));
             }
         }
@@ -252,7 +254,8 @@ public abstract class Template
      * 
      * @return the root template.
      */
-    public Template getRoot() {
+    public Template getRoot()
+    {
         if (parent != null)
             return parent.getRoot();
         else
@@ -264,7 +267,8 @@ public abstract class Template
      * 
      * @return the parent of the current template.
      */
-    public Template getParent() {
+    public Template getParent()
+    {
         return parent;
     }
 

@@ -25,12 +25,12 @@ public class SI_IK_Effector extends Template
      * template will be local if this flag is True and global if this flag is
      * False. *
      */
-	public boolean rotation_flag;
+    public boolean rotation_flag;
 
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		rotation_flag = ((Integer)it.next()).intValue()!=0;
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        rotation_flag = ((Integer)it.next()).intValue()!=0;
+    }
 }

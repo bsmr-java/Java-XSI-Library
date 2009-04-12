@@ -35,13 +35,14 @@ public class SI_GlobalMaterial extends Template
         propagation = (String)it.next();
         
         if(!propagation.equals("BRANCH") &&
-           !propagation.equals("NODE") &&
-           !propagation.equals("INHERITED"))
+            !propagation.equals("NODE") &&
+            !propagation.equals("INHERITED"))
             throw new ParseException("Illegal propagation in SI_GlobalMaterial: "+propagation);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + " - referencedMaterial: " + referencedMaterial + ", propagation: " + propagation;
     }
 }

@@ -72,17 +72,17 @@ public class SI_PolygonList extends Template
     {
         ListIterator<Object> it = block.values.listIterator();
 
-//        boolean newVersion = dot_xsi_header.majorVersion > 3 || (dot_xsi_header.majorVersion == 3 && dot_xsi_header.minorVersion >= 5);
+        //        boolean newVersion = dot_xsi_header.majorVersion > 3 || (dot_xsi_header.majorVersion == 3 && dot_xsi_header.minorVersion >= 5);
 
         nbPolygons = ((Integer)it.next()).intValue();
         elements = (String)it.next();
 
-		Object next = it.next();
-		it.previous();
+        Object next = it.next();
+        it.previous();
 
-//		if (newVersion) // Material is only available in 3.5 and above
-		if (next instanceof String) // Hack to support 3.0 files that include a material
-			material = (String)it.next();
+        //  if (newVersion) // Material is only available in 3.5 and above
+        if (next instanceof String) // Hack to support 3.0 files that include a material
+            material = (String)it.next();
 
         nbTotalVertices = ((Integer)it.next()).intValue();
         polygons = new Polygon[nbPolygons];
@@ -125,18 +125,18 @@ public class SI_PolygonList extends Template
             }
         }
 
-		int uvN = 0;
+        int uvN = 0;
 
-		while (elements.indexOf(TEX_COORD_UV + uvN) >= 0)
-			uvN++;
+        while (elements.indexOf(TEX_COORD_UV + uvN) >= 0)
+            uvN++;
 
-		if (uvN==0 && elements.indexOf(TEX_COORD_UV) >= 0)
-			uvN++;
+        if (uvN==0 && elements.indexOf(TEX_COORD_UV) >= 0)
+            uvN++;
 
-		for (int i = 0; i < nbPolygons; i++)
-		{
-			polygons[i].uv = new int[uvN][];
-		}
+        for (int i = 0; i < nbPolygons; i++)
+        {
+            polygons[i].uv = new int[uvN][];
+        }
 
         for (int uv = 0; uv < uvN; uv++)
         {
@@ -152,8 +152,8 @@ public class SI_PolygonList extends Template
     }
 
     @Override
-    public String toString() {
-        // TODO Auto-generated method stub
+    public String toString()
+    {
         return super.toString() + " - Number of Polyygons: " + nbPolygons + ", material: " + material + ", number of vertices: " + nbTotalVertices;
     }
 }

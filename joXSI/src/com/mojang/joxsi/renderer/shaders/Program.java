@@ -63,17 +63,17 @@ public class Program
      *            <code>false</code> use OpenGL 1 Extension functions for
      *            compiling and linking GLSL shaders and programs.
      */
-   public Program(final boolean useOpenGL2)
-   {
-       hasOpenGL2 = useOpenGL2;
-       if (logger.isLoggable(Level.CONFIG))
-       {
-           if (hasOpenGL2)
-               logger.config("Will use OpenGL 2 functions for compiling and linking GLSL shaders and programs");
-           else
-               logger.config("Will use OpenGL 1 Extension functions for compiling and linking GLSL shaders and programs");
-       }
-   }
+    public Program(final boolean useOpenGL2)
+    {
+        hasOpenGL2 = useOpenGL2;
+        if (logger.isLoggable(Level.CONFIG))
+        {
+            if (hasOpenGL2)
+                logger.config("Will use OpenGL 2 functions for compiling and linking GLSL shaders and programs");
+            else
+                logger.config("Will use OpenGL 1 Extension functions for compiling and linking GLSL shaders and programs");
+        }
+    }
 
     /**
      * 
@@ -280,7 +280,7 @@ public class Program
         }
         return shaderObject;
     }
-    
+
     /**
      * Gets location (index) of the attribute in the shaderObject
      * 
@@ -301,12 +301,12 @@ public class Program
         }    
         return 0;
     }
-    
+
     /**
      * Enables shader based on openGL version.
      * 
      */
-    
+
     public void Enable(GL gl, int shaderIndex)
     {
         if (hasOpenGL2)
@@ -318,12 +318,12 @@ public class Program
             gl.glUseProgramObjectARB(shaderIndex);
         }        
     }
-    
+
     /**
      * Disables shader based on openGL version.
      * 
      */
-    
+
     public void Disable(GL gl)
     {
         if (hasOpenGL2)

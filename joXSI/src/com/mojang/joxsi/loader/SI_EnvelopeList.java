@@ -13,19 +13,19 @@ import java.util.Iterator;
 public class SI_EnvelopeList extends Template
 {
     /** Number of envelopes in the list. */
-	public int nEnvelopes;
+    public int nEnvelopes;
     /** Array of {@link SI_Envelope }s. */
-	public SI_Envelope[] envelopes;
+    public SI_Envelope[] envelopes;
 
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		nEnvelopes = ((Integer)it.next()).intValue();
-		envelopes = new SI_Envelope[nEnvelopes];
-		for (int i=0; i<nEnvelopes; i++)
-		{
-			envelopes[i] = (SI_Envelope)it.next();
-		}
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        nEnvelopes = ((Integer)it.next()).intValue();
+        envelopes = new SI_Envelope[nEnvelopes];
+        for (int i=0; i<nEnvelopes; i++)
+        {
+            envelopes[i] = (SI_Envelope)it.next();
+        }
+    }
 }

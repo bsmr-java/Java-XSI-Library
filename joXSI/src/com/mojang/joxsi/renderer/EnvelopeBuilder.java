@@ -138,7 +138,7 @@ public class EnvelopeBuilder
         int j;
         float weight;
         float[] mtrx;
-        
+
         int normal;
         float xn;
         float yn;
@@ -161,7 +161,7 @@ public class EnvelopeBuilder
             {
                 weight = triangleList.envelopeWeights[j][vertex];
                 mtrx = envelopes[triangleList.envelopeIndexes[j][vertex]].deformationMatrix;
-                
+
                 // Multiply original position by the deformer matrix, multiply result by weight, and add to output values.
                 x += (mtrx[0] * xv + mtrx[4] * yv + mtrx[8] * zv + mtrx[12]) * weight;
                 y += (mtrx[1] * xv + mtrx[5] * yv + mtrx[9] * zv + mtrx[13]) * weight;
@@ -174,7 +174,7 @@ public class EnvelopeBuilder
             if (hasNormals)
             {
                 normal = triangleList.normalIndexes[i];
-                
+
                 // Get original normal
                 xn = shape.normalBuffer[normal * 3 + 0];
                 yn = shape.normalBuffer[normal * 3 + 1];
@@ -194,7 +194,7 @@ public class EnvelopeBuilder
                     y += (mtrx[1] * xn + mtrx[5] * yn + mtrx[9] * zn) * weight;
                     z += (mtrx[2] * xn + mtrx[6] * yn + mtrx[10] * zn) * weight;
                 }
-                
+
                 if (normalize)
                 {
                     // Normalize the normal
@@ -235,7 +235,7 @@ public class EnvelopeBuilder
 
         if (hasColors)
         {
-      	  int colorIndex;
+            int colorIndex;
             // Look up the colors from the shape, and add to the buffer
             for (int i = 0; i < triangleList.vertices; i++)
             {
@@ -253,7 +253,7 @@ public class EnvelopeBuilder
         {
             if (triangleList.hasTexCoords[t])
             {
-            	int texCoordIndex;
+                int texCoordIndex;
                 // Look up the texture coordinates from the shape, and add to the buffer
                 for (int i = 0; i < triangleList.vertices; i++)
                 {

@@ -56,23 +56,23 @@ public class SI_Constraint extends Template
     public int nbConstrainingObjects;
     /** Constraining Object Name. */
     public String constrainingObjectName;
-    
+
     @Override
     public void parse(RawTemplate rawtemplate) throws ParseException 
     {
-    	Iterator<Object> iterator = rawtemplate.values.iterator();
-    	objectName = (String) iterator.next();
-    	constraintType = (String) iterator.next();
-    	nbConstrainingObjects = ((Integer) iterator.next()).intValue();
-    	constrainingObjectName = (String) iterator.next();
-    	
-    	if(!constraintType.equals("POSITION") &&
-    	   !constraintType.equals("SCALING") &&
-    	   !constraintType.equals("DIRECTION") &&
-    	   !constraintType.equals("ORIENTATION") &&
-    	   !constraintType.equals("UP_VECTOR") &&
-    	   !constraintType.equals("PREFERED_AXIS") &&
-    	   !constraintType.equals("INTEREST"))
-    	    throw new ParseException("Illegal constrainType in SI_Constraint: "+constraintType);
+        Iterator<Object> iterator = rawtemplate.values.iterator();
+        objectName = (String) iterator.next();
+        constraintType = (String) iterator.next();
+        nbConstrainingObjects = ((Integer) iterator.next()).intValue();
+        constrainingObjectName = (String) iterator.next();
+
+        if(!constraintType.equals("POSITION") &&
+                !constraintType.equals("SCALING") &&
+                !constraintType.equals("DIRECTION") &&
+                !constraintType.equals("ORIENTATION") &&
+                !constraintType.equals("UP_VECTOR") &&
+                !constraintType.equals("PREFERED_AXIS") &&
+                !constraintType.equals("INTEREST"))
+            throw new ParseException("Illegal constrainType in SI_Constraint: "+constraintType);
     }
 }

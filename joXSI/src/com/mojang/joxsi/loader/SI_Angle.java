@@ -18,22 +18,22 @@ public class SI_Angle extends Template
     public static final int DEGREES = 0;
     /** Indicates angle values are expressed in Radians in the file. */
     public static final int RADIANS = 1;
-    
+
     /**
      * Specifies angle representation:<br>
      * 0 = degrees<br>
      * 1 = radians
      */
-	public int type;
+    public int type;
 
     @Override
-	public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		type = ((Integer)it.next()).intValue();
-		if(type != 0 && type != 1)
-		    throw new ParseException("Illegal SI_Angel: "+type);
-	}
+    public void parse(RawTemplate block) throws ParseException
+    {
+        Iterator<Object> it = block.values.iterator();
+        type = ((Integer)it.next()).intValue();
+        if(type != 0 && type != 1)
+            throw new ParseException("Illegal SI_Angel: "+type);
+    }
 
     /**
      * Returns the angle representation for the model.
@@ -41,7 +41,8 @@ public class SI_Angle extends Template
      * @return the angle representation for the model.
      * @ost $result == DEGREES || $result == RADIANS
      */
-    public int getType() {
+    public int getType()
+    {
         return type;
     }
 
@@ -52,12 +53,14 @@ public class SI_Angle extends Template
      *            the angle representation for the model.
      * @pre aType == DEGREES || aType == RADIANS
      */
-    public void setType(final int aType) {
+    public void setType(final int aType)
+    {
         type = aType;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + " - type: " + type;
     }
 }

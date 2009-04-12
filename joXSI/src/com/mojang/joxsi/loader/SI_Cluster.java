@@ -23,41 +23,41 @@ import java.util.Iterator;
 public class SI_Cluster extends Template
 {
     /** Name of the reference model. */
-	public String referencedModel;
+    public String referencedModel;
     /** Weighting. Possible values include:
      * <ul>
      * <li>AVERAGE</li> 
      * <li>ADDITIVE</li>
      * </ul>
      */
-	public String weighting;
+    public String weighting;
     /**
      * Cluster center reference. If there is no cluster center, use an empty
      * string instead.
      */
-	public String clusterCenterReference;
+    public String clusterCenterReference;
     /** Number of vertices. */
-	public int nbVertices;
+    public int nbVertices;
     /**  . */
-	public int[] vertexIndexes;
+    public int[] vertexIndexes;
 
-	@Override
+    @Override
     public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		referencedModel = (String)it.next();
-		weighting = (String)it.next();
-		clusterCenterReference = (String)it.next();
-		
-		nbVertices = ((Integer)it.next()).intValue();
-		vertexIndexes = new int[nbVertices]; 
-		for (int i=0; i<nbVertices; i++)
-		{
-			vertexIndexes[i] = ((Integer)it.next()).intValue();
-		}
-		
-		if(!weighting.equals("AVERAGE") &&
-		   !weighting.equals("ADDITIVE"))
-		    throw new ParseException("Illegal weighting in SI_Cluster: "+weighting);
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        referencedModel = (String)it.next();
+        weighting = (String)it.next();
+        clusterCenterReference = (String)it.next();
+
+        nbVertices = ((Integer)it.next()).intValue();
+        vertexIndexes = new int[nbVertices]; 
+        for (int i=0; i<nbVertices; i++)
+        {
+            vertexIndexes[i] = ((Integer)it.next()).intValue();
+        }
+
+        if(!weighting.equals("AVERAGE") &&
+                !weighting.equals("ADDITIVE"))
+            throw new ParseException("Illegal weighting in SI_Cluster: "+weighting);
+    }
 }

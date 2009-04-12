@@ -53,7 +53,7 @@ public class JoglSceneRenderer
         }
         if (nullattachmentMap.containsKey(model.name)) 
         {
-           render(nullattachmentMap.get(model.name));
+            render(nullattachmentMap.get(model.name));
         }
         
         // Render all trianglelists in all meshes.
@@ -272,7 +272,8 @@ public class JoglSceneRenderer
      * @param name the short name of the NULL
      * @param scene containing the model(s) to be attached to a NULL 
      */
-    public void addNullAttachment(String name, Scene scene) {
+    public void addNullAttachment(String name, Scene scene)
+    {
         nullattachmentMap.put(name, scene);
     }
     
@@ -280,7 +281,8 @@ public class JoglSceneRenderer
      * Remove an attachment from the list of attachments for NULL attaching
      * @param name the short name of the NULL
      */
-    public void removeNullAttachment(String name) {
+    public void removeNullAttachment(String name)
+    {
         nullattachmentMap.remove(name);
     }
     

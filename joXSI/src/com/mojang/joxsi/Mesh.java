@@ -65,7 +65,7 @@ public class Mesh
      */
     private SI_TriangleList tesselate(SI_PolygonList list)
     {
-        ArrayList<SI_TriangleList.Triangle> triangles = new ArrayList<SI_TriangleList.Triangle>();
+        List<SI_TriangleList.Triangle> triangles = new ArrayList<SI_TriangleList.Triangle>();
         for (int i = 0; i < list.polygons.length; i++)
         {
             Tesselator.tesselate(list.polygons[i], triangles);

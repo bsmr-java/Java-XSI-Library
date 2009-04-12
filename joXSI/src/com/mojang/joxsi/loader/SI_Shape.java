@@ -68,21 +68,21 @@ import java.util.ListIterator;
 public class SI_Shape extends Template
 {
     /** Array of positions for vertices. */
-	public static final String POSITION = "POSITION";
-	/** Array of normals information. */
-	public static final String NORMAL = "NORMAL";
-	/** . */
-	public static final String COLOR = "COLOR";
+    public static final String POSITION = "POSITION";
+    /** Array of normals information. */
+    public static final String NORMAL = "NORMAL";
+    /** . */
+    public static final String COLOR = "COLOR";
     /**
      * Template contains texture UV coordinates information (see uvi below). The
      * number sign (#) represents the number of the texture UV coordinates
      * starting at 0.
      */
-	public static final String TEX_COORD_UV = "TEX_COORD_UV";
+    public static final String TEX_COORD_UV = "TEX_COORD_UV";
     /** Specifies shape animation in SI_ShapeAnimation. */
-	public static final String INDEXED  = "INDEXED";
+    public static final String INDEXED  = "INDEXED";
     /** Defines an original shape. */
-	public static final String ORDERED = "ORDERED";
+    public static final String ORDERED = "ORDERED";
 
     /**
      * Number of arrays in the template. There is one array for every kind of
@@ -105,13 +105,13 @@ public class SI_Shape extends Template
     /**
      * TODO XSI v3.5 added material to the Shape Array so that needs to be supported
      */
-	public class ShapeArray implements Serializable
-	{
+    public class ShapeArray implements Serializable
+    {
         /**
          * Number of this kind of element in the array. For example, there is
          * one array of position values for each vertex in the template.
          */
-		public int nbElements;
+        public int nbElements;
         /**
          * Specifies what kind of information appears in this section. Possible
          * values are: <br>
@@ -123,13 +123,13 @@ public class SI_Shape extends Template
          * starting at 0. Note: The TEX_COORD_UV# element is only available in
          * v3.5 and beyond.
          */
-		public String elements;
+        public String elements;
         /**
          * Index (zero-based) of an element (position, normal, color, or uv
          * coordinate) in the corresponding array of the original shape. Note:
          * This is used for indexed forms in shape animation templates only .
          */
-		public int[] indexes;
+        public int[] indexes;
         /**
          * The structure of the array depends on what element was specified for
          * this block of data:<br>
@@ -139,17 +139,17 @@ public class SI_Shape extends Template
          * • For TEX_COORD_UV#, value_arrayi takes the form: <ui>,<vi>. <br>
          * Note: The TEX_COORD_UV# element is only available in v3.5 and beyond.
          */
-		public float[] values;
+        public float[] values;
 
-		/**
+        /**
          * 
          * @param type
          * @return boolean
-		 */
+         */
         public boolean isType(String type)
-		{
-			return elements.startsWith(type);
-		}
+        {
+            return elements.startsWith(type);
+        }
 
         /**
          * {@inheritDoc}
@@ -159,63 +159,64 @@ public class SI_Shape extends Template
         {
             return "ShapeArray [nbElements: " + nbElements + ", type: " + elements + ']';
         }
-	}
+    }
 
     @Override
     public void parse(RawTemplate block)
     {
         ListIterator<Object> it = block.values.listIterator();
         nbShapeArrays = ((Integer)it.next()).intValue();
-		layout = (String)it.next();
-		isIndexed = layout.equals(INDEXED);
-		
-		shapeArrays = new ShapeArray[nbShapeArrays];
-		for (int i=0; i<nbShapeArrays; i++)
-		{
-			shapeArrays[i] = new ShapeArray();
-			shapeArrays[i].nbElements = ((Integer)it.next()).intValue();
-			shapeArrays[i].elements = (String)it.next();
+        layout = (String)it.next();
+        isIndexed = layout.equals(INDEXED);
 
-			int len = 0;			
-			if (shapeArrays[i].isType(POSITION)) len = 3; // x, y, z 
-			if (shapeArrays[i].isType(NORMAL)) len = 3; // x, y, z 
-			if (shapeArrays[i].isType(COLOR)) len = 4; // r, g, b, a
-			if (shapeArrays[i].isType(TEX_COORD_UV)) len = 2; // u, v
-			
-			shapeArrays[i].values = new float[shapeArrays[i].nbElements*len];
-			if (isIndexed)
-			{
-				shapeArrays[i].indexes = new int[shapeArrays[i].nbElements];
-			}
-			
-			Object o = it.next();
-			if (o instanceof Float)
-			{
-				it.previous();
-			}
-			else
-			{
-//				System.out.println("Skipping "+o);
-			}
+        shapeArrays = new ShapeArray[nbShapeArrays];
+        for (int i=0; i<nbShapeArrays; i++)
+        {
+            shapeArrays[i] = new ShapeArray();
+            shapeArrays[i].nbElements = ((Integer)it.next()).intValue();
+            shapeArrays[i].elements = (String)it.next();
 
-			for (int j=0; j<shapeArrays[i].nbElements; j++)
-			{
-				if (isIndexed)
-				{
-					shapeArrays[i].indexes[j] = ((Number)it.next()).intValue();
-				}
+            int len = 0;
+            if (shapeArrays[i].isType(POSITION)) len = 3; // x, y, z 
+            if (shapeArrays[i].isType(NORMAL)) len = 3; // x, y, z 
+            if (shapeArrays[i].isType(COLOR)) len = 4; // r, g, b, a
+            if (shapeArrays[i].isType(TEX_COORD_UV)) len = 2; // u, v
 
-				for (int k=0; k<len; k++)
-				{
-					shapeArrays[i].values[j*len+k] = ((Float)it.next()).floatValue();
-				}
-			}
-		}
+            shapeArrays[i].values = new float[shapeArrays[i].nbElements*len];
+            if (isIndexed)
+            {
+                shapeArrays[i].indexes = new int[shapeArrays[i].nbElements];
+            }
+
+            Object o = it.next();
+            if (o instanceof Float)
+            {
+                it.previous();
+            }
+            else
+            {
+                //  System.out.println("Skipping "+o);
+            }
+
+            for (int j=0; j<shapeArrays[i].nbElements; j++)
+            {
+                if (isIndexed)
+                {
+                    shapeArrays[i].indexes[j] = ((Number)it.next()).intValue();
+                }
+
+                for (int k=0; k<len; k++)
+                {
+                    shapeArrays[i].values[j*len+k] = ((Float)it.next()).floatValue();
+                }
+            }
+        }
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return super.toString() + ", Number of Shapes: " + nbShapeArrays + ", layout: " + layout + ", isIndexed: " + isIndexed
-                + ", Shapes: " + Arrays.toString(shapeArrays);
+            + ", Shapes: " + Arrays.toString(shapeArrays);
     }
 }

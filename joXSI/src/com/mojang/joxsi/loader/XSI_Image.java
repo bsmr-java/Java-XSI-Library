@@ -20,65 +20,66 @@ import java.util.Iterator;
 public class XSI_Image extends Template
 {
     /** Name of source file. */
-	public String filename;
+    public String filename;
     /** Image size in X. */
-	public int imageX;
+    public int imageX;
     /** Image size in Y. */
-	public int imageY;
+    public int imageY;
     /** Number of channels. Possible values are: 3 = RGB, 4 = RGBA. */
-	public int channel_count;
+    public int channel_count;
     /** 
      * Number of bits per pixel. Possible values:<br>
      * • 24<br>
      * • 32
      */
-	public int bitsPerPixels;
+    public int bitsPerPixels;
     /** Leftmost X of the cropping rectangle. */
-	public float minimumX;
+    public float minimumX;
     /** Rightmost X of the cropping rectangle. */
-	public float maximumX;
+    public float maximumX;
     /** Leftmost Y of the cropping rectangle. */
-	public float minimumY;
+    public float minimumY;
     /** Rightmost Y of the cropping rectangle. */
-	public float maximumY;
+    public float maximumY;
     /**
      * Specifies frame rate to use. If this value is 0, 
      * the scene frame rate is assumed; otherwise, this value is the new frame rate.
      * */
-	public float frame_rate;
+    public float frame_rate;
     /** Number of frames for sequence. */
-	public int frame_count;
+    public int frame_count;
     /** Specifies frame number for first frame in sequence. */
-	public int first;
+    public int first;
     /** Specifies frame number for last frame in sequence. */
-	public int last;
-	
-    @Override
-	public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		filename  = (String)it.next();
-		imageX = ((Integer)it.next()).intValue();
-		imageY = ((Integer)it.next()).intValue();
-		channel_count = ((Integer)it.next()).intValue();
-		bitsPerPixels = ((Integer)it.next()).intValue();
-		minimumX = ((Float)it.next()).floatValue();
-		maximumX = ((Float)it.next()).floatValue();
-		minimumY = ((Float)it.next()).floatValue();
-		maximumY = ((Float)it.next()).floatValue();
-		frame_rate = ((Float)it.next()).floatValue();
-		frame_count = ((Integer)it.next()).intValue();
-		first = ((Integer)it.next()).intValue();
-		last = ((Integer)it.next()).intValue();
-		
-		if(channel_count != 3 && channel_count != 4)
-		    throw new ParseException("Illegal channel_count in XSI_Image: "+channel_count);
-		if(bitsPerPixels != 24 && bitsPerPixels != 32 && bitsPerPixels != 64)
-		    throw new ParseException("Illegal bitsPerPixel in XSI_Image: "+bitsPerPixels);
-	}
+    public int last;
 
     @Override
-    public String toString() {
+    public void parse(RawTemplate block) throws ParseException
+    {
+        Iterator<Object> it = block.values.iterator();
+        filename  = (String)it.next();
+        imageX = ((Integer)it.next()).intValue();
+        imageY = ((Integer)it.next()).intValue();
+        channel_count = ((Integer)it.next()).intValue();
+        bitsPerPixels = ((Integer)it.next()).intValue();
+        minimumX = ((Float)it.next()).floatValue();
+        maximumX = ((Float)it.next()).floatValue();
+        minimumY = ((Float)it.next()).floatValue();
+        maximumY = ((Float)it.next()).floatValue();
+        frame_rate = ((Float)it.next()).floatValue();
+        frame_count = ((Integer)it.next()).intValue();
+        first = ((Integer)it.next()).intValue();
+        last = ((Integer)it.next()).intValue();
+
+        if(channel_count != 3 && channel_count != 4)
+            throw new ParseException("Illegal channel_count in XSI_Image: "+channel_count);
+        if(bitsPerPixels != 24 && bitsPerPixels != 32 && bitsPerPixels != 64)
+            throw new ParseException("Illegal bitsPerPixel in XSI_Image: "+bitsPerPixels);
+    }
+
+    @Override
+    public String toString()
+    {
         return super.toString() + ", Imagename: " + filename + " (" + imageX + ", " + imageY + ")";
     }
 }

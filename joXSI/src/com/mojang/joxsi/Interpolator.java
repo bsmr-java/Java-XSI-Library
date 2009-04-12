@@ -216,7 +216,8 @@ public class Interpolator
         SI_FCurve.FCurve curCurve = curve.fcurves[0];
 
         // Only apply the animation if there are frames in it
-		if (curCurve.frames.length != 0) {
+        if (curCurve.frames.length != 0)
+        {
             float val;
 
             // If we're before the start of the animation, just return the first value.
@@ -281,14 +282,16 @@ public class Interpolator
                             {
                                 nextXa = curCurve.keyValues[pos][1];
                                 nextYa = curCurve.keyValues[pos][2];
-                            } else
+                            }
+                            else
                             {
                                 nextXa = curCurve.keyValues[0][1];
                                 nextYa = curCurve.keyValues[0][2];
                             }
 
                             val = cubic(prevTime, prevVal, prevTime + prevXa, prevVal + prevYa, nextTime + nextXa, nextVal + nextYa, nextTime, nextVal, interp);
-                        } catch (ArrayIndexOutOfBoundsException e)
+                        }
+                        catch (ArrayIndexOutOfBoundsException e)
                         {
                             val = prevVal;
 

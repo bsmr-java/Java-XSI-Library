@@ -11,22 +11,22 @@ import java.util.Iterator;
 public class SI_IK_Root extends Template
 {
     /** number of joints. */
-	public int nbJoints;
+    public int nbJoints;
     /** Array of joint names. */
-	public String[] jointNames;
+    public String[] jointNames;
     /** Effector name. */
-	public String effectorName;
+    public String effectorName;
 
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		nbJoints = ((Integer)it.next()).intValue();
-		jointNames = new String[nbJoints];
-		for (int i=0; i<nbJoints; i++)
-		{
-			jointNames[i] = (String)it.next();
-		}
-		effectorName = (String)it.next();
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        nbJoints = ((Integer)it.next()).intValue();
+        jointNames = new String[nbJoints];
+        for (int i=0; i<nbJoints; i++)
+        {
+            jointNames[i] = (String)it.next();
+        }
+        effectorName = (String)it.next();
+    }
 }

@@ -24,47 +24,47 @@ public class SI_Transform extends Template
     /** Translation vector. */
     public float transX, transY, transZ;
 
-	public SI_Transform()
-	{
-	}
-	
-    public SI_Transform(SI_Transform trans)
+    public SI_Transform()
     {
-    	set(trans);
     }
 
-	public void set(SI_Transform trans)
-	{
-		scalX = trans.scalX;
-		scalY = trans.scalY;
-		scalZ = trans.scalZ;
-		rotX = trans.rotX;
-		rotY = trans.rotY;
-		rotZ = trans.rotZ;
-		transX = trans.transX;
-		transY = trans.transY;
-		transZ = trans.transZ;
-	}
-    
-	@Override
+    public SI_Transform(SI_Transform trans)
+    {
+        set(trans);
+    }
+
+    public void set(SI_Transform trans)
+    {
+        scalX = trans.scalX;
+        scalY = trans.scalY;
+        scalZ = trans.scalZ;
+        rotX = trans.rotX;
+        rotY = trans.rotY;
+        rotZ = trans.rotZ;
+        transX = trans.transX;
+        transY = trans.transY;
+        transZ = trans.transZ;
+    }
+
+    @Override
     public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		scalX = ((Float)it.next()).floatValue();
-		scalY = ((Float)it.next()).floatValue();
-		scalZ = ((Float)it.next()).floatValue();
-		rotX = ((Float)it.next()).floatValue();
-		rotY = ((Float)it.next()).floatValue();
-		rotZ = ((Float)it.next()).floatValue();
-		transX = ((Float)it.next()).floatValue();
-		transY = ((Float)it.next()).floatValue();
-		transZ = ((Float)it.next()).floatValue();
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        scalX = ((Float)it.next()).floatValue();
+        scalY = ((Float)it.next()).floatValue();
+        scalZ = ((Float)it.next()).floatValue();
+        rotX = ((Float)it.next()).floatValue();
+        rotY = ((Float)it.next()).floatValue();
+        rotZ = ((Float)it.next()).floatValue();
+        transX = ((Float)it.next()).floatValue();
+        transY = ((Float)it.next()).floatValue();
+        transZ = ((Float)it.next()).floatValue();
+    }
 
     @Override
     public String toString()
     {
         return template_type + " " + template_info + ", scal(xyz): " + scalX + ", " + scalY + ", " + scalZ + ", rot(xyz): "
-                + rotX + ", " + rotY + ", " + rotZ + ", trans(xyz): " + transX + ", " + transY + ", " + transZ;
+            + rotX + ", " + rotY + ", " + rotZ + ", trans(xyz): " + transX + ", " + transY + ", " + transZ;
     }
 }

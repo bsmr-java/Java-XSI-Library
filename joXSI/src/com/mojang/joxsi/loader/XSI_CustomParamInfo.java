@@ -18,12 +18,12 @@ public class XSI_CustomParamInfo extends Template
      * Minimum value.<br>
      * Note: For string parameters, this value must be set to empty string (““).
      */
-	public float min;
+    public float min;
     /**
      * Maximum value.<br>
      * For string parameters, this value must be set to empty string (““).
      */
-	public float max;
+    public float max;
     /**
      * Bit flags corresponding to the capabilities of the parameter. Same as “siCapabilities” in the object model.
      * Flag values can be cumulative. You can combine them with bitwise “OR”.
@@ -36,20 +36,20 @@ public class XSI_CustomParamInfo extends Template
      * 128 = Not Pset inspectable<br>
      * 256 = Texturable
      */
-	public int capabilities;
+    public int capabilities;
 
-	@Override
+    @Override
     public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		min = ((Number)it.next()).floatValue();
-		max = ((Number)it.next()).floatValue();
-		capabilities = ((Integer)it.next()).intValue();
-		if(capabilities < 0) // TODO xwalk.chm shows very large numbers || capabilities > 415)
-		{
-		    throw new ParseException("Illegal capabilities in XSI_CustomParamInfo: "+capabilities); 
-		}
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        min = ((Number)it.next()).floatValue();
+        max = ((Number)it.next()).floatValue();
+        capabilities = ((Integer)it.next()).intValue();
+        if(capabilities < 0) // TODO xwalk.chm shows very large numbers || capabilities > 415)
+        {
+            throw new ParseException("Illegal capabilities in XSI_CustomParamInfo: "+capabilities); 
+        }
+    }
 
     @Override
     public String toString()

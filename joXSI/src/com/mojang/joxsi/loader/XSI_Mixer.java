@@ -15,9 +15,9 @@ import java.util.Iterator;
 public class XSI_Mixer extends Template
 {
     /** Determines if inter-clip interpolation is enabled or not. */
-	public boolean autoTransition;
+    public boolean autoTransition;
     /** Determines if the animation mixer is active or not. */
-	public boolean active;
+    public boolean active;
     /**
      * Specifies how the mix is calculated. Possible values are:<br>
      * • True = Mixes are a weighted averages. The results are mixes 
@@ -25,7 +25,7 @@ public class XSI_Mixer extends Template
      * • False = Mixes are additive. The values of the separate clips are 
      *    added on top of each other. 
      */
-	public boolean normalize;
+    public boolean normalize;
     /**
      * Quaternions usually result in smoother rotations; however, if you are 
      * mixing two or more rotations and using Quaternion, there may be some 
@@ -34,9 +34,9 @@ public class XSI_Mixer extends Template
      * • True = Rotation values are mixed according to their Quaternion values.<br>
      * • False = Rotation values are mixed according to their Euler values.
      */
-	public boolean quaternionMixing;
+    public boolean quaternionMixing;
     /** True to remove spins. */
-	public boolean removeSpins;
+    public boolean removeSpins;
     /**
      * When you select Quaternion for Rotation Mixing, this option generates more 
      * continuous rotation curves, especially for operations such as plotting/freezing 
@@ -44,24 +44,25 @@ public class XSI_Mixer extends Template
      * • True = Maintain Continuity is enabled.<br>
      * • False = Maintain Continuity is disabled.
      */
-	public boolean maintainContinuity;
+    public boolean maintainContinuity;
 
-	@Override
+    @Override
     public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		autoTransition = ((Integer)it.next()).intValue()!=0;
-		active = ((Integer)it.next()).intValue()!=0;
-		normalize = ((Integer)it.next()).intValue()!=0;
-		quaternionMixing = ((Integer)it.next()).intValue()!=0;
-		removeSpins = ((Integer)it.next()).intValue()!=0;
-		maintainContinuity = ((Integer)it.next()).intValue()!=0;
-	}
+    {
+        Iterator<Object> it = block.values.iterator();
+        autoTransition = ((Integer)it.next()).intValue()!=0;
+        active = ((Integer)it.next()).intValue()!=0;
+        normalize = ((Integer)it.next()).intValue()!=0;
+        quaternionMixing = ((Integer)it.next()).intValue()!=0;
+        removeSpins = ((Integer)it.next()).intValue()!=0;
+        maintainContinuity = ((Integer)it.next()).intValue()!=0;
+    }
 
-	@Override
-    public String toString() {
+    @Override
+    public String toString()
+    {
         return super.toString() + ", autoTransition: " + autoTransition + ", active: " + active + ", normalize: " + normalize
-                + ", quaternionMixing: " + quaternionMixing + ", removeSpins: " + removeSpins + ", maintainContinuity: "
-                + maintainContinuity;
+            + ", quaternionMixing: " + quaternionMixing + ", removeSpins: " + removeSpins + ", maintainContinuity: "
+            + maintainContinuity;
     }
 }

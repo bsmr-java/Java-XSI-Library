@@ -27,23 +27,24 @@ import java.util.Iterator;
 public class SI_Ambience extends Template
 {
     /** The ambient red color in the scene. */
-	public float red;
+    public float red;
     /** The ambient green color in the scene. */
-	public float green;
+    public float green;
     /** The ambient blue color in the scene. */
-	public float blue;
+    public float blue;
 
     @Override
-	public void parse(RawTemplate block)
-	{
-		Iterator<Object> it = block.values.iterator();
-		red = ((Float)it.next()).floatValue();
-		green = ((Float)it.next()).floatValue();
-		blue = ((Float)it.next()).floatValue();
-	}
+    public void parse(RawTemplate block)
+    {
+        Iterator<Object> it = block.values.iterator();
+        red = ((Float)it.next()).floatValue();
+        green = ((Float)it.next()).floatValue();
+        blue = ((Float)it.next()).floatValue();
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         // TODO Auto-generated method stub
         return super.toString() + ", Red: " + red + ", Green: " + green + ", Blue: " + blue;
     }

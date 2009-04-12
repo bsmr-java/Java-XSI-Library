@@ -16,27 +16,27 @@ public class SI_Scene extends Template
      * Specifies whether time values are expressed as frames or seconds.
      * <p>Possible values are: FRAMES | SECONDS
      */
-	public String timing;
+    public String timing;
     /** Start time (in either frames or seconds, depending on the value of the Timing flag) of the scene. */
-	public float start;
+    public float start;
     /** End time (in either frames or seconds, depending on the value of the Timing flag) of the scene. */
-	public float end;
+    public float end;
     /** Frames per second. */
-	public float frameRate;
+    public float frameRate;
 
     @Override
-	public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		timing = (String)it.next();
-		start = ((Number)it.next()).floatValue();
-		end = ((Number)it.next()).floatValue();
-		frameRate = ((Number)it.next()).floatValue();
+    public void parse(RawTemplate block) throws ParseException
+    {
+        Iterator<Object> it = block.values.iterator();
+        timing = (String)it.next();
+        start = ((Number)it.next()).floatValue();
+        end = ((Number)it.next()).floatValue();
+        frameRate = ((Number)it.next()).floatValue();
 
-		if(!timing.equals("FRAMES") &&
-		   !timing.equals("SECONDS"))
-		    throw new ParseException("Illegal timing in SI_Scene: "+timing);
-	}
+        if(!timing.equals("FRAMES") &&
+                !timing.equals("SECONDS"))
+            throw new ParseException("Illegal timing in SI_Scene: "+timing);
+    }
 
     /**
      * Returns the frame rate of this action in frames per second (FPS).

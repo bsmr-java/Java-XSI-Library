@@ -43,14 +43,14 @@ public class SI_FCurve extends Template
      * <p>
      * The number of key values is given by (Dimension * NbKeyValues).
      */
-	public class FCurve implements Serializable
-	{
-		public float[] frames;
-		public float[][] keyValues;
-	}
+    public class FCurve implements Serializable
+    {
+        public float[] frames;
+        public float[][] keyValues;
+    }
 
     /** Name of the object to which the function curves apply. */
-	public String objectName;
+    public String objectName;
     /**
      * Name of the function curves.
      * <p>For cameras (v2.0/v3.0): <br>
@@ -68,18 +68,18 @@ public class SI_FCurve extends Template
      * <p>For materials (v3.0 only):<br>
      * AMBIENT | DIFFUSE | EMMISSIVE | POWER | SPECULAR
      */
-	public String fcurve;
+    public String fcurve;
     /**
      * Possible values are:<br>
      * CONSTANT | HERMITE | LINEAR | CUBIC.
      */
-	public String interpolation;
+    public String interpolation;
     /**
      * Number of vector component fcurves. For example, if there is only the X
      * translation fcurve, then the dimension is 1. If there are fcurves for X,
      * Y, and Z, then the dimension is 3.
      */
-	public int nbFcurves;
+    public int nbFcurves;
     /**
      * Number of values stored for a vector component at a given key.<br>
      * CONSTANT and LINEAR fcurves have one key value for each vector component.<br>
@@ -98,11 +98,11 @@ public class SI_FCurve extends Template
      * <li>right tan Y value</li>
      * </ul>
      */
-	public int nbKeyValues;
+    public int nbKeyValues;
     /** Number of keys. */
-	public int nbKeys;
+    public int nbKeys;
     /** Array of FCurves. */
-	public FCurve[] fcurves;
+    public FCurve[] fcurves;
 
     /**
      * For each key, a comma-separated list beginning with the frame number (an
@@ -114,88 +114,88 @@ public class SI_FCurve extends Template
      * <p>
      * The number of key values is given by (Dimension * NbKeyValues).
      */
-	@Override
+    @Override
     public void parse(RawTemplate block) throws ParseException
-	{
-		Iterator<Object> it = block.values.iterator();
-		objectName = (String)it.next();
-		fcurve = ((String)it.next()).intern();
-		interpolation = (String)it.next();
-		nbFcurves = ((Integer)it.next()).intValue();
-		nbKeyValues = ((Integer)it.next()).intValue();
-		nbKeys = ((Integer)it.next()).intValue();
+    {
+        Iterator<Object> it = block.values.iterator();
+        objectName = (String)it.next();
+        fcurve = ((String)it.next()).intern();
+        interpolation = (String)it.next();
+        nbFcurves = ((Integer)it.next()).intValue();
+        nbKeyValues = ((Integer)it.next()).intValue();
+        nbKeys = ((Integer)it.next()).intValue();
 
-		fcurves = new FCurve[nbFcurves];
+        fcurves = new FCurve[nbFcurves];
 
-		if(!fcurve.equals("INTEREST") &&    // Camera (v2.0, v3.0)
-		   !fcurve.equals("FAR") &&
-		   !fcurve.equals("FOV") &&
-		   !fcurve.equals("NEAR") &&
-		   !fcurve.equals("POSITION") &&
-		   !fcurve.equals("ROLL") &&
-		   !fcurve.equals("CONE") &&        // Lights (v2.0)
-		   !fcurve.equals("SPREAD") &&
-		   !fcurve.equals("COLOR") &&       // Lights (v3.0)
-		   !fcurve.equals("ORIENTATION") &&
-           !fcurve.equals("SCALING-X") &&
-           !fcurve.equals("SCALING-Y") &&
-           !fcurve.equals("SCALING-Z") &&
-		   !fcurve.equals("SCALING") &&
-		   !fcurve.equals("ROTATION") &&
-           !fcurve.equals("TRANSLATION-X") &&
-           !fcurve.equals("TRANSLATION-Y") &&
-           !fcurve.equals("TRANSLATION-Z") &&
-		   !fcurve.equals("TRANSLATION") && // Models (v2.0)
-		   !fcurve.equals("NODEVIS") &&     // Models (v3.0)
-		   !fcurve.equals("START") &&       // Fog (v3.0)
-		   !fcurve.equals("END") &&
-		   !fcurve.equals("AMBIENT") &&     // Materials (v3.0)
-		   !fcurve.equals("DIFFUSE") &&
-		   !fcurve.equals("EMMISSIVE") &&
-		   !fcurve.equals("POWER") &&
-		   !fcurve.equals("SPECULAR") &&
-           !fcurve.equals("ROTATION-X") &&
-           !fcurve.equals("ROTATION-Y") &&
-           !fcurve.equals("ROTATION-Z") &&
-		   !fcurve.endsWith("rotx") &&      // XSI Short Hacks?
-		   !fcurve.endsWith("roty") &&
-		   !fcurve.endsWith("rotz") &&
-		   !fcurve.endsWith("posx") &&
-           !fcurve.endsWith("posy") &&
-           !fcurve.endsWith("posz") &&
-           !fcurve.endsWith("sclx") &&
-           !fcurve.endsWith("scly") &&
-           !fcurve.endsWith("sclz"))
-		    throw new ParseException("Illegal fcurve in SI_FCurve: "+fcurve);
-		if(!interpolation.equals("CONSTANT") &&
-		   !interpolation.equals("HERMITE") &&
-		   !interpolation.equals("LINEAR") &&
-		   !interpolation.equals("CUBIC"))
-		    throw new ParseException("Illegal interpolation in SI_FCurve: "+interpolation);
+        if(!fcurve.equals("INTEREST") &&    // Camera (v2.0, v3.0)
+                !fcurve.equals("FAR") &&
+                !fcurve.equals("FOV") &&
+                !fcurve.equals("NEAR") &&
+                !fcurve.equals("POSITION") &&
+                !fcurve.equals("ROLL") &&
+                !fcurve.equals("CONE") &&        // Lights (v2.0)
+                !fcurve.equals("SPREAD") &&
+                !fcurve.equals("COLOR") &&       // Lights (v3.0)
+                !fcurve.equals("ORIENTATION") &&
+                !fcurve.equals("SCALING-X") &&
+                !fcurve.equals("SCALING-Y") &&
+                !fcurve.equals("SCALING-Z") &&
+                !fcurve.equals("SCALING") &&
+                !fcurve.equals("ROTATION") &&
+                !fcurve.equals("TRANSLATION-X") &&
+                !fcurve.equals("TRANSLATION-Y") &&
+                !fcurve.equals("TRANSLATION-Z") &&
+                !fcurve.equals("TRANSLATION") && // Models (v2.0)
+                !fcurve.equals("NODEVIS") &&     // Models (v3.0)
+                !fcurve.equals("START") &&       // Fog (v3.0)
+                !fcurve.equals("END") &&
+                !fcurve.equals("AMBIENT") &&     // Materials (v3.0)
+                !fcurve.equals("DIFFUSE") &&
+                !fcurve.equals("EMMISSIVE") &&
+                !fcurve.equals("POWER") &&
+                !fcurve.equals("SPECULAR") &&
+                !fcurve.equals("ROTATION-X") &&
+                !fcurve.equals("ROTATION-Y") &&
+                !fcurve.equals("ROTATION-Z") &&
+                !fcurve.endsWith("rotx") &&      // XSI Short Hacks?
+                !fcurve.endsWith("roty") &&
+                !fcurve.endsWith("rotz") &&
+                !fcurve.endsWith("posx") &&
+                !fcurve.endsWith("posy") &&
+                !fcurve.endsWith("posz") &&
+                !fcurve.endsWith("sclx") &&
+                !fcurve.endsWith("scly") &&
+                !fcurve.endsWith("sclz"))
+            throw new ParseException("Illegal fcurve in SI_FCurve: "+fcurve);
+        if(!interpolation.equals("CONSTANT") &&
+                !interpolation.equals("HERMITE") &&
+                !interpolation.equals("LINEAR") &&
+                !interpolation.equals("CUBIC"))
+            throw new ParseException("Illegal interpolation in SI_FCurve: "+interpolation);
 
-		for (int i=0; i<nbFcurves; i++)
-		{
-			fcurves[i] = new FCurve();
-			fcurves[i].frames = new float[nbKeys];
-			fcurves[i].keyValues = new float[nbKeys][nbKeyValues];
+        for (int i=0; i<nbFcurves; i++)
+        {
+            fcurves[i] = new FCurve();
+            fcurves[i].frames = new float[nbKeys];
+            fcurves[i].keyValues = new float[nbKeys][nbKeyValues];
 
-			for (int j=0; j<nbKeys; j++)
-			{
-				fcurves[i].frames[j] = ((Float)it.next()).floatValue();
-				for (int k=0; k<nbKeyValues; k++)
-				{
-					fcurves[i].keyValues[j][k] = ((Float)it.next()).floatValue();
-				}
-			}
-		}
-	}
+            for (int j=0; j<nbKeys; j++)
+            {
+                fcurves[i].frames[j] = ((Float)it.next()).floatValue();
+                for (int k=0; k<nbKeyValues; k++)
+                {
+                    fcurves[i].keyValues[j][k] = ((Float)it.next()).floatValue();
+                }
+            }
+        }
+    }
 
     @Override
-    public String toString() {
-        // TODO Auto-generated method stub
+    public String toString()
+    {
         return super.toString()
-                + " ObjectName: " + objectName + ", fcurve: " + fcurve + ", interpolation: " + interpolation
-                + ", number of Fcurves: " + nbFcurves + ", number of keyvalues: " + nbKeyValues + ", nmber of keys: " + nbKeys;
+            + " ObjectName: " + objectName + ", fcurve: " + fcurve + ", interpolation: " + interpolation
+            + ", number of Fcurves: " + nbFcurves + ", number of keyvalues: " + nbKeyValues + ", nmber of keys: " + nbKeys;
     }
 
 }

@@ -73,7 +73,7 @@ public class Material
      */
     public Material(XSI_Material material, Map<String, XSI_Image> images)
     {
-   	 	XSI_Image image;
+        XSI_Image image;
         name = material.template_info;
         for (Iterator<Template> it = material.getAll(Template.XSI_Shader).iterator(); it.hasNext();)
         {
