@@ -23,6 +23,7 @@
     	<copy todir="${bin.dir}">
 			<fileset dir="${resource.dir}" includes="${resource.files}" />
 		</copy>
+    	<mkdir dir="${dist.dir}"/>
     </target>
         
     <target name="-do-jar" depends="init,compile">
