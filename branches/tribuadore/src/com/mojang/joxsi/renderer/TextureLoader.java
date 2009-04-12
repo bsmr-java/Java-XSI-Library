@@ -4,6 +4,8 @@ import java.util.logging.Logger;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -45,6 +47,17 @@ public class TextureLoader
         this.gl = gl;
         this.glu = glu;
     }
+    
+    /**
+     * Sets the base path of textures.
+     * 
+     * @param basePath
+     *                  base path to textures
+     */
+    public void setBasePath(String basePath)
+    {
+        this.basePath = basePath;
+    }
 
     /**
      * Loads a texture by name, and return its opengl texture object id
@@ -60,7 +73,8 @@ public class TextureLoader
     {
         // Check if an id already exists for this texture name
         Integer i = loadedTextures.get(textureName);
-        if (i != null)
+        
+        if (i != null && i > -1)
         {
             // Yes, it has been loaded before. Return that id.
             return i.intValue();
@@ -73,12 +87,11 @@ public class TextureLoader
                 String textureFile = textureName;
                 
                 if (basePath != null && basePath.length() > 0)
-                {
-                    if (textureFile.charAt(0) != '/')   // it's a relative path
-                        textureFile = basePath + textureFile;
-                }
-                
-                final InputStream lTextureAsStream = getClass().getResourceAsStream("/" + textureFile);
+                    textureFile = basePath + "\\" + textureFile;
+                             
+                //final InputStream lTextureAsStream = getClass().getResourceAsStream(textureFile);
+                final InputStream lTextureAsStream = new FileInputStream(new File(textureFile));
+
                 if (lTextureAsStream == null)
                 {
                     logger.warning("Could not read texture: " + textureFile);

@@ -284,4 +284,14 @@ public class JoglSceneRenderer
         nullattachmentMap.remove(name);
     }
     
+    /**
+     * Returns the TextureLoader being used.
+     * 
+     * @return the TextureLoader being used
+     */
+    public TextureLoader getTextureLoader()
+    {
+        return this.textureLoader;
+    }
+    
 }

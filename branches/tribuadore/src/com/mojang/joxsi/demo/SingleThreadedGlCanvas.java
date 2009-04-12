@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.media.opengl.AWTGraphicsConfiguration;
 import javax.media.opengl.AWTGraphicsDevice;
@@ -29,13 +28,8 @@ import com.mojang.joxsi.renderer.shaders.Program;
  */
 public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
 {
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(SingleThreadedGlCanvas.class.getName());
-
     private GLDrawable drawable;
-
     private GLContext context;
-
     private boolean ok = false;
 
     /**
@@ -194,9 +188,9 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
             int[] lIntArray =
             { 0, 0 };
             gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, lIntArray, 0);
-            if (logger.isLoggable(Level.INFO))
+            if (ModelDisplayer.logger.isLoggable(Level.INFO))
             {
-                logger.info("GL_MAX_TEXTURE_COORDS: " + lIntArray[0]);
+                ModelDisplayer.logger.info("GL_MAX_TEXTURE_COORDS: " + lIntArray[0]);
             }
 
             // Call render loop

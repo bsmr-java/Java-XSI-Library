@@ -15,7 +15,6 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
@@ -38,9 +37,6 @@ import com.mojang.joxsi.loader.ParseException;
  */
 public class ModelScanner
 {
-    /** Logging instance. */
-    private static Logger logger = Logger.getLogger(ModelScanner.class.getName()); 
-
     public static void main(String[] args)
     {
         String rootDir = ".";
