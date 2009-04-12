@@ -12,8 +12,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.FileHandler;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.media.opengl.GL;
@@ -30,7 +32,7 @@ import com.mojang.joxsi.renderer.shaders.*;
 
 /**
  * A simple model displayer demo application.
- *
+ * 
  * @author Notch
  * @author Egal
  * @author Milbo
@@ -38,41 +40,50 @@ import com.mojang.joxsi.renderer.shaders.*;
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
+    // Setup a static logger instance that is available from anywhere to use
+    public final static String LOG_PROPERTIES_FILE = "logging.properties";
+    public final static Logger logger;
 
-    //private static ConsoleHandler ch = new ConsoleHandler();
+    static
+    {
+        // Configure java.util.logging and get a Logger instance
+        System.setProperty("java.util.logging.config.file", LOG_PROPERTIES_FILE);
+        LogManager logManager = LogManager.getLogManager();
+        try
+        {
+            logManager.readConfiguration();
+        }
+        catch (SecurityException e)
+        {
+        }
+        catch (IOException e)
+        {
+        }
+        logger = Logger.getLogger(ModelDisplayer.class.getName());
 
-    private static FileHandler fh;
+    }
 
-    /* * Classname used in some logging statements. */
-    private static final String CLASS_NAME = ModelDisplayer.class.getName();
-
+    // List of Scenes (models) and current displayed Scene pointers
+    private List<Scene> scenes = new ArrayList<Scene>();
     private Scene scene;
     private Scene tool;
     private Scene tool2;
 
+    // JFrame's for the TemplateTree and ModelDisplayerFrame
+    private static JFrame templateTreeFrame;
+    private static ModelDisplayerFrame modelDisplayerFrame;
+    private TemplateTree templateTree;
+
     private int xDragStart;
-
     private int yDragStart;
-
     private float xRot;
-
     private float yRot;
-
     private float xCamera;
-
     private float yCamera;
-
     private float zCamera;
-
     private float zoomDistance = 4.1f;
-
     private static boolean stop = false;
-
     private JoglSceneRenderer sceneRenderer;
-
-    private static long time = 0l;
 
     /** Diffuse scene light zero. */
     private float[] diffuseSceneLight0 = new float[] { 1, 1, 1, 1 };
@@ -90,19 +101,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private float[] positionSceneLight0 = new float[] { 0, 0.7f, 0.7f, 0 };
 
     private boolean moreLight;
-
     private boolean grid;
-
     private boolean vertexshader = false;
-
     private int showModel;
-
     private int showAction;
-
     private boolean blend = true;
+
     /**
-     * If <code>true</code> render the {@link #groundTexture } or a plain
-     * colour. If <code>false</code> then draw a grid.
+     * If <code>true</code> render the {@link #groundTexture } or a plain colour.
+     * If <code>false</code> then draw a grid.
      */
     private boolean drawGround = true;
     /**
@@ -125,12 +132,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * Determines the value for calling glLightModel with parameter
      * GL_LIGHT_MODEL_COLOR_CONTROL. <code>false</code> (GL.GL_SINGLE_COLOR)
      * specifies that a single color is generated from the lighting computation
-     * for a vertex. <code>true</code> (G.#GL_SEPARATE_SPECULAR_COLOR)
-     * specifies that the specular color computation of lighting be stored
-     * separately from the remainder of the lighting computation. The specular
-     * color is summed into the generated fragment's color after the application
-     * of texture mapping (if enabled). The initial value is false
-     * (GL.GL_SINGLE_COLOR).
+     * for a vertex. <code>true</code> (G.#GL_SEPARATE_SPECULAR_COLOR) specifies
+     * that the specular color computation of lighting be stored separately from
+     * the remainder of the lighting computation. The specular color is summed
+     * into the generated fragment's color after the application of texture
+     * mapping (if enabled). The initial value is false (GL.GL_SINGLE_COLOR).
      */
     private boolean useSeparateSpecularColour = false;
     /** The textureLoader. */
@@ -149,12 +155,17 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
     /**
      * TODO JavaDoc.
-     *
+     * 
      * @param scene
      */
-    public ModelDisplayer(Scene scene)
+    public ModelDisplayer()
     {
-        this.scene = scene;
+        templateTreeFrame = new JFrame("Templates");
+        templateTreeFrame.setSize(200, 500);
+        templateTree = new TemplateTree();
+        templateTreeFrame.add(new JScrollPane(templateTree));
+        templateTreeFrame.setVisible(true);
+
         addMouseListener(this);
         addMouseMotionListener(this);
         addMouseWheelListener(this);
@@ -169,36 +180,57 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
-     * TODO JavaDoc.
+     * Sets the currently displaying Scene.
      * 
-     * @param modelNr
+     * @param scene
+     *            index of the Scene to switch to
      */
-    public void setShowModel(int modelNr)
+    public void setShowScene(int sceneIndex)
     {
-        if (modelNr >= scene.models.length)
+        // Give up if index out of bounds
+        if (sceneIndex < 0 || sceneIndex >= this.scenes.size()) return;
+
+        // Set the current Scene instance to the indexed scene
+        this.scene = this.scenes.get(sceneIndex);
+
+        // Make sure the TextureLoader has the right basePath
+        this.sceneRenderer.getTextureLoader().setBasePath(scene.basePath);
+
+        // Set the Tree view to display selected model information
+        templateTree.setTemplate(scene.root);
+    }
+
+    /**
+     * Sets the currently displaying Model.
+     * 
+     * @param modelIndex
+     */
+    public void setShowModel(int modelIndex)
+    {
+        if (modelIndex >= scene.models.length)
         {
             showModel = -1;
-            logger.warning("Illegal Model: " + modelNr + " (Model out of bound, max: " + scene.models.length + ")");
+            logger.warning("Illegal Model: " + modelIndex + " (Model out of bound, max: " + scene.models.length + ")");
         }
 
         else
-            showModel = modelNr;
+            showModel = modelIndex;
         showAction = -1;
     }
 
     /**
      * TODO JavaDoc.
      * 
-     * @param actionNr
+     * @param actionIndex
      */
-    public void setShowAction(int actionNr)
+    public void setShowAction(int actionIndex)
     {
         if (showModel >= 0)
         {
-            if (actionNr >= scene.models[showModel].actions.length)
+            if (actionIndex >= scene.models[showModel].actions.length)
                 showAction = -1;
             else
-                showAction = actionNr;
+                showAction = actionIndex;
         }
         updateAction();
     }
@@ -208,6 +240,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      */
     public void updateAction()
     {
+        // Do nothing if no scene is available
+        if (scene == null) return;
+
         /*
          * Pyro Small change, only do the search when there hasn't been set a
          * model and action which has to be showed
@@ -269,7 +304,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /*
      * (non-Javadoc)
      * 
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     * @see
+     * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
     public void mouseReleased(MouseEvent e)
     {
@@ -316,7 +352,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /*
      * (non-Javadoc)
      * 
-     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+     * @see
+     * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+     * )
      */
     public void mouseDragged(MouseEvent e)
     {
@@ -350,7 +388,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /*
      * (non-Javadoc)
      * 
-     * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+     * @see
+     * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
      */
     public void mouseMoved(MouseEvent e)
     {
@@ -367,11 +406,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         /*
          * String keyString = "key code = " + keyCode + " (" +
          * KeyEvent.getKeyText(keyCode) + ")";
-         *
+         * 
          * int modifiersEx = aEvent.getModifiersEx(); String modString =
          * "extended modifiers = " + modifiersEx; String tmpString =
-         * KeyEvent.getModifiersExText(modifiersEx); if (tmpString.length() > 0) {
-         * modString += " (" + tmpString + ")"; } else { modString += " (no
+         * KeyEvent.getModifiersExText(modifiersEx); if (tmpString.length() > 0)
+         * { modString += " (" + tmpString + ")"; } else { modString += " (no
          * extended modifiers)"; }
          */
         // logger.info("keyPressed: " + keyString + ", " + modString);
@@ -533,32 +572,28 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         // Action action = null;
         // Log some details of the model
-        int lNumberOfModels = 0;
-        if (scene != null && scene.models != null)
-        {
-            lNumberOfModels = scene.models.length;
-        }
-        logger.info("Number of models: " + lNumberOfModels);
-        int lNumberOfEnvelopes = 0;
-        if (scene.envelopes != null)
-        {
-            lNumberOfEnvelopes = scene.envelopes.length;
-        }
-        logger.info("Number of envelopes in the scene: " + lNumberOfEnvelopes);
-        logger.info("Number of images in the scene: " + scene.images.size());
-        logger.info("Number of materials in the scene: " + scene.materials.size());
+        /*
+         * //TRIBUADORE int lNumberOfModels = 0; if (scene != null &&
+         * scene.models != null) { lNumberOfModels = scene.models.length; }
+         * logger.info("Number of models: " + lNumberOfModels); int
+         * lNumberOfEnvelopes = 0; if (scene.envelopes != null) {
+         * lNumberOfEnvelopes = scene.envelopes.length; }
+         * logger.info("Number of envelopes in the scene: " +
+         * lNumberOfEnvelopes); logger.info("Number of images in the scene: " +
+         * scene.images.size());
+         * logger.info("Number of materials in the scene: " +
+         * scene.materials.size());
+         * 
+         * logger.info("Model: " + showModel + "\tAction: " + showAction);
+         */
 
-        logger.info("Model: " + showModel + "\tAction: " + showAction);
-
-        // Create a new JoglSceneRenderer with a default TextureLoader
-        sceneRenderer = new JoglSceneRenderer(gl, new TextureLoader(scene.basePath, gl, glu));
-        if (tool!=null)
-            sceneRenderer.addNullAttachment("R_hand_null", tool); //MDL-Model
-        if (tool2!=null)
-            sceneRenderer.addNullAttachment("L_hand_null", tool2); //MDL-Model
-        
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
+
+        // Create a new JoglSceneRenderer with a default TextureLoader
+        sceneRenderer = new JoglSceneRenderer(gl, textureLoader);
+        if (tool != null) sceneRenderer.addNullAttachment("R_hand_null", tool); // MDL-Model
+        if (tool2 != null) sceneRenderer.addNullAttachment("L_hand_null", tool2); // MDL-Model
 
         int maxTexture[] = new int[1];
         gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, maxTexture, 0);
@@ -568,7 +603,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         // Log the Minimum and Maximum OpenGL Point Size
         float val[] = new float[2];
-        gl.glGetFloatv( GL.GL_POINT_SIZE_RANGE, val, 0  );
+        gl.glGetFloatv(GL.GL_POINT_SIZE_RANGE, val, 0);
         logger.info("min point size=" + val[0] + " max=" + val[1]);
 
         // Check if Anisotropic filtering is supported by the GPU
@@ -585,15 +620,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             useAnisotropicFiltering = false;
             anisotropicFilteringLevel = 0;
         }
-        
-        //SHADER CODE
-        int shaderWaveAttrib = 0;        
+
+        // SHADER CODE
+        int shaderWaveAttrib = 0;
         int waveProgram = 0;
-        
-        try 
+
+        try
         {
             ShaderSourceCode vertexShaderSource = ShaderSourceCode.fromResource("/wave.glsl");
-
             shaderProgram.addVertexShader(gl, vertexShaderSource);
             waveProgram = shaderProgram.link(gl);
         }
@@ -602,9 +636,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             e.printStackTrace();
         }
         logger.info("Compiled and Linked shader");
-        shaderWaveAttrib = shaderProgram.getAttribLocation(gl, waveProgram, "wave");        
+        shaderWaveAttrib = shaderProgram.getAttribLocation(gl, waveProgram, "wave");
         // END SHADER CODE
-        
 
         // Run main loop until the stop flag is raised.
         while (!stop)
@@ -762,7 +795,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // drawn later
                 if (vertexshader)
                 {
-                    //shaderProgram.Enable;
+                    // shaderProgram.Enable;
                     shaderProgram.Enable(gl, waveProgram);
                 }
 
@@ -813,7 +846,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                     }
                     gl.glEnd();
                 }
-                
+
                 // Setting the GPU shader 0 it is like setting on null
                 if (vertexshader)
                 {
@@ -900,13 +933,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
             }
 
-            // Render the scene
-            sceneRenderer.render(scene);
+            // Render the scene if available
+            if (scene != null) sceneRenderer.render(scene);
 
             // Disable lighting
             gl.glDisable(GL.GL_LIGHTING);
 
-            // Calculate the fps.
+            // Calculate the FPS
             frames++;
             long now = System.currentTimeMillis();
             if (now - start > 4000)
@@ -943,6 +976,19 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
+     * Adds a Scene to the list of available Scenes.
+     * 
+     * @param scene
+     *            The Scene
+     */
+    public void addScene(String filename, Scene scene)
+    {
+        scenes.add(scene);
+        modelDisplayerFrame.addModels(filename, scene);
+        setShowScene(this.scenes.size() - 1);
+    }
+
+    /**
      * Main entry point of the application.
      * 
      * @param args
@@ -954,125 +1000,88 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      */
     public static void main(String[] args) throws IOException, ParseException
     {
-        final String methodName = "main";
-        fh = new FileHandler("modeldisplayer.log");
-        //logger.addHandler(ch);
-        logger.addHandler(fh);
-        TimeIt timer = new TimeIt();
         String groundTexture = null;
-
-        Scene scene = null;
         Scene tool = null;
         Scene tool2 = null;
-        if (args.length == 0)
+
+        // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
+        modelDisplayerFrame = new ModelDisplayerFrame("Model Display");
+        ModelDisplayer canvas = new ModelDisplayer();
+        canvas.tool = tool;
+        canvas.tool2 = tool2;
+        canvas.groundTexture = groundTexture;
+        modelDisplayerFrame.getContentPane().add(canvas);
+        new Thread(canvas).start();
+
+        modelDisplayerFrame.setLocation(200, 30);
+        modelDisplayerFrame.setSize(512, 384);
+        modelDisplayerFrame.setVisible(true);
+
+        // Possibly load Models at start for better time measurement
+        for (int i = 0; i < args.length; i++)
         {
-            logger.info("No arguments. We're probably run from webstart, so load the default model");
-            // No arguments. We're probably run from webstart, so load the
-            // default model
-            scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
-        }
-        else
-        {
-            // Just the possibility to load more Models at start for better time
-            // measurement
-            for (int i = 0; i < args.length; i++)
+            if (args[i].startsWith("-")) // Options
             {
-                if (args[i].startsWith("-")) // Options
+                // -ground texture/terrain/enchanted-grass.jpg
+                String option = args[i].substring(1).toLowerCase();
+
+                if (option.equals("ground"))
                 {
-                    // -ground texture/terrain/enchanted-grass.jpg
-                    String option = args[i].substring(1).toLowerCase();
-
-                    if (option.equals("ground"))
+                    if (i + 1 < args.length)
                     {
-                        if (i + 1 < args.length)
-                        {
-                            groundTexture = args[++i];
-                            continue;
-                        }
+                        groundTexture = args[++i];
+                        continue;
                     }
-                    if (option.startsWith("tool")) {
-                        if (i + 1 < args.length)
+                }
+                if (option.startsWith("tool"))
+                {
+                    if (i + 1 < args.length)
+                    {
+                        logger.info("Going to load '" + args[++i] + "' as a tool model");
+                        final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
+                        if (lResourceAsStream != null)
                         {
-                            logger.info("Going to load '" + args[++i] + "' as a tool model");
-                            final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
-                            if (lResourceAsStream != null)
-                            {
-                                logger.info("Going to load '" + args[i] + "' as a tool model from "
-                                        + ModelDisplayer.class.getResource("/" + args[i]));
+                            logger.info("Going to load '" + args[i] + "' as a tool model from "
+                                    + ModelDisplayer.class.getResource("/" + args[i]));
 
-                                String basePath = null;
-                                int lastSlashIndex = args[i].lastIndexOf('/');
-                                if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
+                            String basePath = null;
+                            int lastSlashIndex = args[i].lastIndexOf('/');
+                            if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
 
-                                if (option.equals("tool"))
-                                    tool = Scene.load(lResourceAsStream, basePath);
-                                else if (option.equals("tool2"))
-                                    tool2 = Scene.load(lResourceAsStream, basePath); 
-                                    
-                            }                            
+                            if (option.equals("tool"))
+                                tool = Scene.load(lResourceAsStream, basePath);
+                            else if (option.equals("tool2")) tool2 = Scene.load(lResourceAsStream, basePath);
+
                         }
                     }
                 }
-                // Models
+            }
+            // Models
+            else
+            {
+                logger.info("Going to load '" + args[i] + "' as a model");
+                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
+                if (lResourceAsStream != null)
+                {
+                    logger.info("Going to load '" + args[i] + "' as a model from "
+                            + ModelDisplayer.class.getResource("/" + args[i]));
+
+                    String basePath = null;
+                    int lastSlashIndex = args[i].lastIndexOf('/');
+                    if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
+
+                    canvas.addScene("/", Scene.load(lResourceAsStream, basePath));
+                }
                 else
                 {
-                    logger.info("Going to load '" + args[i] + "' as a model");
-                    final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
-                    if (lResourceAsStream != null)
-                    {
-                        logger.info("Going to load '" + args[i] + "' as a model from "
-                                + ModelDisplayer.class.getResource("/" + args[i]));
-
-                        String basePath = null;
-                        int lastSlashIndex = args[i].lastIndexOf('/');
-                        if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
-
-                        scene = Scene.load(lResourceAsStream, basePath);
-                    }
-                    else
-                    {
-                        logger.info("Model does not exist at location " + args[i]); 
-                        logger.throwing(CLASS_NAME, methodName, new IllegalArgumentException(
-                                "Cannot load model from this location: " + args[i]));
-                    }
+                    logger.info("Model does not exist at location " + args[i]);
                 }
             }
         }
 
-        if (scene == null)
-        {
-            throw new RuntimeException("No scene stored! (scene == null)");
-        }
-
-        time = timer.getTime();
-        logger.info("Time to create scene: " + time + "ms");
-        // Set up a JFrame for a TemplateTree showing the entire scene
-        JFrame frame1 = new JFrame("Templates");
-        frame1.setSize(200, 500);
-        frame1.add(new JScrollPane(new TemplateTree(scene.root)));
-        frame1.setVisible(true);
-
-        // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
-        JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
-        ModelDisplayer canvas = new ModelDisplayer(scene);
-        canvas.tool = tool;
-        canvas.tool2 = tool2;
-        canvas.groundTexture = groundTexture;
-        frame.getContentPane().add(canvas);
-        new Thread(canvas).start();
-
-        frame.setLocation(200, 30);
-        frame.setSize(512, 384);
-        frame.setVisible(true);
-
         // Add a hook for listening to the windowclose event
-        frame.addWindowListener(new WindowAdapter()
+        modelDisplayerFrame.addWindowListener(new WindowAdapter()
         {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.awt.event.WindowAdapter#windowClosing(WindowEvent)
-             */
             @Override
             public void windowClosing(WindowEvent e)
             {

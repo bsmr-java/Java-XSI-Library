@@ -1,6 +1,5 @@
 package com.mojang.joxsi.demo;
 
-import java.util.logging.Logger;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -11,19 +10,26 @@ import com.mojang.joxsi.loader.Template;
  * A class that shows the contents of an XSI template as a JTree
  */
 public class TemplateTree extends JTree
-{
-    /** logger - Logging instance. */
-    private static Logger logger = Logger.getLogger(TemplateTree.class.getName());
+{    
     /**
-     * Creates a new TemplateTree, showing the contents of the specified Template.
-     * 
-     * @param template the template to show
+     * Creates an instance of TemplateTree.
      */
-    public TemplateTree(Template template)
+    public TemplateTree()
+    {
+    }
+    
+    /**
+     * Sets the Template to show in the views TreeModel.
+     * 
+     * @param template
+     *              The template to show
+     */
+    public void setTemplate(Template template)
     {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(template);
         populateTree(root, template);
         setModel(new DefaultTreeModel(root));
+        validate();
     }
 
     /**
@@ -38,7 +44,7 @@ public class TemplateTree extends JTree
         {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(template.templates.get(i));
             node.add(child);
-            logger.info("Added child to tree at level " + child.getLevel() + ": " + child);
+            ModelDisplayer.logger.info("Added child to tree at level " + child.getLevel() + ": " + child);
             populateTree(child, template.templates.get(i));
         }
     }

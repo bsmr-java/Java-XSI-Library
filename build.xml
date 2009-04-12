@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Client" default="default" basedir=".">
+    <description>Builds and deploys the project.</description>
+
+    <target name="default" depends="jar" description="Runs default task"/>
+	
+    <target name="init">
+        <property file="build.properties"/>
+    </target>
+
+    <target name="-pre-compile" depends="init">
+    	<delete dir="${bin.dir}"/>
+        <mkdir dir="${bin.dir}"/>
+    </target>
+    
+    <target name="-do-compile" depends="init,-pre-compile">
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${javac.classpath}" debug="${javac.debug}" optimize="${javac.optimise}" deprecation="${javac.deprecation}"/>
+    </target>
+    
+    <target name="compile" depends="init,-pre-compile,-do-compile" description="Compile project."/>
+
+    <target name="-pre-jar" depends="init">
+    	<copy todir="${bin.dir}">
+			<fileset dir="${resource.dir}" includes="${resource.files}" />
+		</copy>
+    </target>
+        
+    <target name="-do-jar" depends="init,compile">
+        <jar destfile="${dist.lib}" basedir="${bin.dir}" compress="${jar.compress}">
+        	<manifest>
+        		<attribute name="Main-Class" value="${manifest.mainclass}"/>
+        		<attribute name="Class-Path" value="${manifest.classpath}"/>
+        	</manifest>
+    	</jar>
+    </target>
+    
+    <target name="-post-jar">
+		<copy todir="${dist.dir}">
+			<fileset dir="${jogl.native.dir}" includes="${native.libs}" />
+		</copy>
+    	<copy todir="${dist.dir}">
+    		<fileset file="${jogl.jar}"/>
+    	</copy>
+    	<copy todir="${dist.dir}">
+    		<fileset file="${gluegen-rt.jar}"/>
+    	</copy>
+    	<copy todir="${dist.dir}">
+			<fileset file="logging.properties" />
+		</copy>
+    	<delete dir="${dist.dir}/**/.svn" />
+    </target>
+
+    <target name="jar" depends="init,compile,-pre-jar,-do-jar,-post-jar" description="Build distribution."/>
+
+</project>
