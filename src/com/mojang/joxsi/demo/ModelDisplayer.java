@@ -10,12 +10,15 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.media.opengl.GL;
@@ -40,32 +43,16 @@ import com.mojang.joxsi.renderer.shaders.*;
 public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
-    // Setup a static logger instance that is available from anywhere to use
-    public final static String LOG_PROPERTIES_FILE = "logging.properties";
-    public final static Logger logger;
-
-    static
-    {
-        // Configure java.util.logging and get a Logger instance
-        System.setProperty("java.util.logging.config.file", LOG_PROPERTIES_FILE);
-        LogManager logManager = LogManager.getLogManager();
-        try
-        {
-            logManager.readConfiguration();
-        }
-        catch (SecurityException e)
-        {
-        }
-        catch (IOException e)
-        {
-        }
-        logger = Logger.getLogger(ModelDisplayer.class.getName());
-
-    }
+    /** logger - Logging instance. */
+    private final static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
+ 
+    private final static String WINDOW_TITLE = "Model Display";
 
     // List of Scenes (models) and current displayed Scene pointers
-    private List<Scene> scenes = new ArrayList<Scene>();
+    private List<String> xsiorder = new ArrayList<String>();
+    private Map<String, Scene> scenes = new HashMap<String, Scene>();
     private Scene scene;
+    private String currentXSIPath = null;
     private Scene tool;
     private Scene tool2;
 
@@ -152,6 +139,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private int SIZE = 32;
 
     private float[][][] mesh = new float[SIZE][SIZE][3];
+    
+    // Maximum allowed recent XSIs
+    private final static int RECENTXSI_MAX = 10;
 
     /**
      * TODO JavaDoc.
@@ -182,22 +172,43 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /**
      * Sets the currently displaying Scene.
      * 
-     * @param scene
-     *            index of the Scene to switch to
+     * @param xsipath
+     *              xsipath of scene
      */
-    public void setShowScene(int sceneIndex)
+    public void setShowScene(String xsipath)
     {
-        // Give up if index out of bounds
-        if (sceneIndex < 0 || sceneIndex >= this.scenes.size()) return;
+        // Have we already loaded the Scene?
+        if (!scenes.containsKey(xsipath))
+        {
+            try
+            {
+                File file = new File(xsipath);
+                Scene scene = Scene.load(new FileInputStream(file), file.getParent());
+                xsiorder.add(xsipath);
+                scenes.put(xsipath, scene);
+            }
+            catch (Exception e)
+            {
+                return;
+            }
+        }
 
-        // Set the current Scene instance to the indexed scene
-        this.scene = this.scenes.get(sceneIndex);
-
-        // Make sure the TextureLoader has the right basePath
-        this.sceneRenderer.getTextureLoader().setBasePath(scene.basePath);
-
+        // Update recent XSIs
+        xsiorder.remove(xsipath);
+        xsiorder.add(xsipath);
+        while (xsiorder.size() > RECENTXSI_MAX)
+            scenes.remove(xsiorder.remove(0));
+        ModelDisplayerProperties.updateRecentXSI(xsiorder);
+        modelDisplayerFrame.updateModels(xsiorder, scenes);
+                
+        // Set the current Scene instance to the specified Scene
+        this.scene = this.scenes.get(xsipath);
+        
         // Set the Tree view to display selected model information
         templateTree.setTemplate(scene.root);
+        
+        currentXSIPath = xsipath;
+        modelDisplayerFrame.setTitle(WINDOW_TITLE + " - " + currentXSIPath);
     }
 
     /**
@@ -974,18 +985,38 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
         }
     }
-
+    
     /**
-     * Adds a Scene to the list of available Scenes.
+     * Unloads the specified XSI model.
      * 
-     * @param scene
-     *            The Scene
+     * @param xsipath
+     *              path of XSI model to unload
      */
-    public void addScene(String filename, Scene scene)
+    public void closeScene(String xsipath)
     {
-        scenes.add(scene);
-        modelDisplayerFrame.addModels(filename, scene);
-        setShowScene(this.scenes.size() - 1);
+        xsiorder.remove(xsipath);
+        scenes.remove(xsipath);
+        ModelDisplayerProperties.updateRecentXSI(xsiorder);
+        modelDisplayerFrame.updateModels(xsiorder, scenes);
+    }
+    
+    /**
+     * Closes the currently displayed Scene.
+     */
+    public void closeCurrentScene()
+    {
+        if (currentXSIPath == null)
+            return;
+        closeScene(currentXSIPath);
+        if (xsiorder.size() > 0)
+            setShowScene(xsiorder.get(xsiorder.size() - 1));
+        else
+        {
+            scene = null;
+            templateTree.setTemplate(null);
+            currentXSIPath = null;
+            modelDisplayerFrame.setTitle(WINDOW_TITLE);
+        }
     }
 
     /**
@@ -1005,7 +1036,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         Scene tool2 = null;
 
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
-        modelDisplayerFrame = new ModelDisplayerFrame("Model Display");
+        modelDisplayerFrame = new ModelDisplayerFrame(WINDOW_TITLE);
         ModelDisplayer canvas = new ModelDisplayer();
         canvas.tool = tool;
         canvas.tool2 = tool2;
@@ -1017,6 +1048,12 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         modelDisplayerFrame.setSize(512, 384);
         modelDisplayerFrame.setVisible(true);
 
+        // Load all the recently opened models
+        List<String> recentXSIs = ModelDisplayerProperties.getRecentXSIs();
+        ModelDisplayerProperties.clearRecentXSIs();
+        for (String xsipath : recentXSIs)
+            canvas.setShowScene(xsipath);
+        
         // Possibly load Models at start for better time measurement
         for (int i = 0; i < args.length; i++)
         {
@@ -1058,24 +1095,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             }
             // Models
             else
-            {
+            {               
+                // Command-line call specifies a model to load
                 logger.info("Going to load '" + args[i] + "' as a model");
-                final InputStream lResourceAsStream = ModelDisplayer.class.getResourceAsStream("/" + args[i]);
-                if (lResourceAsStream != null)
-                {
-                    logger.info("Going to load '" + args[i] + "' as a model from "
-                            + ModelDisplayer.class.getResource("/" + args[i]));
-
-                    String basePath = null;
-                    int lastSlashIndex = args[i].lastIndexOf('/');
-                    if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
-
-                    canvas.addScene("/", Scene.load(lResourceAsStream, basePath));
-                }
-                else
-                {
-                    logger.info("Model does not exist at location " + args[i]);
-                }
+                File file = new File(args[i]);
+                canvas.setShowScene(file.getAbsolutePath());
             }
         }
 
