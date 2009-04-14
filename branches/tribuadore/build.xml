@@ -21,7 +21,7 @@
 
     <target name="-pre-jar" depends="init">
     	<copy todir="${bin.dir}">
-			<fileset dir="${resource.dir}" includes="${resource.files}" />
+			<fileset dir="sample-models" includes="wave.glsl" />
 		</copy>
     	<mkdir dir="${dist.dir}"/>
     </target>
@@ -46,7 +46,7 @@
     		<fileset file="${gluegen-rt.jar}"/>
     	</copy>
     	<copy todir="${dist.dir}">
-			<fileset file="logging.properties" />
+			<fileset dir="${resources.dir}" />
 		</copy>
     	<delete dir="${dist.dir}/**/.svn" />
     </target>

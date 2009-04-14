@@ -1,19 +1,14 @@
 package com.mojang.joxsi.demo;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import com.mojang.joxsi.Scene;
-import com.mojang.joxsi.loader.ParseException;
-
 /**
- * Provides a prompt for users to select .xsi file from the file system.
- * If a file is chosen, all models it contains are loaded and added the list
- * of known models by calling ModelDisplayer.addScene().
+ * Provides a prompt for users to select .xsi files from the file system.
+ * If a file is chosen, all models it contains are loaded and added to the
+ * list of known models by calling ModelDisplayer.addScene().
  * 
  * @author Tribuadore
  */
@@ -59,20 +54,13 @@ public class OpenXSI
         fc.addChoosableFileFilter(new OpenXSI.XSIFilter());
         fc.setAcceptAllFileFilterUsed(false);
         
-        // If a file is chosen, load it using Scene.load() and add it to the
-        // loaded models using ModelDisplayer.addScene().
+        // If a file is chosen, add it to ModelDisplayer
         if (fc.showOpenDialog(mdf) == JFileChooser.APPROVE_OPTION)
         {
-            try
-            {
-                File file = fc.getSelectedFile();
-                FileInputStream xsi = new FileInputStream(file);
-                Scene model = Scene.load(xsi, file.getParent());                
-                mdf.getModelDisplayer().addScene(file.getName(), model);                
-                OpenXSI.staticpath = file.getParent();
-            }
-            catch (IOException e) {}
-            catch (ParseException e) {}
+            File file = fc.getSelectedFile();              
+            mdf.getModelDisplayer().setShowScene(file.getPath());
+            ModelDisplayerProperties.save();
+            OpenXSI.staticpath = file.getParent();
         }
     }
 }

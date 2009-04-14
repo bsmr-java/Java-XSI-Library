@@ -111,6 +111,7 @@ public class JoglSceneRenderer
         if (triangleList.vertices == 0) return; // This should probably be done before calling this method
 
         // Switch to the right material.
+        textureLoader.setBasePath(triangleList.scene.basePath);
         setupMaterial(triangleList.scene.getMaterial(triangleList.material));
 
         // Build the buffers for the triangle list.

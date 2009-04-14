@@ -3,6 +3,9 @@ package com.mojang.joxsi.demo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,12 +17,14 @@ import com.mojang.joxsi.Scene;
 
 public class ModelDisplayerFrame extends JFrame implements ActionListener
 {
+    /** logger - Logging instance. */
+    private final static Logger logger = Logger.getLogger(ModelDisplayerFrame.class.getName());
+    
+    private final static String ACTION_ID_SEPERATOR = "___";
     private JMenu jmModels;
-    private int sceneCount;
 
     ModelDisplayerFrame(String title)
     {
-        this.sceneCount = 0;
         this.setTitle(title);
         this.setJMenuBar(createMenuBar());
     }
@@ -49,10 +54,12 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
         jmFile.setMnemonic(KeyEvent.VK_F);
         jmFile.getPopupMenu().setLightWeightPopupEnabled(false);
         jmFile.add(createMenuItem("Open XSI...", KeyEvent.VK_O, "Open XSI"));
+        jmFile.add(createMenuItem("Close", KeyEvent.VK_C, "Close"));
         jmFile.add(createMenuItem("Exit", KeyEvent.VK_X, "Exit"));
 
         // Models section
         this.jmModels = new JMenu("Models");
+        jmFile.setMnemonic(KeyEvent.VK_M);
         jmModels.getPopupMenu().setLightWeightPopupEnabled(false);
 
         /**
@@ -79,41 +86,49 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
     }
 
     /**
-     * Addes models in the specified Scene to the Models menu.
+     * Updates the Models menu.
      * 
-     * @param scene
+     * @param xsiorder
+     *              ordered list of xsi path's
+     * @param scenes
+     *              map of xsi path's to Scene
      */
-    public void addModels(String filename, Scene scene)
+    public void updateModels(List<String> xsiorder, Map<String, Scene> scenes)
     {
-        Model[] models = scene.models;
         String action;
         String text;
+        int scenenum = 0;
         
-        for (int i = 0; i < models.length; i++)
+        jmModels.removeAll();
+        
+        for (String xsipath : xsiorder)
         {
-            if (models[i].actions.length > 0)
-            {
-                text = models[i].name + " [" + filename + "]";
-                JMenu jmModelSub = new JMenu(text);
-                jmModelSub.getPopupMenu().setLightWeightPopupEnabled(false);
-                for (int j = 0; j < models[i].actions.length; j++)
-                {
-                    text = models[i].actions[j].getName();
-                    action = "scene_" + sceneCount + "_model_" + i + "_action_" + j;
-                    jmModelSub.add(createMenuItem(text, action));
-                }
-                this.jmModels.add(jmModelSub);
-            }
-            else
-            {
-                text = models[i].name + " [" + filename + "]";
-                action = "scene_" + sceneCount + "_model_" + i;
-                this.jmModels.add(createMenuItem(text, action));
-            }
-        }
+            Model[] models = scenes.get(xsipath).models;
         
-        // Increment the Scene counter
-        sceneCount++;
+            for (int i = 0; i < models.length; i++)
+            {
+                text = scenenum + ". " +  models[i].name + " [" + xsipath + "]";
+                if (models[i].actions.length > 0)
+                {
+                    JMenu jmModelSub = new JMenu(text);
+                    jmModelSub.getPopupMenu().setLightWeightPopupEnabled(false);
+                    for (int j = 0; j < models[i].actions.length; j++)
+                    {
+                        text = models[i].actions[j].getName();
+                        action = "scene" + ACTION_ID_SEPERATOR + xsipath + ACTION_ID_SEPERATOR + "model" + ACTION_ID_SEPERATOR+ i + ACTION_ID_SEPERATOR + "action" + ACTION_ID_SEPERATOR + j;
+                        jmModelSub.add(createMenuItem(text, action));
+                    }
+                    this.jmModels.add(jmModelSub);
+                }
+                else
+                {
+                    action = "scene" + ACTION_ID_SEPERATOR + xsipath + ACTION_ID_SEPERATOR + "model" + ACTION_ID_SEPERATOR + i;
+                    this.jmModels.add(createMenuItem(text, action));
+                }
+            }
+            
+            scenenum++;
+        }
     }
 
     /*
@@ -128,23 +143,23 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
         String action = e.getActionCommand();
         if (action == null)
         {
-            ModelDisplayer.logger.info("Empty ActionCommand ");
+            logger.info("Empty ActionCommand ");
             return;
         }
         else
         {
-            ModelDisplayer.logger.info("ActionCommand: " + action + " source: " + e.getSource());
+            logger.info("ActionCommand: " + action + " source: " + e.getSource());
         }
 
         if (action.startsWith("scene_"))
         {
             // Start the model specified after model_ and the action specified
             // after action_
-            String[] nextToDo = action.split("_");
-            int selectedScene = -1;
+            String[] nextToDo = action.split(ACTION_ID_SEPERATOR);
+            String selectedScene = null;
             int selectedModel = -1;
             int selectedAction = -1;
-            if (nextToDo.length >= 2) selectedScene = Integer.parseInt(nextToDo[1]);
+            if (nextToDo.length >= 2) selectedScene = nextToDo[1];
             if (nextToDo.length >= 4) selectedModel = Integer.parseInt(nextToDo[3]);
             if (nextToDo.length >= 6) selectedAction = Integer.parseInt(nextToDo[5]);
             ModelDisplayer md = this.getModelDisplayer();
@@ -157,14 +172,11 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
         }
 
         if (action.equals("Open XSI"))
-        {
             OpenXSI.open(this);
-        }
+        else if (action.equals("Close"))
+            getModelDisplayer().closeCurrentScene();
         else if (action.equals("Exit"))
-        {
-            ModelDisplayer md = this.getModelDisplayer();
-            md.stopProgram();
-        }
+            getModelDisplayer().stopProgram();
     }
 
     public ModelDisplayer getModelDisplayer()
