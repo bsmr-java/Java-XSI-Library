@@ -1,12 +1,16 @@
 package com.mojang.joxsi;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.joxsi.demo.ModelDisplayer;
 import com.mojang.joxsi.loader.DotXSILoader;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.loader.RootTemplate;
@@ -79,7 +83,50 @@ public class Scene
     {
         return new Scene(DotXSILoader.load(in), basePath);
     }
-
+    
+    /**
+     * Factory method for loading a Scene from an xsi path.
+     *
+     * <p>This method calls new Scene(DotXSILoader.load(in), basePath);
+     *
+     * @param xsipath A file or class path, relative or absolute, to an XSI file
+     * @return a new Scene.
+     * @throws IOException if there's an io error.
+     * @throws ParseException if the parsing fails for any reason
+     */
+    public static Scene load(String xsipath) throws IOException, ParseException
+    {
+        InputStream in = null;
+        
+        // First try to file the xsipath as a class path
+        URL url = ModelDisplayer.class.getResource(xsipath);
+        if (url != null)
+            in = url.openStream();
+        
+        // If that doesn't work, try to find it as a file path
+        else
+        {
+            File file = new File(xsipath);
+            if (!file.exists())
+                throw new IOException("Unable to find " + xsipath);
+            in = new FileInputStream(file);
+        }
+        
+        // Get the base path of the xsi file
+        int last = -1;
+        int next = -1;
+        do
+        {
+            next = xsipath.indexOf("/", last + 1);
+            if (next == -1)
+                next = xsipath.indexOf("\\", last + 1);
+            if (next != -1)
+                last = next;
+        } while (next > -1);
+                
+        return Scene.load(in, (last > -1) ? xsipath.substring(0, last + 1) : "/");
+    }
+    
     /**
      * Creates a new Scene from the specified root template.
      *

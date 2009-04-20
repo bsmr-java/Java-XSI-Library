@@ -31,6 +31,10 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
 {
     /** logger - Logging instance. */
     private final static Logger logger = Logger.getLogger(SingleThreadedGlCanvas.class.getName());
+
+    static {
+        logger.setLevel(Level.OFF);
+    }
     
     private GLDrawable drawable;
     private GLContext context;

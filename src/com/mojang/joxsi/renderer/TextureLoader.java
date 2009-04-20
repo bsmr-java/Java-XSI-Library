@@ -1,5 +1,6 @@
 package com.mojang.joxsi.renderer;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -24,6 +25,11 @@ import com.sun.opengl.util.BufferUtil;
 public class TextureLoader
 {
     private static Logger logger = Logger.getLogger("com.mojang.joxsi.demo");
+
+    static {
+        logger.setLevel(Level.OFF);
+    }
+    
     private GL gl;
     private GLU glu;
     private Map<String,Integer> loadedTextures = new HashMap<String,Integer>();

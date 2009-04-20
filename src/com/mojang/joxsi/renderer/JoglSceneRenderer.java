@@ -44,7 +44,7 @@ public class JoglSceneRenderer
      *        the model to be rendered
      */
     private void renderModel(Model model)
-    {
+    {        
         // If the model has an active transform, push the matrix and apply it.
         if (model.animated != null)
         {
@@ -54,7 +54,7 @@ public class JoglSceneRenderer
         if (nullattachmentMap.containsKey(model.name)) 
         {
            render(nullattachmentMap.get(model.name));
-        }
+        }        
         
         // Render all trianglelists in all meshes.
         for (int i = 0; i < model.meshes.length; i++)
@@ -246,7 +246,7 @@ public class JoglSceneRenderer
      *        the scene to be rendered
      */
     public void render(Scene scene)
-    {
+    {        
         // If there are any envelopes, calculate their deformer matrices
         if (scene.envelopes != null)
         {
@@ -266,6 +266,7 @@ public class JoglSceneRenderer
         {
             renderModel(scene.models[i]);
         }
+        
     }
     
     /**
