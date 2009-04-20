@@ -10,8 +10,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 {
     /** logger - Logging instance. */
     private final static Logger logger = Logger.getLogger(ModelDisplayer.class.getName());
- 
+     
     private final static String WINDOW_TITLE = "Model Display";
 
     // List of Scenes (models) and current displayed Scene pointers
@@ -115,6 +113,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private boolean useAnisotropicFiltering = false;
     /** How much Anisotropic Filtering to use. */
     private int anisotropicFilteringLevel = 0;
+    
     /**
      * Determines the value for calling glLightModel with parameter
      * GL_LIGHT_MODEL_COLOR_CONTROL. <code>false</code> (GL.GL_SINGLE_COLOR)
@@ -144,9 +143,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private final static int RECENTXSI_MAX = 10;
 
     /**
-     * TODO JavaDoc.
-     * 
-     * @param scene
+     * Creates an instance of ModelDisplayer.
      */
     public ModelDisplayer()
     {
@@ -181,14 +178,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         if (!scenes.containsKey(xsipath))
         {
             try
-            {
-                File file = new File(xsipath);
-                Scene scene = Scene.load(new FileInputStream(file), file.getParent());
+            {   
+                Scene scene = Scene.load(xsipath);
                 xsiorder.add(xsipath);
                 scenes.put(xsipath, scene);
             }
             catch (Exception e)
             {
+                logger.warning(e.getMessage());
                 return;
             }
         }
@@ -212,7 +209,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
-     * Sets the currently displaying Model.
+     * Sets the current Model.
      * 
      * @param modelIndex
      */
@@ -230,7 +227,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
-     * TODO JavaDoc.
+     * Sets the current Action.
      * 
      * @param actionIndex
      */
@@ -247,7 +244,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     }
 
     /**
-     * TODO JavaDoc.
+     * Updates this.action to the correct action.  
      */
     public void updateAction()
     {
@@ -583,20 +580,25 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
         // Action action = null;
         // Log some details of the model
-        /*
-         * //TRIBUADORE int lNumberOfModels = 0; if (scene != null &&
-         * scene.models != null) { lNumberOfModels = scene.models.length; }
-         * logger.info("Number of models: " + lNumberOfModels); int
-         * lNumberOfEnvelopes = 0; if (scene.envelopes != null) {
-         * lNumberOfEnvelopes = scene.envelopes.length; }
-         * logger.info("Number of envelopes in the scene: " +
-         * lNumberOfEnvelopes); logger.info("Number of images in the scene: " +
-         * scene.images.size());
-         * logger.info("Number of materials in the scene: " +
-         * scene.materials.size());
-         * 
-         * logger.info("Model: " + showModel + "\tAction: " + showAction);
-         */
+        int lNumberOfModels = 0; if (scene != null &&
+        scene.models != null) { lNumberOfModels = scene.models.length; }
+        logger.info("Number of models: " + lNumberOfModels); int
+        lNumberOfEnvelopes = 0;
+        if (scene != null)
+        {
+            if (scene.envelopes != null)
+            {
+                lNumberOfEnvelopes = scene.envelopes.length;
+                logger.info("Number of envelopes in the scene: " +
+        lNumberOfEnvelopes);
+            }
+            logger.info("Number of images in the scene: " +
+        scene.images.size());
+            logger.info("Number of materials in the scene: " +
+        scene.materials.size());
+        }
+    
+        logger.info("Model: " + showModel + "\tAction: " + showAction);
 
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
@@ -959,7 +961,6 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 start = now;
                 // start += 4000;
                 if (logger.isLoggable(Level.FINEST)) logger.finest(frames / 4 + " fps");
-                // TODO
                 logger.info(frames / 4 + " fps");
                 frames = 0;
             }
@@ -1098,8 +1099,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             {               
                 // Command-line call specifies a model to load
                 logger.info("Going to load '" + args[i] + "' as a model");
-                File file = new File(args[i]);
-                canvas.setShowScene(file.getAbsolutePath());
+                canvas.setShowScene(args[i]);
             }
         }
 

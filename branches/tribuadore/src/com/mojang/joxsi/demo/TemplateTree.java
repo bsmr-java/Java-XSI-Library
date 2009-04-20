@@ -1,5 +1,6 @@
 package com.mojang.joxsi.demo;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JTree;
@@ -15,6 +16,10 @@ public class TemplateTree extends JTree
 {
     /** logger - Logging instance. */
     private final static Logger logger = Logger.getLogger(TemplateTree.class.getName());
+
+    static {
+        logger.setLevel(Level.OFF);
+    }
     
     /**
      * Creates an instance of TemplateTree.

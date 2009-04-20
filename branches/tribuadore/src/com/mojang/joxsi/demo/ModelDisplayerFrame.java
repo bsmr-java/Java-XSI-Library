@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
@@ -19,6 +20,10 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
 {
     /** logger - Logging instance. */
     private final static Logger logger = Logger.getLogger(ModelDisplayerFrame.class.getName());
+
+    static {
+        logger.setLevel(Level.OFF);
+    }
     
     private final static String ACTION_ID_SEPERATOR = "___";
     private JMenu jmModels;
@@ -62,25 +67,8 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
         jmFile.setMnemonic(KeyEvent.VK_M);
         jmModels.getPopupMenu().setLightWeightPopupEnabled(false);
 
-        /**
-         * Pyro Ditched the whole Animation menu as they are dependent on the
-         * model which is showed at the current time. I made the Model menu
-         * contain submenu's which show which animation can be shown.
-         */
-        // Animations Section
-        /*
-         * JMenu jmAnimations = new JMenu("Animations");
-         * jmAnimations.getPopupMenu().setLightWeightPopupEnabled(false); //
-         * TODO Dynamic list based on animations in xsi jmAnimations.add(
-         * createMenuItem("Animation 1",KeyEvent.VK_1, "Animation 1"));
-         * jmAnimations.add( createMenuItem("Animation 2",KeyEvent.VK_2,
-         * "Animation 2")); jmAnimations.add(
-         * createMenuItem("Animation 3",KeyEvent.VK_3, "Animation 3"));
-         */
-
         jmb.add(jmFile);
         jmb.add(jmModels);
-        // jmb.add(jmAnimations);
 
         return jmb;
     }
@@ -151,7 +139,7 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
             logger.info("ActionCommand: " + action + " source: " + e.getSource());
         }
 
-        if (action.startsWith("scene_"))
+        if (action.startsWith("scene"))
         {
             // Start the model specified after model_ and the action specified
             // after action_
