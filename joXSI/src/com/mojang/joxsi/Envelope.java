@@ -14,7 +14,7 @@ public class Envelope
 {
     /** logger - Logging instance. Not used yet just a placeholder for later use*/
     // private static Logger logger = Logger.getLogger(Envelope.class.getName());
-    public VertexWeight[] vertexWeights;
+    VertexWeight[] vertexWeights;
     public Model envelopeModel;
     public Model deformerModel;
     public float[] deformationMatrix = new float[16];

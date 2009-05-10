@@ -27,6 +27,14 @@ public class BumpMapEffect
     private int[][] bumpY;
     private int w;
     private int h;
+    // is called every time the view is changed, this code shouldnt be here
+    // is just to understand and get some oversight,... should be in the client
+    private int[] erg = new int[w * h];
+    private int pos = 0;
+
+    private int px = 0;
+    private int py = 0;
+    private int f;
 
     public BumpMapEffect(XSI_Image incomingImg)
     {
@@ -79,15 +87,6 @@ public class BumpMapEffect
             }
         }
     }
-
-    // is called every time the view is changed, this code shouldnt be here
-    // is just to understand and get some oversight,... should be in the client
-    int[] erg = new int[w * h];
-    int pos = 0;
-
-    int px = 0;
-    int py = 0;
-    int f;
 
     public void paintComponent(Graphics graphics)
     {

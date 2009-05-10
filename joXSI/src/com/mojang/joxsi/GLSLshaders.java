@@ -30,14 +30,14 @@ public class GLSLshaders
     private static Logger logger = Logger.getLogger(GLSLshaders.class.getName());
 
     GL gl = null;
-    public boolean fragmentShaderSupported;
-    public boolean vertexShaderSupported;
-    public int programObjectVertex;
-    public int programObjectFragment;
-    public int waveAttrib;
-    public int textureAttrib;
+    private boolean fragmentShaderSupported;
+    private boolean vertexShaderSupported;
+    private int programObjectVertex;
+    private int programObjectFragment;
+    private int waveAttrib;
+    private int textureAttrib;
 
-    public List<GLSLshaders> shaderVector = new Vector<GLSLshaders>();
+    private List<GLSLshaders> shaderVector = new Vector<GLSLshaders>();
 
     public GLSLshaders(GL gl)
     {
