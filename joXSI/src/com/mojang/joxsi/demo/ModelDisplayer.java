@@ -26,7 +26,8 @@ import com.mojang.joxsi.Scene;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
-import com.mojang.joxsi.renderer.shaders.*;
+import com.mojang.joxsi.renderer.shaders.Program;
+import com.mojang.joxsi.renderer.shaders.ShaderSourceCode;
 
 /**
  * A simple model displayer demo application.
@@ -35,7 +36,7 @@ import com.mojang.joxsi.renderer.shaders.*;
  * @author Egal
  * @author Milbo
  */
-public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
+public final class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListener, MouseMotionListener, MouseWheelListener,
         KeyListener
 {
     /** logger - Logging instance. */
@@ -72,7 +73,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
     private JoglSceneRenderer sceneRenderer;
 
-    private static long time = 0l;
+    private static long time = 0L;
 
     /** Diffuse scene light zero. */
     private float[] diffuseSceneLight0 = new float[] { 1, 1, 1, 1 };
@@ -86,7 +87,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     /** Should the Ambient scene light zero be shown. */
     private boolean ambientSceneLightFlag0 = true;
 
-    /** Position of the Scene light zero */
+    /** Position of the Scene light zero. */
     private float[] positionSceneLight0 = new float[] { 0, 0.7f, 0.7f, 0 };
 
     private boolean moreLight;
@@ -139,7 +140,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
     private Action action;
 
     // Hmm just for testing
-    private static final float TWO_PI = (float) (Math.PI * 2);
+    private static final float TWO_PI = (float)(Math.PI * 2);
 
     private float wave_movement = 0.0f;
     /** Size of the grid on the ground. */
@@ -152,7 +153,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      *
      * @param scene
      */
-    public ModelDisplayer(Scene scene)
+    public ModelDisplayer(final Scene scene)
     {
         this.scene = scene;
         addMouseListener(this);
@@ -173,7 +174,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * 
      * @param modelNr
      */
-    public void setShowModel(int modelNr)
+    public void setShowModel(final int modelNr)
     {
         if (modelNr >= scene.models.length)
         {
@@ -191,7 +192,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * 
      * @param actionNr
      */
-    public void setShowAction(int actionNr)
+    public void setShowAction(final int actionNr)
     {
         if (showModel >= 0)
         {
@@ -221,7 +222,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 logger.info("Number of actions in model " + i + ": " + scene.models[i].actions.length);
                 for (int j = 0; j < scene.models[i].actions.length; j++)
                 {
-                    Action a = scene.models[i].actions[j];
+                    final Action a = scene.models[i].actions[j];
                     if (action == null)
                     {
                         action = a;
@@ -246,50 +247,40 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         stop = true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
-    public void mouseClicked(MouseEvent e)
+    public void mouseClicked(final MouseEvent e)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
-    public void mousePressed(MouseEvent e)
+    public void mousePressed(final MouseEvent e)
     {
         xDragStart = e.getX();
         yDragStart = e.getY();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
-    public void mouseReleased(MouseEvent e)
+    public void mouseReleased(final MouseEvent e)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
      */
-    public void mouseEntered(MouseEvent e)
+    public void mouseEntered(final MouseEvent e)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
      */
-    public void mouseExited(MouseEvent e)
+    public void mouseExited(final MouseEvent e)
     {
     }
 
@@ -299,9 +290,9 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * 
      * @see java.awt.event.MouseWheelListener#mouseWheelMoved(java.awt.event.MouseWheelEvent)
      */
-    public void mouseWheelMoved(MouseWheelEvent e)
+    public void mouseWheelMoved(final MouseWheelEvent e)
     {
-        int modifiersEx = e.getModifiersEx();
+        final int modifiersEx = e.getModifiersEx();
         if ((modifiersEx & InputEvent.CTRL_DOWN_MASK) > 0)
         {
             zoomDistance += e.getUnitsToScroll() * 0.01f;
@@ -313,17 +304,15 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         if (zoomDistance < 0.01f) zoomDistance = 0.01f;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
      */
-    public void mouseDragged(MouseEvent e)
+    public void mouseDragged(final MouseEvent e)
     {
         // Some magic for looking around
 
-        int xDrag = e.getX() - xDragStart;
-        int yDrag = e.getY() - yDragStart;
+        final int xDrag = e.getX() - xDragStart;
+        final int yDrag = e.getY() - yDragStart;
         if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) > 0)
         {
             xRot += xDrag;
@@ -333,37 +322,33 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
         if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) > 0)
         {
-            float xs = (float) Math.sin(xRot * Math.PI / 180.0f);
-            float xc = (float) Math.cos(xRot * Math.PI / 180.0f);
+            final float xs = (float)Math.sin(xRot * Math.PI / 180.0f);
+            final float xc = (float)Math.cos(xRot * Math.PI / 180.0f);
             // TODO Unused float ys = (float)Math.sin(yRot * Math.PI / 180.0f);
             // TODO Unused float yc = (float)Math.cos(yRot * Math.PI / 180.0f);
             xCamera -= (xDrag * xc) * zoomDistance * zoomDistance / 100;
             zCamera -= (xDrag * xs) * zoomDistance * zoomDistance / 100;
 
-            yCamera += (yDrag) * zoomDistance * zoomDistance / 100;
+            yCamera += yDrag * zoomDistance * zoomDistance / 100;
         }
 
         xDragStart = e.getX();
         yDragStart = e.getY();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
      */
-    public void mouseMoved(MouseEvent e)
+    public void mouseMoved(final MouseEvent e)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
      */
-    public void keyPressed(KeyEvent aEvent)
+    public void keyPressed(final KeyEvent aEvent)
     {
-        int keyCode = aEvent.getKeyCode();
+        final int keyCode = aEvent.getKeyCode();
         /*
          * String keyString = "key code = " + keyCode + " (" +
          * KeyEvent.getKeyText(keyCode) + ")";
@@ -375,13 +360,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
          * extended modifiers)"; }
          */
         // logger.info("keyPressed: " + keyString + ", " + modString);
-        float xs = (float) Math.sin(xRot * Math.PI / 180.0f);
-        float xc = (float) Math.cos(xRot * Math.PI / 180.0f);
-        float zs = (float) Math.sin((90 - xRot) * Math.PI / 180.0f);
-        float zc = (float) Math.cos((90 - xRot) * Math.PI / 180.0f);
+        final float xs = (float)Math.sin(xRot * Math.PI / 180.0f);
+        final float xc = (float)Math.cos(xRot * Math.PI / 180.0f);
+        final float zs = (float)Math.sin((90 - xRot) * Math.PI / 180.0f);
+        final float zc = (float)Math.cos((90 - xRot) * Math.PI / 180.0f);
 
         switch (keyCode)
-            {
+        {
             case 'A':
                 ambientSceneLightFlag0 = !ambientSceneLightFlag0;
                 break;
@@ -472,24 +457,20 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
             default:
                 break;
-            }
+        }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
      */
-    public void keyReleased(KeyEvent aEvent)
+    public void keyReleased(final KeyEvent aEvent)
     {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
      */
-    public void keyTyped(KeyEvent aEvent)
+    public void keyTyped(final KeyEvent aEvent)
     {
     }
 
@@ -504,11 +485,11 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
             for (int z = 0; z < SIZE; z++)
             {
                 // We Want To Center Our Mesh Around The Origin
-                mesh[x][z][0] = (float) (SIZE / 2) - x;
+                mesh[x][z][0] = (float)(SIZE / 2) - x;
                 // Set The Y Values For All Points To 0
                 mesh[x][z][1] = 0.0f;
                 // We Want To Center Our Mesh Around The Origin
-                mesh[x][z][2] = (float) (SIZE / 2) - z;
+                mesh[x][z][2] = (float)(SIZE / 2) - z;
             }
         }
     }
@@ -521,12 +502,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * @param glu
      * @param aShaders
      * 
-     * @see SingleThreadedGlCanvas#renderLoop(GL, GLU, GLSLshaders)
+     * @see SingleThreadedGlCanvas#renderLoop(GL, GLU, com.mojang.joxsi.GLSLshaders)
      */
     @Override
-    protected void renderLoop(GL gl, GLU glu, Program shaderProgram)
+    protected void renderLoop(final GL gl, final GLU glu, final Program shaderProgram)
     {
-        if (action == null) updateAction();
+        if (action == null)
+            updateAction();
 
         int frames = 0;
         long start = System.currentTimeMillis();
@@ -560,21 +542,21 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Create a textureLoader for the displayer
         textureLoader = new TextureLoader(null, gl, glu);
 
-        int maxTexture[] = new int[1];
+        final int[] maxTexture = new int[1];
         gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, maxTexture, 0);
         logger.info("GL_MAX_TEXTURE_COORDS: " + maxTexture[0]);
         gl.glGetIntegerv(GL.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, maxTexture, 0);
         logger.info("GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: " + maxTexture[0]);
 
         // Log the Minimum and Maximum OpenGL Point Size
-        float val[] = new float[2];
-        gl.glGetFloatv( GL.GL_POINT_SIZE_RANGE, val, 0  );
+        final float[] val = new float[2];
+        gl.glGetFloatv(GL.GL_POINT_SIZE_RANGE, val, 0);
         logger.info("min point size=" + val[0] + " max=" + val[1]);
 
         // Check if Anisotropic filtering is supported by the GPU
         if (gl.isExtensionAvailable("GL_EXT_texture_filter_anisotropic"))
         {
-            int max[] = new int[1];
+            final int[] max = new int[1];
             gl.glGetIntegerv(GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, max, 0);
             logger.info("GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT: " + max[0]);
             anisotropicFilteringLevel = max[0];
@@ -592,7 +574,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         
         try 
         {
-            ShaderSourceCode vertexShaderSource = ShaderSourceCode.fromResource("/wave.glsl");
+            final ShaderSourceCode vertexShaderSource = ShaderSourceCode.fromResource("/wave.glsl");
 
             shaderProgram.addVertexShader(gl, vertexShaderSource);
             waveProgram = shaderProgram.link(gl);
@@ -610,10 +592,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         while (!stop)
         {
             // Set up viewport and frustum
-            int width = getWidth();
-            int height = getHeight();
+            final int width = getWidth();
+            final int height = getHeight();
 
-            final float h = (float) width / (float) height;
+            final float h = (float)width / (float)height;
 
             gl.glViewport(0, 0, width, height);
             gl.glDepthMask(true);
@@ -669,7 +651,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, 0.0F);
             }
 
-            float hs = SIZE / 2;
+            final float hs = SIZE / 2;
             if (drawBackground)
             {
                 // Draw a blue background
@@ -691,8 +673,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // Draw a grid on the background
                 gl.glBegin(GL.GL_LINES);
                 {
-                    float z = 4;
-                    int size = 4;
+                    final float z = 4;
+                    final int size = 4;
                     for (int x = -size; x <= size; x++)
                     {
                         if ((x & 3) == 0)
@@ -713,8 +695,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // Draw a grid on the background
                 gl.glBegin(GL.GL_LINES);
                 {
-                    float z = 4;
-                    int size = 4;
+                    final float z = 4;
+                    final int size = 4;
                     for (int x = -size; x <= size; x++)
                     {
                         if ((x & 3) == 0)
@@ -825,7 +807,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 // Draw a grid
                 gl.glBegin(GL.GL_LINES);
                 {
-                    float z = 4;
+                    final float z = 4;
                     for (int x = -SIZE; x <= SIZE; x++)
                     {
                         if ((x & 3) == 0)
@@ -908,7 +890,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
 
             // Calculate the fps.
             frames++;
-            long now = System.currentTimeMillis();
+            final long now = System.currentTimeMillis();
             if (now - start > 4000)
             {
                 // This is more precise
@@ -927,10 +909,10 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         }
     }
 
-    /*
-     * Just for setting the Gridmode need to be called more than one time
+    /**
+     * Just for setting the Gridmode need to be called more than one time.
      */
-    private void setGridmode(GL gl)
+    private void setGridmode(final GL gl)
     {
         if (grid)
         {
@@ -952,13 +934,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
      * @throws ParseException
      *             if the parsing fails for any reason
      */
-    public static void main(String[] args) throws IOException, ParseException
+    public static void main(final String[] args) throws IOException, ParseException
     {
         final String methodName = "main";
         fh = new FileHandler("modeldisplayer.log");
         //logger.addHandler(ch);
         logger.addHandler(fh);
-        TimeIt timer = new TimeIt();
+        final TimeIt timer = new TimeIt();
         String groundTexture = null;
 
         Scene scene = null;
@@ -980,7 +962,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                 if (args[i].startsWith("-")) // Options
                 {
                     // -ground texture/terrain/enchanted-grass.jpg
-                    String option = args[i].substring(1).toLowerCase();
+                    final String option = args[i].substring(1).toLowerCase();
 
                     if (option.equals("ground"))
                     {
@@ -990,7 +972,8 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                             continue;
                         }
                     }
-                    if (option.startsWith("tool")) {
+                    if (option.startsWith("tool"))
+                    {
                         if (i + 1 < args.length)
                         {
                             logger.info("Going to load '" + args[++i] + "' as a tool model");
@@ -1001,14 +984,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                                         + ModelDisplayer.class.getResource("/" + args[i]));
 
                                 String basePath = null;
-                                int lastSlashIndex = args[i].lastIndexOf('/');
-                                if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
+                                final int lastSlashIndex = args[i].lastIndexOf('/');
+                                if (lastSlashIndex != -1)
+                                    basePath = args[i].substring(0, lastSlashIndex + 1);
 
                                 if (option.equals("tool"))
                                     tool = Scene.load(lResourceAsStream, basePath);
                                 else if (option.equals("tool2"))
                                     tool2 = Scene.load(lResourceAsStream, basePath); 
-                                    
                             }                            
                         }
                     }
@@ -1024,7 +1007,7 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
                                 + ModelDisplayer.class.getResource("/" + args[i]));
 
                         String basePath = null;
-                        int lastSlashIndex = args[i].lastIndexOf('/');
+                        final int lastSlashIndex = args[i].lastIndexOf('/');
                         if (lastSlashIndex != -1) basePath = args[i].substring(0, lastSlashIndex + 1);
 
                         scene = Scene.load(lResourceAsStream, basePath);
@@ -1047,14 +1030,14 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         time = timer.getTime();
         logger.info("Time to create scene: " + time + "ms");
         // Set up a JFrame for a TemplateTree showing the entire scene
-        JFrame frame1 = new JFrame("Templates");
+        final JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);
         frame1.add(new JScrollPane(new TemplateTree(scene.root)));
         frame1.setVisible(true);
 
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
-        JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
-        ModelDisplayer canvas = new ModelDisplayer(scene);
+        final JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
+        final ModelDisplayer canvas = new ModelDisplayer(scene);
         canvas.tool = tool;
         canvas.tool2 = tool2;
         canvas.groundTexture = groundTexture;
@@ -1068,13 +1051,13 @@ public class ModelDisplayer extends SingleThreadedGlCanvas implements MouseListe
         // Add a hook for listening to the windowclose event
         frame.addWindowListener(new WindowAdapter()
         {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.awt.event.WindowAdapter#windowClosing(WindowEvent)
+            /**
+             * {@inheritDoc}
+             *
+             * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
              */
             @Override
-            public void windowClosing(WindowEvent e)
+            public void windowClosing(final WindowEvent e)
             {
                 // Set the stop flag to true.
                 stop = true;

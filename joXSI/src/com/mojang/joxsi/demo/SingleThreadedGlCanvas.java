@@ -39,7 +39,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     private boolean ok = false;
 
     /**
-     * Creates a new SingleThreadedGlCanvas
+     * Creates a new SingleThreadedGlCanvas.
      */
     public SingleThreadedGlCanvas()
     {
@@ -47,19 +47,19 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
     }
 
     /**
-     * Creates a new SingleThreadedGlCanvas with the specified GLCapabilities
+     * Creates a new SingleThreadedGlCanvas with the specified GLCapabilities.
      * 
      * @param capabilities
      *            the GLCapabilities this canvas should have
      */
-    public SingleThreadedGlCanvas(GLCapabilities capabilities)
+    public SingleThreadedGlCanvas(final GLCapabilities capabilities)
     {
         this(capabilities, null, null, null);
     }
 
     /**
      * Creates a new SingleThreadedGlCanvas with the specified GLCapabilities,
-     * and some other options
+     * and some other options.
      * 
      * @param capabilities
      *            the GLCapabilities this canvas should have
@@ -71,10 +71,10 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * @param device
      *            the canvas should exist in this GraphicsDevice
      */
-    public SingleThreadedGlCanvas(GLCapabilities capabilities, GLCapabilitiesChooser chooser, GLContext shareWith,
-            GraphicsDevice device)
+    public SingleThreadedGlCanvas(final GLCapabilities capabilities, final GLCapabilitiesChooser chooser,
+            final GLContext shareWith, final GraphicsDevice device)
     {
-        super(unwrap((AWTGraphicsConfiguration) GLDrawableFactory.getFactory().chooseGraphicsConfiguration(capabilities,
+        super(unwrap((AWTGraphicsConfiguration)GLDrawableFactory.getFactory().chooseGraphicsConfiguration(capabilities,
                 chooser, new AWTGraphicsDevice(device))));
         drawable = GLDrawableFactory.getFactory().getGLDrawable(this, capabilities, chooser);
         context = drawable.createContext(shareWith);
@@ -99,7 +99,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * Overridden to make sure it's empty.
      */
     @Override
-    public void update(Graphics g)
+    public void update(final Graphics g)
     {
     }
 
@@ -107,7 +107,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * Overridden to make sure it's empty.
      */
     @Override
-    public void paint(Graphics g)
+    public void paint(final Graphics g)
     {
     }
 
@@ -159,7 +159,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
 
     /**
      * Sets up the context and makes it current, then calls the renderloop
-     * method
+     * method.
      */
     public void run()
     {
@@ -186,12 +186,12 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
         try
         {
             // Create GL and GLU objects
-            GL gl = context.getGL();
-            GLU glu = new GLU();            
-            Program shaderProgram = new Program();           
+            final GL gl = context.getGL();
+            final GLU glu = new GLU();            
+            final Program shaderProgram = new Program();           
             
             setupGLstates(gl);
-            int[] lIntArray =
+            final int[] lIntArray =
             { 0, 0 };
             gl.glGetIntegerv(GL.GL_MAX_TEXTURE_COORDS, lIntArray, 0);
             if (logger.isLoggable(Level.INFO))
@@ -221,11 +221,11 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
 
     /**
      * Setting Up the GL states could be set in relation to Usersettings and
-     * available Graphiccards later
+     * available Graphics cards later.
      * 
      * @param gl
      */
-    private void setupGLstates(GL gl)
+    private void setupGLstates(final GL gl)
     {
         // Setup GL States
         // Black Background
@@ -254,7 +254,7 @@ public abstract class SingleThreadedGlCanvas extends Canvas implements Runnable
      * @return the GraphicsConfiguration, or null if AWTGraphicsConfiguration is
      *         null
      */
-    private static GraphicsConfiguration unwrap(AWTGraphicsConfiguration config)
+    private static GraphicsConfiguration unwrap(final AWTGraphicsConfiguration config)
     {
         if (config == null)
         {

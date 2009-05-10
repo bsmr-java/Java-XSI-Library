@@ -36,12 +36,21 @@ import com.mojang.joxsi.loader.ParseException;
  * @author magnusrk
  * 
  */
-public class ModelScanner
+public final class ModelScanner
 {
     /** Logging instance. */
-    private static Logger logger = Logger.getLogger(ModelScanner.class.getName()); 
+    private static final Logger logger = Logger.getLogger(ModelScanner.class.getName());
 
-    public static void main(String[] args)
+    /**
+     * Contructor is private as all methods are static and this class should not
+     * be instantiated.
+     */
+    private ModelScanner()
+    {
+        super();
+    }
+
+    public static void main(final String[] args)
     {
         String rootDir = ".";
         System.out.println(rootDir);
@@ -49,7 +58,7 @@ public class ModelScanner
         {
             rootDir = args[0];
         }
-        File modelDir = new File(rootDir);
+        final File modelDir = new File(rootDir);
         if (modelDir.isFile())
         {
             rootDir = ".";
@@ -71,9 +80,9 @@ public class ModelScanner
 
         try
         {
-            File logFile = new File(rootDir, "scanner.log");
-            FileOutputStream fos = new FileOutputStream(logFile);
-            OutputStream dos = new DuplicateOutputStream(System.err, fos);
+            final File logFile = new File(rootDir, "scanner.log");
+            final FileOutputStream fos = new FileOutputStream(logFile);
+            final OutputStream dos = new DuplicateOutputStream(System.err, fos);
             System.setErr(new PrintStream(dos));
         }
         catch (FileNotFoundException e)
@@ -100,7 +109,7 @@ public class ModelScanner
         }
         else
         {
-            ModelSourceLocator modelList = new ModelSourceLocator(modelDir);
+            final ModelSourceLocator modelList = new ModelSourceLocator(modelDir);
     
             for (ModelSource model : modelList)
             {
@@ -125,7 +134,7 @@ public class ModelScanner
      *            the {@link ModelSource} describing the dotXSI Model to be
      *            scanned.
      */
-    private static void scanOneModel(ModelSource model)
+    private static void scanOneModel(final ModelSource model)
     {
         // stdout for progress display on the console.
         System.out.println("Scanning " + model);
@@ -135,7 +144,7 @@ public class ModelScanner
 
         try
         {
-            InputStream lResourceAsStream = model.getStream();
+            final InputStream lResourceAsStream = model.getStream();
             Scene.load(lResourceAsStream, model.getBasePath());
         }
         catch (FileNotFoundException e)
@@ -191,7 +200,7 @@ class JarModelSource implements ModelSource
     private JarFile jar;
     private JarEntry entry;
 
-    public JarModelSource(JarFile jar, JarEntry entry)
+    public JarModelSource(final JarFile jar, final JarEntry entry)
     {
         this.jar = jar;
         this.entry = entry;
@@ -199,10 +208,11 @@ class JarModelSource implements ModelSource
 
     public String getBasePath()
     {
-        String name = this.entry.getName();
+        final String name = this.entry.getName();
         String basePath = null;
-        int lastSlash = name.lastIndexOf(File.separatorChar);
-        if (lastSlash != -1) basePath = name.substring(0, lastSlash + 1);
+        final int lastSlash = name.lastIndexOf(File.separatorChar);
+        if (lastSlash != -1)
+            basePath = name.substring(0, lastSlash + 1);
         return basePath;
     }
 
@@ -229,7 +239,7 @@ class FileModelSource implements ModelSource
 
     private File file;
 
-    public FileModelSource(File file)
+    public FileModelSource(final File file)
     {
         this.file = file;
     }
@@ -262,7 +272,7 @@ class ModelSourceLocator implements Iterable<ModelSource>
 
     private File rootDirectory;
 
-    public ModelSourceLocator(File rootDirectory)
+    public ModelSourceLocator(final File rootDirectory)
     {
         this.rootDirectory = rootDirectory;
     }
@@ -287,7 +297,7 @@ class ModelSourceLocatorIterator implements Iterator<ModelSource>
     private Queue<ModelSource> sources;
     private Queue<File> directories;
 
-    public ModelSourceLocatorIterator(File rootDirectory)
+    public ModelSourceLocatorIterator(final File rootDirectory)
     {
         this.sources = new LinkedList<ModelSource>();
         this.directories = new LinkedList<File>();
@@ -296,7 +306,7 @@ class ModelSourceLocatorIterator implements Iterator<ModelSource>
 
     private void findMoreFiles()
     {
-        File dir = directories.remove();
+        final File dir = directories.remove();
         for (File subfile : dir.listFiles())
         {
             // ModelScanner.log("Adding " + subfile + " (" +
@@ -318,10 +328,10 @@ class ModelSourceLocatorIterator implements Iterator<ModelSource>
                     e.printStackTrace();
                     continue;
                 }
-                Enumeration<JarEntry> entries = jar.entries();
+                final Enumeration<JarEntry> entries = jar.entries();
                 while (entries.hasMoreElements())
                 {
-                    JarEntry entry = entries.nextElement();
+                    final JarEntry entry = entries.nextElement();
                     if (!entry.isDirectory()) sources.add(new JarModelSource(jar, entry));
                 }
             }
@@ -367,15 +377,20 @@ class DuplicateOutputStream extends OutputStream
     private OutputStream one;
     private OutputStream two;
 
-    public DuplicateOutputStream(OutputStream one, OutputStream two)
+    public DuplicateOutputStream(final OutputStream one, final OutputStream two)
     {
         super();
         this.one = one;
         this.two = two;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see java.io.OutputStream#write(int)
+     */
     @Override
-    public void write(int b) throws IOException
+    public void write(final int b) throws IOException
     {
         this.one.write(b);
         this.two.write(b);

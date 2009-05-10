@@ -11,62 +11,67 @@ import javax.swing.JMenuItem;
 
 import com.mojang.joxsi.Model;
 
-public class ModelDisplayerFrame extends JFrame implements ActionListener
+public final class ModelDisplayerFrame extends JFrame implements ActionListener
 {
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(ModelDisplayerFrame.class.getName());
 
-	ModelDisplayerFrame(String title, Model[] models)
-	{
-		this.setTitle(title);
-		this.setJMenuBar(createMenuBar(models));
-	}
-    
-    
-    protected JMenuItem createMenuItem(String text, int mnemonic, String actionCommand)
-    { 
-    	JMenuItem menuItem = new JMenuItem(text);
-    	menuItem.setMnemonic(mnemonic);
-    	menuItem.addActionListener(this);
-    	menuItem.setActionCommand(actionCommand);
-    	return menuItem;
+    ModelDisplayerFrame(final String title, final Model[] models)
+    {
+        this.setTitle(title);
+        this.setJMenuBar(createMenuBar(models));
     }
-    
-    protected JMenuItem createMenuItem(String text, String actionCommand)
+
+
+    protected JMenuItem createMenuItem(final String text, final int mnemonic, final String actionCommand)
     { 
-        JMenuItem menuItem = new JMenuItem(text);
+        final JMenuItem menuItem = new JMenuItem(text);
+        menuItem.setMnemonic(mnemonic);
         menuItem.addActionListener(this);
         menuItem.setActionCommand(actionCommand);
         return menuItem;
     }
-   
-    protected JMenuBar createMenuBar(Model[] models)
+
+    protected JMenuItem createMenuItem(final String text, final String actionCommand)
+    { 
+        final JMenuItem menuItem = new JMenuItem(text);
+        menuItem.addActionListener(this);
+        menuItem.setActionCommand(actionCommand);
+        return menuItem;
+    }
+
+    protected JMenuBar createMenuBar(final Model[] models)
     {
         // File section
-        JMenuBar jmb = new JMenuBar();
-        JMenu jmFile = new JMenu("File");
+        final JMenuBar jmb = new JMenuBar();
+        final JMenu jmFile = new JMenu("File");
         jmFile.setMnemonic(KeyEvent.VK_F);
         jmFile.getPopupMenu().setLightWeightPopupEnabled(false);
 
-        jmFile.add( createMenuItem("Exit", KeyEvent.VK_X, "Exit"));
-        
+        jmFile.add(createMenuItem("Exit", KeyEvent.VK_X, "Exit"));
+
         // Models section
-        JMenu jmModels = new JMenu("Models");
+        final JMenu jmModels = new JMenu("Models");
         jmModels.getPopupMenu().setLightWeightPopupEnabled(false);
-// TODO Dynamic list based on models in xsi
-        for(int i=0; i < models.length; i++) {
-            if(models[i].actions.length > 0) {
-                JMenu jmModelSub = new JMenu(models[i].name);
+        // TODO Dynamic list based on models in xsi
+        for(int i=0; i < models.length; i++)
+        {
+            if(models[i].actions.length > 0)
+            {
+                final JMenu jmModelSub = new JMenu(models[i].name);
                 jmModelSub.getPopupMenu().setLightWeightPopupEnabled(false);
-                for(int j=0; j<models[i].actions.length; j++) {
+                for(int j=0; j<models[i].actions.length; j++)
+                {
                     jmModelSub.add(createMenuItem(models[i].actions[j].getName(), "model_"+i+"_action_"+j));
                 }
                 jmModels.add(jmModelSub);
-            } else {
+            }
+            else
+            {
                 jmModels.add(createMenuItem(models[i].name, "model_"+i));
             }
         }
-        
+
         /**
          * Pyro
          * Ditched the whole Animation menu as they are dependent on the model which is
@@ -77,64 +82,70 @@ public class ModelDisplayerFrame extends JFrame implements ActionListener
         /*
         JMenu jmAnimations = new JMenu("Animations");
         jmAnimations.getPopupMenu().setLightWeightPopupEnabled(false);
-// TODO Dynamic list based on animations in xsi
+        // TODO Dynamic list based on animations in xsi
         jmAnimations.add( createMenuItem("Animation 1",KeyEvent.VK_1, "Animation 1"));
         jmAnimations.add( createMenuItem("Animation 2",KeyEvent.VK_2, "Animation 2"));
         jmAnimations.add( createMenuItem("Animation 3",KeyEvent.VK_3, "Animation 3"));
-        */
-        
+         */
+
         jmb.add(jmFile);
         jmb.add(jmModels);
         //jmb.add(jmAnimations);
-        
+
         return jmb;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
- 	public void actionPerformed(ActionEvent e) {
-
-		String action = e.getActionCommand();
-		if (action == null)
+    public void actionPerformed(final ActionEvent e)
+    {
+        final String action = e.getActionCommand();
+        if (action == null)
         {
-		    logger.info("Empty ActionCommand ");
-			return;
-		}
+            logger.info("Empty ActionCommand ");
+            return;
+        }
         else
         {
-			logger.info("ActionCommand: " + action+" source: "+e.getSource());
-		}
-		
-		if(action.startsWith("model_")) {
-		    //Start the model specified after model_ and the action specified after action_
-		    String[] nextToDo = action.split("_");
-		    int selectedModel  = -1;
-		    int selectedAction = -1;
-		    if(nextToDo.length >= 2)
-		        selectedModel = Integer.parseInt(nextToDo[1]);
-		    if(nextToDo.length >= 4)
-		        selectedAction = Integer.parseInt(nextToDo[3]);
-		    ModelDisplayer md = this.getModelDisplayer();
-		    if(md != null) {
-    		    md.setShowModel(selectedModel);
-    		    md.setShowAction(selectedAction);
-		    }
-		}
-		
-		if(action.equals("Exit")) {
-		    ModelDisplayer md = this.getModelDisplayer();
-		    md.stopProgram();
-		}
- 	}
- 	
- 	private ModelDisplayer getModelDisplayer() {
- 	    ModelDisplayer md = null;
- 	    for(int i=0; i<this.getContentPane().getComponentCount(); i++) {
-            if(this.getContentPane().getComponent(i).getClass().toString().endsWith("ModelDisplayer")) {
+            logger.info("ActionCommand: " + action+" source: "+e.getSource());
+        }
+
+        if(action.startsWith("model_"))
+        {
+            //Start the model specified after model_ and the action specified after action_
+            final String[] nextToDo = action.split("_");
+            int selectedModel  = -1;
+            int selectedAction = -1;
+            if(nextToDo.length >= 2)
+                selectedModel = Integer.parseInt(nextToDo[1]);
+            if(nextToDo.length >= 4)
+                selectedAction = Integer.parseInt(nextToDo[3]);
+            final ModelDisplayer md = this.getModelDisplayer();
+            if(md != null)
+            {
+                md.setShowModel(selectedModel);
+                md.setShowAction(selectedAction);
+            }
+        }
+
+        if (action.equals("Exit"))
+        {
+            final ModelDisplayer md = this.getModelDisplayer();
+            md.stopProgram();
+        }
+    }
+
+    private ModelDisplayer getModelDisplayer()
+    {
+        ModelDisplayer md = null;
+        for(int i=0; i<this.getContentPane().getComponentCount(); i++)
+        {
+            if(this.getContentPane().getComponent(i).getClass().toString().endsWith("ModelDisplayer"))
+            {
                 md = (ModelDisplayer)this.getContentPane().getComponent(i);
             }
         }
- 	    return md;
- 	}
+        return md;
+    }
 }

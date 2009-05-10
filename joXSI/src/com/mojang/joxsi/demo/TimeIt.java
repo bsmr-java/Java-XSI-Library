@@ -1,25 +1,26 @@
 package com.mojang.joxsi.demo;
 
-
 /**
  * 
- * @author Milbo
- *just for time
+ * @author Milbo just for time
  */
-public class TimeIt {
+public class TimeIt
+{
+    private long starttime;
 
-	private long starttime;
-	
-	TimeIt(){
-		resetTime();
-	}
-	
- 	public void resetTime(){
-		starttime=System.currentTimeMillis();
-	}
-	
-	public long getTime(){
-		return System.currentTimeMillis()- starttime ;		
-	}
-	
+    TimeIt()
+    {
+        resetTime();
+    }
+
+    public void resetTime()
+    {
+        starttime = System.currentTimeMillis();
+    }
+
+    public long getTime()
+    {
+        return System.currentTimeMillis() - starttime;
+    }
+
 }
