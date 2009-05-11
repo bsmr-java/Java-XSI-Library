@@ -18,8 +18,6 @@ import java.util.logging.Logger;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -151,22 +149,19 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
 
     private float[][][] mesh = new float[SIZE][SIZE][3];
 
-    
-    
     // Following variables are used in fountain and particles
-    private static boolean useParticle = true;
+    private static boolean useParticle = false;
     // If useParticle is set to true, loadParticle will also be automatically set to true
     // to prevent program crashes. Other way around it doesnt really matter.
     private static boolean loadParticle = true; // if false, whole scene will not be loaded
     private static String sceneFile = "/fountian.xsi";
-    private static Particle particle[];
+    private static Particle[] particle;
     private static int particleCount = 200;    
     private static String particleFile = "/littledrop.xsi";
     private float rotate = 0;
     private static Scene particleScene;
     private static Scene fountainScene;
-    
-    
+
     /**
      * TODO JavaDoc.
      *
