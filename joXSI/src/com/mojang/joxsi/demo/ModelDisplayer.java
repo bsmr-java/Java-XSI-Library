@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -153,6 +155,9 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
     
     // Following variables are used in fountain and particles
     private static boolean useParticle = true;
+    // If useParticle is set to true, loadParticle will also be automatically set to true
+    // to prevent program crashes. Other way around it doesnt really matter.
+    private static boolean loadParticle = true; // if false, whole scene will not be loaded
     private static String sceneFile = "/fountian.xsi";
     private static Particle particle[];
     private static int particleCount = 200;    
@@ -160,6 +165,7 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
     private float rotate = 0;
     private static Scene particleScene;
     private static Scene fountainScene;
+    
     
     /**
      * TODO JavaDoc.
@@ -420,6 +426,16 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
                 break;
             case 'W':
                 drawBackground = !drawBackground;
+                break;
+            case 'P':
+                if (particle != null && particleScene != null && fountainScene != null)
+                {
+                    useParticle = !useParticle;
+                }
+                else
+                {
+                    System.out.println("You need to set particle loading to true in order to render particle and fountain scenes");
+                }
                 break;
 
             // Arrow keys movement
@@ -934,6 +950,8 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
                     particle[i].move();
                     // Draw the particle
                     sceneRenderer.render(particleScene);
+                    gl.glTranslatef(-particle[i].getX(), -particle[i].getY(), -particle[i].getZ());
+                    gl.glRotatef(-rotate * particle[i].getRotationSpeed(), particle[i].getRotateX(), particle[i].getRotateY(), particle[i].getRotateZ());
                 }
                 // Particle rendering end
             }
@@ -990,6 +1008,11 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
      */
     public static void main(final String[] args) throws IOException, ParseException
     {
+        // if useParticle is true, we need to set loadParticle to true too, to prevent crashes.
+        // other option would have been to set useParticle to false too, but now its made this way.
+        if (useParticle)
+            loadParticle = true;
+        
         final String methodName = "main";
         fh = new FileHandler("modeldisplayer.log");
         //logger.addHandler(ch);
@@ -1007,8 +1030,9 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
             // default model
             scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
             
-            // If useParticle is set to true, load the particle related items
-            if (useParticle)
+            // If loadParticle is set to true, load the particle related items
+            // This has effect when user tries to push P button to switch between true and false for useParticles
+            if (loadParticle)
             {
                 fountainScene = Scene.load(ModelDisplayer.class.getResourceAsStream(sceneFile));
                 particleScene = Scene.load(ModelDisplayer.class.getResourceAsStream(particleFile));
@@ -1117,11 +1141,7 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         final JFrame frame1 = new JFrame("Templates");
         frame1.setSize(200, 500);
         frame1.add(new JScrollPane(new TemplateTree(scene.root)));
-        frame1.setVisible(true);
-
-        
-        
-       
+        frame1.setVisible(true);       
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
         final JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
         final ModelDisplayer canvas = new ModelDisplayer(scene);
