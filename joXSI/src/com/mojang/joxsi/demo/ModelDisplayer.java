@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
 import com.mojang.joxsi.Scene;
+import com.mojang.joxsi.demo.particles.Particle;
 import com.mojang.joxsi.loader.ParseException;
 import com.mojang.joxsi.renderer.JoglSceneRenderer;
 import com.mojang.joxsi.renderer.TextureLoader;
@@ -148,6 +149,18 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
 
     private float[][][] mesh = new float[SIZE][SIZE][3];
 
+    
+    
+    // Following variables are used in fountain and particles
+    private static boolean useParticle = true;
+    private static String sceneFile = "/fountian.xsi";
+    private static Particle particle[];
+    private static int particleCount = 200;    
+    private static String particleFile = "/littledrop.xsi";
+    private float rotate = 0;
+    private static Scene particleScene;
+    private static Scene fountainScene;
+    
     /**
      * TODO JavaDoc.
      *
@@ -884,7 +897,48 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
 
             // Render the scene
             sceneRenderer.render(scene);
-
+            
+            // If useParticle is set to true, render particle scene (fountain and particles)
+            if (useParticle)
+            {
+                // Render the fountain
+                sceneRenderer.render(fountainScene);
+                // Particle rendering start
+                rotate += 0.50f;
+                for (int i = 0; i < particleCount; i++)
+                {               
+                    // If the particle has reached the end of its life or reached the bottom of the fountain
+                    if (!particle[i].isActive() || particle[i].getY() < 0)
+                    {
+                        // "Respawn" the particle. We set up the starting values so it throws the water particles
+                        // around the fountain and then we add gravitation only on Y axis, so it looks nice.
+                        particle[i].setValues((float)Math.random() / 80.0f, 1.0f, true,
+                                0, 2.5f, 0,
+                                ((float)Math.random() - 0.5f) / 50.0f, 0.02f, ((float)Math.random() - 0.5f) / 50.0f,
+                                0, -((float)Math.random() + 5) / 10000.0f, 0,
+                                (float)Math.random(), (float)Math.random(), (float)Math.random(), (float)Math.random());
+                    }
+                  
+                    // NOTE: This could probably be optimized further.
+                    // Start drawing from the beginning, set rotations and so on, also done before for the fountain
+                    gl.glLoadIdentity();    
+                    gl.glTranslatef(0, 0, -(zoomDistance * zoomDistance));
+                    gl.glRotatef(yRot, 1, 0, 0);
+                    gl.glRotatef(xRot, 0, 1, 0);
+                    gl.glTranslatef(xCamera, yCamera, zCamera);
+                    // Set the location of the particle
+                    gl.glTranslatef(particle[i].getX(), particle[i].getY(), particle[i].getZ());
+                    // Set the particle rotation
+                    gl.glRotatef(rotate * particle[i].getRotationSpeed(), particle[i].getRotateX(), particle[i].getRotateY(), particle[i].getRotateZ());
+                    // Move the particle
+                    particle[i].move();
+                    // Draw the particle
+                    sceneRenderer.render(particleScene);
+                }
+                // Particle rendering end
+            }
+            
+            
             // Disable lighting
             gl.glDisable(GL.GL_LIGHTING);
 
@@ -952,6 +1006,36 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
             // No arguments. We're probably run from webstart, so load the
             // default model
             scene = Scene.load(ModelDisplayer.class.getResourceAsStream("/DanceMagic.xsi"));
+            
+            // If useParticle is set to true, load the particle related items
+            if (useParticle)
+            {
+                fountainScene = Scene.load(ModelDisplayer.class.getResourceAsStream(sceneFile));
+                particleScene = Scene.load(ModelDisplayer.class.getResourceAsStream(particleFile));
+                // Reserve space for particles
+                particle = new Particle[particleCount];
+                // Go through all the particles and give them values
+                for (int i = 0; i < particleCount; i++)
+                {
+                    // Following will set the fading to 0.0125 - 0 and life to 1, which means the particles life time is
+                    // somewhere between 80 frames to unlimited frames.
+                    
+                    // Directions and gravities are also set to 0 so the particles wont move until they have once faded out,
+                    // this makes sure that they wont all burst out at once at first, until they "respawn".
+                    
+                    // We also set rotation to 0, because we don't really want to rotate particles that are inside of the
+                    // fountain and we can't even see them. See the rendering code to see how these values can be used.
+                    
+                    // If you want to make the particles burst at the beginning, set directions or/and gravities to (float)Math.random(),
+                    // you could also set values without random, but then all the particles would have the same location, so you would
+                    // only see one particle.
+                    particle[i] = new Particle((float)Math.random() / 80.0f, 1, true,
+                                        0, 2.5f, 0, //set starting location to the top of the fountain
+                                        0, 0, 0, //set direction to 0
+                                        0, 0, 0, //set gravities to 0
+                                        0, 0, 0, 0);
+                }
+            }
         }
         else
         {
@@ -1035,6 +1119,9 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         frame1.add(new JScrollPane(new TemplateTree(scene.root)));
         frame1.setVisible(true);
 
+        
+        
+       
         // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
         final JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
         final ModelDisplayer canvas = new ModelDisplayer(scene);
