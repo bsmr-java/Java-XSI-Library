@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="joXSI" default="build-lib">
+
+	<description>
+    	Package joXSI for distribution
+    </description>
+
+	<!-- Various variables
+	default is for shared settings, use custom to make local modifications
+	that you don't want other people to share.
+	-->
+	<property file="custom.properties" />
+	<property file="default.properties" />
+
+    <!-- =================================================================== -->
+	<!-- Defines the classpath for compiling the sources.                    -->
+	<!-- =================================================================== -->
+	<path id="build.classpath">
+		<pathelement location="${junit.jar}" />
+		<pathelement path="${build.classes}"/>
+	</path>
+
+    <target name="prepare" 
+    	description="--> Prepare directories">
+
+		<delete dir="${build.dir}" />
+    	
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.classes}" />
+    </target>
+
+    <target name="compile-lib" depends="prepare" description="--> Compile java classes to build directory">
+
+        <echo message="Compiling with ${build.compiler}" />
+    	<javac srcdir="${src.dir}"
+        	   destdir="${build.classes}"
+               classpathref="build.classpath"
+  			   fork="true"
+        	   memoryinitialsize="32M"
+        	   memorymaximumsize="128M"
+        	   optimize="true"
+        	   verbose="false"
+        	   source="1.5"
+        	   target="1.5"
+               debug="${debug}">
+            <include name="**/*.java" />
+    		<exclude name="com/mojang/joxsi/renderer/**" />
+    		<exclude name="com/mojang/joxsi/parser/**" />
+    		<exclude name="com/mojang/joxsi/demo/**" />
+        	<exclude name="com/mojang/joxsi/GLSLshaders.java" />
+    	</javac>
+
+	</target>
+
+
+	  <target name="createmanifest" depends="prepare" description="Creates a manifest file for jars">
+	    <tstamp>
+	      <format property="manifest-date" pattern="dd-MM-yyyy HH:mm" />
+	    </tstamp>
+
+	    <echo message="Creating manifest file" />
+	    <manifest file="${build.dir}/MANIFEST.MF">
+	      <attribute name="Built-By" value="${project.team}"/>
+	      <attribute name="Specification-Title" value="${project.title}"/>
+	      <attribute name="Specification-Version" value="${project.version}"/>
+	      <attribute name="Specification-Vendor" value="${project.team}"/>
+	      <attribute name="Implementation-Title" value="${project.title}"/>
+	      <attribute name="Implementation-Vendor" value="${project.team}"/>
+	      <attribute name="Implementation-Version" value="${jar.version}"/>
+	      <attribute name="Build-date" value="${manifest-date}"/>
+	    </manifest>
+	  </target>
+
+    <target name="build-lib" depends="prepare,createmanifest,compile-lib"
+    	description="--> Builds a library-only joXSI jar">
+
+        <echo message="Start building jars" />
+        <jar jarfile="${build.jar}" basedir="${build.classes}" update="false"
+                                              includes="**/**"
+                                              excludes="**/.svn/**"
+                                              manifest="${build.dir}/MANIFEST.MF" />
+    </target>
+
+	<target name="clean" description="Removes all compiled and generated files (the build directory)">
+		<delete dir="${build.dir}" />
+    </target>
+
+</project>
