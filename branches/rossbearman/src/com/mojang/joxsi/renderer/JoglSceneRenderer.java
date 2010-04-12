@@ -16,7 +16,7 @@ import com.mojang.joxsi.loader.SI_Transform;
  * A simple JOGL based renderer class.
  */
 public class JoglSceneRenderer
-{
+{    
     private EnvelopeBuilder envelopeBuilder;
     private TextureLoader textureLoader;
     private GL gl;
@@ -265,6 +265,28 @@ public class JoglSceneRenderer
         {
             renderModel(scene.models[i]);
         }
+    }
+    
+    /**
+     * Replaces the materials in a scene with a specified list of replacements, then 
+     * renders the scene by recursively rendering all models in the scene after some setup.
+     * 
+     * @param scene
+     *        the scene to be rendered
+     * @param overrideMaterials
+     *        the name of the materials to override and the texture to override them with
+     */
+    public void render(Scene scene, Map<String, String> overrideMaterials)
+    {
+        //Override the scene's materials with any changes
+        for(Material material : scene.materials.values())
+        {
+            if(overrideMaterials.containsKey(material.name))
+                material.imageName = overrideMaterials.get(material.name);
+        }
+        
+        //Continue with rendering
+        render(scene);       
     }
     
     /**
