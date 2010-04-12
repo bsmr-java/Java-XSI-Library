@@ -1,0 +1,393 @@
+xsi 0360txt 0032
+
+SI_FileInfo { 
+	"", 
+	"Inventor", 
+	"Sun May 10 20:56:13 2009", 
+	"SOFTIMAGE|XSI", 
+}
+
+SI_Scene Scene { 
+	"FRAMES", 
+	1.000000, 
+	100.000000, 
+	29.970030, 
+}
+
+SI_CoordinateSystem { 
+	1, 
+	0, 
+	1, 
+	0, 
+	2, 
+	5, 
+}
+
+SI_Angle { 
+	0, 
+}
+
+SI_Ambience { 
+	0.200000, 
+	0.200000, 
+	0.200000, 
+}
+
+SI_MaterialLibrary MATLIB-Scene { 
+	1, 
+	XSI_Material DefaultLib.Scene_Material { 
+		10, 
+		"surface","Phong",
+		"volume","",
+		"environment","",
+		"contour","",
+		"displacement","",
+		"shadow","Phong",
+		"Photon","Phong",
+		"PhotonVolume","",
+		"normal","",
+		"RealTime","",
+		XSI_Shader Phong { 
+			"Softimage.material-phong.1", 
+			4, 
+			53, 
+			27, 
+			"Name","STRING","Phong",
+			"ambient.red","FLOAT",0.000000,
+			"ambient.green","FLOAT",0.000000,
+			"ambient.blue","FLOAT",0.000000,
+			"ambient.alpha","FLOAT",0.000000,
+			"diffuse.red","FLOAT",0.700000,
+			"diffuse.green","FLOAT",0.700000,
+			"diffuse.blue","FLOAT",0.700000,
+			"diffuse.alpha","FLOAT",0.000000,
+			"specular.red","FLOAT",1.000000,
+			"specular.green","FLOAT",1.000000,
+			"specular.blue","FLOAT",1.000000,
+			"specular.alpha","FLOAT",0.000000,
+			"shiny","FLOAT",50.000000,
+			"transparency.red","FLOAT",0.000000,
+			"transparency.green","FLOAT",0.000000,
+			"transparency.blue","FLOAT",0.000000,
+			"transparency.alpha","FLOAT",0.000000,
+			"trans_glossy","FLOAT",0.000000,
+			"transparent_samples","INTEGER",0,
+			"reflectivity.red","FLOAT",0.000000,
+			"reflectivity.green","FLOAT",0.000000,
+			"reflectivity.blue","FLOAT",0.000000,
+			"reflectivity.alpha","FLOAT",0.000000,
+			"reflect_glossy","FLOAT",0.000000,
+			"reflect_samples","INTEGER",0,
+			"index_of_refraction","FLOAT",1.000000,
+			"translucency","FLOAT",0.000000,
+			"incandescence.red","FLOAT",1.000000,
+			"incandescence.green","FLOAT",1.000000,
+			"incandescence.blue","FLOAT",1.000000,
+			"incandescence.alpha","FLOAT",0.000000,
+			"inc_inten","FLOAT",0.000000,
+			"bump.x","FLOAT",0.000000,
+			"bump.y","FLOAT",0.000000,
+			"bump.z","FLOAT",0.000000,
+			"notrace","BOOLEAN",0,
+			"diffuse_inuse","BOOLEAN",1,
+			"specular_inuse","BOOLEAN",0,
+			"reflect_inuse","BOOLEAN",0,
+			"refract_inuse","BOOLEAN",0,
+			"incand_inuse","BOOLEAN",0,
+			"translucent_inuse","BOOLEAN",0,
+			"radiance.red","FLOAT",1.000000,
+			"radiance.green","FLOAT",1.000000,
+			"radiance.blue","FLOAT",1.000000,
+			"radiance.alpha","FLOAT",1.000000,
+			"scaletrans","FLOAT",1.000000,
+			"inverttrans","BOOLEAN",0,
+			"usealphatrans","BOOLEAN",0,
+			"scalerefl","FLOAT",1.000000,
+			"invertrefl","BOOLEAN",0,
+			"usealpharefl","BOOLEAN",0,
+			"ambient","","",
+			"diffuse","Image","SHADER",
+			"specular","","",
+			"shiny","","",
+			"transparency","","",
+			"trans_glossy","","",
+			"reflectivity","","",
+			"reflect_glossy","","",
+			"index_of_refraction","","",
+			"translucency","","",
+			"incandescence","","",
+			"inc_inten","","",
+			"bump","","",
+			"notrace","","",
+			"diffuse_inuse","","",
+			"specular_inuse","","",
+			"reflect_inuse","","",
+			"refract_inuse","","",
+			"incand_inuse","","",
+			"translucent_inuse","","",
+			"radiance","","",
+			"scaletrans","","",
+			"inverttrans","","",
+			"usealphatrans","","",
+			"scalerefl","","",
+			"invertrefl","","",
+			"usealpharefl","","",
+		}
+
+		XSI_Shader Image { 
+			"Softimage.txt2d-image-explicit.1", 
+			4, 
+			30, 
+			21, 
+			"Name","STRING","Image",
+			"tspace_id","STRING","Texture_Projection1",
+			"repeats.x","FLOAT",1.000000,
+			"repeats.y","FLOAT",1.000000,
+			"repeats.z","FLOAT",1.000000,
+			"alt_x","BOOLEAN",0,
+			"alt_y","BOOLEAN",0,
+			"alt_z","BOOLEAN",0,
+			"min.x","FLOAT",0.000000,
+			"min.y","FLOAT",0.000000,
+			"min.z","FLOAT",0.000000,
+			"max.x","FLOAT",1.000000,
+			"max.y","FLOAT",1.000000,
+			"max.z","FLOAT",1.000000,
+			"step.x","FLOAT",0.001000,
+			"step.y","FLOAT",0.001000,
+			"step.z","FLOAT",0.001000,
+			"factor","FLOAT",5.000000,
+			"torus_u","BOOLEAN",0,
+			"torus_v","BOOLEAN",0,
+			"alpha","BOOLEAN",0,
+			"bump_inuse","BOOLEAN",0,
+			"alpha_output","BOOLEAN",0,
+			"alpha_factor","FLOAT",1.000000,
+			"eccmax","FLOAT",20.000000,
+			"maxminor","FLOAT",16.000000,
+			"disc_r","FLOAT",0.300000,
+			"bilinear","BOOLEAN",1,
+			"filtered","BOOLEAN",0,
+			"bump_filtered","BOOLEAN",0,
+			"tex","noIcon_pic","IMAGE",
+			"repeats","","",
+			"alt_x","","",
+			"alt_y","","",
+			"alt_z","","",
+			"min","","",
+			"max","","",
+			"step","","",
+			"factor","","",
+			"torus_u","","",
+			"torus_v","","",
+			"alpha","","",
+			"bump_inuse","","",
+			"alpha_output","","",
+			"alpha_factor","","",
+			"eccmax","","",
+			"maxminor","","",
+			"disc_r","","",
+			"bilinear","","",
+			"filtered","","",
+			"bump_filtered","","",
+		}
+
+		XSI_MaterialInfo { 
+			1, 
+			1, 
+		}
+
+	}
+
+}
+
+SI_Model MDL-sphere { 
+	SI_GlobalMaterial { 
+		"DefaultLib.Scene_Material", 
+		"BRANCH", 
+	}
+
+	SI_Transform SRT-sphere { 
+		0.011249, 
+		0.008237, 
+		0.011249, 
+		0.000000, 
+		0.000000, 
+		0.000000, 
+		0.000000, 
+		0.032289, 
+		0.000000, 
+	}
+
+	SI_Visibility { 
+		1, 
+	}
+
+	XSI_CustomPSet sphere.Mesh_Subdivision_Info { 
+		"NODE", 
+		1,
+		"Subdivision","Small Integer Number",0, 
+		XSI_CustomParamInfo Subdivision { 
+			0,
+			4,
+			4,
+		}
+
+	}
+
+	SI_Mesh MSH-sphere { 
+		SI_Shape SHP-sphere-ORG { 
+			4, 
+			"ORDERED", 
+
+			5, 
+			"POSITION", 
+			0.000000,-4.000000,0.000000,
+			0.000000,4.000000,0.000000,
+			-1.723849,-0.000000,0.000000,
+			0.861925,-0.000000,1.492897,
+			0.861925,-0.000000,-1.492897,
+
+			18, 
+			"NORMAL", 
+			-0.500000,0.000000,0.866025,
+			-0.500000,0.000000,0.866025,
+			-0.488781,-0.210646,0.846594,
+			-0.500000,0.000000,0.866025,
+			-0.500000,0.000000,0.866025,
+			-0.488781,0.210646,0.846594,
+			1.000000,0.000000,0.000000,
+			1.000000,0.000000,0.000000,
+			0.977562,-0.210646,0.000000,
+			1.000000,0.000000,0.000000,
+			1.000000,0.000000,0.000000,
+			0.977562,0.210646,0.000000,
+			-0.500000,0.000000,-0.866025,
+			-0.500000,0.000000,-0.866025,
+			-0.488781,-0.210646,-0.846594,
+			-0.500000,0.000000,-0.866025,
+			-0.500000,0.000000,-0.866025,
+			-0.488781,0.210646,-0.846594,
+
+			18, 
+			"TEX_COORD_UV0", 
+			"Texture_Projection", 
+			1.000000,0.500000,
+			0.000000,0.500000,
+			0.666667,0.000000,
+			0.000000,0.500000,
+			1.000000,0.500000,
+			0.666667,1.000000,
+			1.000000,0.500000,
+			1.000000,0.500000,
+			0.666667,0.000000,
+			1.000000,0.500000,
+			1.000000,0.500000,
+			0.666667,1.000000,
+			0.000000,0.500000,
+			1.000000,0.500000,
+			0.666667,0.000000,
+			1.000000,0.500000,
+			0.000000,0.500000,
+			0.666667,1.000000,
+
+			18, 
+			"TEX_COORD_UV1", 
+			"Texture_Projection1", 
+			1.000000,0.500000,
+			0.000000,0.500000,
+			0.666667,0.000000,
+			0.000000,0.500000,
+			1.000000,0.500000,
+			0.666667,1.000000,
+			1.000000,0.500000,
+			0.000000,0.500000,
+			0.500000,0.000000,
+			0.000000,0.500000,
+			1.000000,0.500000,
+			0.500000,1.000000,
+			1.000000,0.500000,
+			0.000000,0.500000,
+			0.333333,0.000000,
+			0.000000,0.500000,
+			1.000000,0.500000,
+			0.333333,1.000000,
+
+		}
+
+		SI_TriangleList sphere { 
+			6, 
+			"NORMAL|TEX_COORD_UV0|TEX_COORD_UV1", 
+			"DefaultLib.Scene_Material", 
+
+			3,2,0,
+			2,3,1,
+			4,3,0,
+			3,4,1,
+			2,4,0,
+			4,2,1,
+
+			0,1,2,
+			3,4,5,
+			6,7,8,
+			9,10,11,
+			12,13,14,
+			15,16,17,
+
+			0,1,2,
+			3,4,5,
+			6,7,8,
+			9,10,11,
+			12,13,14,
+			15,16,17,
+
+			0,1,2,
+			3,4,5,
+			6,7,8,
+			9,10,11,
+			12,13,14,
+			15,16,17,
+
+		}
+
+	}
+
+}
+
+XSI_ImageLibrary  { 
+	1, 
+	XSI_Image noIcon_pic { 
+		"droptexture.jpg", 
+		1, 
+		1, 
+		4, 
+		32, 
+		0.000000, 
+		1.000000, 
+		0.000000, 
+		1.000000, 
+		29.970030, 
+		0, 
+		0, 
+		0, 
+		XSI_ImageFX { 
+			0.000000, 
+			100.000000, 
+			100.000000, 
+			0.000000, 
+			0.000000, 
+			1.000000, 
+			0, 
+			1, 
+			128, 
+			128, 
+			0, 
+			0, 
+			0, 
+			0, 
+		}
+
+	}
+
+}
+
