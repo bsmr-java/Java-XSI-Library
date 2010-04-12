@@ -12,6 +12,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +55,8 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
     private Scene scene;
     private Scene tool;
     private Scene tool2;
+    
+    private Map<String, String> materials;
 
     private int xDragStart;
 
@@ -182,7 +186,12 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         yCamera = -1.0f;
         createMesh();
     }
-
+    
+    public ModelDisplayer(final Scene scene, final Map<String, String> materials)
+    {
+        this(scene);
+        this.materials = materials;
+    }
     /**
      * TODO JavaDoc.
      * 
@@ -907,7 +916,11 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
             }
 
             // Render the scene
-            sceneRenderer.render(scene);
+            
+            if(materials != null)
+                sceneRenderer.render(scene, materials);
+            else
+                sceneRenderer.render(scene);
             
             // If useParticle is set to true, render particle scene (fountain and particles)
             if (useParticle)
@@ -1018,6 +1031,8 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         Scene scene = null;
         Scene tool = null;
         Scene tool2 = null;
+        Map<String, String> materials = null;
+        
         if (args.length == 0)
         {
             logger.info("No arguments. We're probably run from webstart, so load the default model");
@@ -1072,6 +1087,17 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
                         if (i + 1 < args.length)
                         {
                             groundTexture = args[++i];
+                            continue;
+                        }
+                    }
+                    if (option.equals("materials"))
+                    {
+                        if (i + 1 < args.length)
+                        {
+                            materials = new HashMap<String, String>();
+                            String[] material = args[++i].split(",");
+                            
+                            materials.put(material[0], material[1]);
                             continue;
                         }
                     }
@@ -1137,9 +1163,15 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         frame1.setSize(200, 500);
         frame1.add(new JScrollPane(new TemplateTree(scene.root)));
         frame1.setVisible(true);       
-        // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
+        // Set up a JFrame for a ModelDisplayer, and start the ModelDisplayer
         final JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
-        final ModelDisplayer canvas = new ModelDisplayer(scene);
+        final ModelDisplayer canvas;
+        
+        if (materials != null)
+            canvas = new ModelDisplayer(scene, materials);
+        else
+            canvas = new ModelDisplayer(scene);
+        
         canvas.tool = tool;
         canvas.tool2 = tool2;
         canvas.groundTexture = groundTexture;
