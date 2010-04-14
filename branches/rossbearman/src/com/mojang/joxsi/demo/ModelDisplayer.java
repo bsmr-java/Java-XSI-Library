@@ -1,5 +1,6 @@
 package com.mojang.joxsi.demo;
 
+import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
@@ -226,6 +228,24 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         }
         updateAction();
     }
+    
+    public Scene getScene() { 
+        return scene; 
+    }
+    public Map<String, String> getMaterials() { 
+        return materials; 
+    }
+    
+    public void setMaterials(Map<String, String> materials) {
+        this.materials = materials;
+    }
+    
+    public void resetMaterials() 
+    {
+        scene.resetMaterials(materials.keySet());
+        materials.clear();
+    }
+    
 
     /**
      * TODO JavaDoc.
@@ -1002,6 +1022,47 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
         }
+    }
+    
+    /**
+     * Converts a String array of material names and textures into a HashMap of materials
+     * to override and the textures to override them with.
+     * 
+     * @param parent
+     *        determines the component to display error messages in
+     * @param materialData
+     *        a String array of material name, default texture, override texture
+     * @return
+     *        boolean indicating success or failure
+     */
+    public boolean modifyMaterials(Component parent, String[][] materialData)
+    {
+        String baseTexturePath = getScene().basePath;
+        Map<String, String> materialOverrides = materials;
+        
+        for(String[] material : materialData)
+        {
+            if(TextureLoader.isValidTexture(baseTexturePath, material[2]))
+            {
+                if(materialOverrides == null)
+                    materialOverrides = new HashMap<String, String>();
+                
+                materialOverrides.put(material[0], material[2]);
+            }
+            else
+            {
+                logger.warning("Specified texture '" + "sample-models/" + baseTexturePath + material[2] + "' cannot be found.");
+                JOptionPane.showMessageDialog(
+                        parent,
+                        "Specified texture '" + "sample-models/" + baseTexturePath + material[2] + "' cannot be found.", 
+                        "Texture not Found",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        
+        materials = materialOverrides;
+        return true;
     }
 
     /**

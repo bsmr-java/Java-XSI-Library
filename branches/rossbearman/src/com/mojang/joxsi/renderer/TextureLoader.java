@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -164,5 +165,34 @@ public class TextureLoader
         ByteBuffer bb = BufferUtil.newByteBuffer(data.length);
         bb.put(data);
         return bb;
+    }
+    
+    /**
+     * Validates whether or not a given path resolves to a usable texture
+     * 
+     * @param baseTexturePath the base path of the texture, or null (i.e. 'models/')
+     * @param textureName the name the name of the texture to validate
+     * @return true if the texture is valid
+     */
+    public static boolean isValidTexture(String baseTexturePath, String textureName) 
+    {
+        if (baseTexturePath != null && baseTexturePath.charAt(baseTexturePath.length()-1) != '/')
+            baseTexturePath += '/';
+        
+        String textureFile = textureName;
+        boolean exists = false;
+        
+        if(!textureFile.equals(""))
+        {
+            if (baseTexturePath != null && baseTexturePath.length() > 0)
+            {
+                if (textureFile.charAt(0) != '/')
+                    textureFile = baseTexturePath + textureFile;
+            }
+            
+            exists = (new File("sample-models/" + textureFile)).exists(); 
+        }
+        
+        return exists;
     }
 }
