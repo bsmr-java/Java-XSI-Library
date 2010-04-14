@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mojang.joxsi.loader.DotXSILoader;
 import com.mojang.joxsi.loader.ParseException;
@@ -195,7 +196,20 @@ public class Scene
     {
         return materials.get(materialName);
     }
-
+    
+    /**
+     * Resets each material texture to it's defaultImageName
+     */
+    public void resetMaterials(Set<String> materialNames)
+    {
+        for(String materialName : materialNames) 
+        {
+            Material tempMaterial = materials.get(materialName);
+            tempMaterial.imageName = tempMaterial.defaultImageName;
+            materials.put(materialName, tempMaterial);
+        }
+    }
+    
     @Override
     public String toString()
     {

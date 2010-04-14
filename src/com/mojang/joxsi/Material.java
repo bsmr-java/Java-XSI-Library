@@ -23,8 +23,10 @@ public class Material
     /** logger - Logging instance. */
     private static Logger logger = Logger.getLogger(Material.class.getName());
     public String name;
-    /** Name of the image. */
+    /** Name of the current image. */
     public String imageName;
+    /** Name of the default image. */
+    public String defaultImageName;
     /** Ambient colour. */
     public ColorRGB ambientColor;
     /** Diffuse colour. */
@@ -50,6 +52,7 @@ public class Material
         if (lTexture2D != null)
         {
             imageName = lTexture2D.imageName;
+            defaultImageName = lTexture2D.imageName;
         }
         else
         {
@@ -97,6 +100,7 @@ public class Material
                 else
                 {
                     imageName = image.filename;
+                    defaultImageName = image.filename;
                     
                     // TODO Egal
 //                    Template template = material.getRoot();
