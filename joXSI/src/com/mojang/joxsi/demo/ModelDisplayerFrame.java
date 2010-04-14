@@ -42,18 +42,27 @@ public final class ModelDisplayerFrame extends JFrame implements ActionListener
 
     protected JMenuBar createMenuBar(final Model[] models)
     {
-        // File section
         final JMenuBar jmb = new JMenuBar();
+        
+        // File section
         final JMenu jmFile = new JMenu("File");
         jmFile.setMnemonic(KeyEvent.VK_F);
         jmFile.getPopupMenu().setLightWeightPopupEnabled(false);
 
         jmFile.add(createMenuItem("Exit", KeyEvent.VK_X, "Exit"));
+        
+        //Materials
+        final JMenu jmMaterials = new JMenu("Materials");
+        jmMaterials.getPopupMenu().setLightWeightPopupEnabled(false);
+
+        jmMaterials.add(createMenuItem("Modify Materials", "Modify Materials"));
+        jmMaterials.add(createMenuItem("Reset Materials", "Reset Materials"));
 
         // Models section
         final JMenu jmModels = new JMenu("Models");
         jmModels.getPopupMenu().setLightWeightPopupEnabled(false);
-        // TODO Dynamic list based on models in xsi
+        
+        // TODO Dynamic list based on models in a specified location
         for(int i=0; i < models.length; i++)
         {
             if(models[i].actions.length > 0)
@@ -72,25 +81,9 @@ public final class ModelDisplayerFrame extends JFrame implements ActionListener
             }
         }
 
-        /**
-         * Pyro
-         * Ditched the whole Animation menu as they are dependent on the model which is
-         * showed at the current time. I made the Model menu contain submenu's which show
-         * which animation can be shown.
-         */
-        // Animations Section
-        /*
-        JMenu jmAnimations = new JMenu("Animations");
-        jmAnimations.getPopupMenu().setLightWeightPopupEnabled(false);
-        // TODO Dynamic list based on animations in xsi
-        jmAnimations.add( createMenuItem("Animation 1",KeyEvent.VK_1, "Animation 1"));
-        jmAnimations.add( createMenuItem("Animation 2",KeyEvent.VK_2, "Animation 2"));
-        jmAnimations.add( createMenuItem("Animation 3",KeyEvent.VK_3, "Animation 3"));
-         */
-
         jmb.add(jmFile);
         jmb.add(jmModels);
-        //jmb.add(jmAnimations);
+        jmb.add(jmMaterials);
 
         return jmb;
     }
@@ -134,9 +127,22 @@ public final class ModelDisplayerFrame extends JFrame implements ActionListener
             final ModelDisplayer md = this.getModelDisplayer();
             md.stopProgram();
         }
+
+        if (action.equals("Modify Materials"))
+        {
+            final MaterialChangerFrame mc = new MaterialChangerFrame(this, this.getModelDisplayer().getScene().materials, this.getModelDisplayer().getMaterials());
+            mc.setVisible(true);
+        }
+
+        if (action.equals("Reset Materials"))
+        {
+            final ModelDisplayer md = this.getModelDisplayer();
+            md.resetMaterials();
+            
+        }
     }
 
-    private ModelDisplayer getModelDisplayer()
+    protected ModelDisplayer getModelDisplayer()
     {
         ModelDisplayer md = null;
         for(int i=0; i<this.getContentPane().getComponentCount(); i++)

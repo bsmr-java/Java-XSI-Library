@@ -1,5 +1,6 @@
 package com.mojang.joxsi.demo;
 
+import java.awt.Component;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,6 +13,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,7 @@ import java.util.logging.Logger;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import com.mojang.joxsi.Action;
@@ -53,6 +57,8 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
     private Scene scene;
     private Scene tool;
     private Scene tool2;
+    
+    private Map<String, String> materials;
 
     private int xDragStart;
 
@@ -182,7 +188,12 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         yCamera = -1.0f;
         createMesh();
     }
-
+    
+    public ModelDisplayer(final Scene scene, final Map<String, String> materials)
+    {
+        this(scene);
+        this.materials = materials;
+    }
     /**
      * TODO JavaDoc.
      * 
@@ -217,6 +228,24 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         }
         updateAction();
     }
+    
+    public Scene getScene() { 
+        return scene; 
+    }
+    public Map<String, String> getMaterials() { 
+        return materials; 
+    }
+    
+    public void setMaterials(Map<String, String> materials) {
+        this.materials = materials;
+    }
+    
+    public void resetMaterials() 
+    {
+        scene.resetMaterials(materials.keySet());
+        materials.clear();
+    }
+    
 
     /**
      * TODO JavaDoc.
@@ -907,7 +936,11 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
             }
 
             // Render the scene
-            sceneRenderer.render(scene);
+            
+            if(materials != null)
+                sceneRenderer.render(scene, materials);
+            else
+                sceneRenderer.render(scene);
             
             // If useParticle is set to true, render particle scene (fountain and particles)
             if (useParticle)
@@ -990,6 +1023,47 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
         }
     }
+    
+    /**
+     * Converts a String array of material names and textures into a HashMap of materials
+     * to override and the textures to override them with.
+     * 
+     * @param parent
+     *        determines the component to display error messages in
+     * @param materialData
+     *        a String array of material name, default texture, override texture
+     * @return
+     *        boolean indicating success or failure
+     */
+    public boolean modifyMaterials(Component parent, String[][] materialData)
+    {
+        String baseTexturePath = getScene().basePath;
+        Map<String, String> materialOverrides = materials;
+        
+        for(String[] material : materialData)
+        {
+            if(TextureLoader.isValidTexture(baseTexturePath, material[2]))
+            {
+                if(materialOverrides == null)
+                    materialOverrides = new HashMap<String, String>();
+                
+                materialOverrides.put(material[0], material[2]);
+            }
+            else
+            {
+                logger.warning("Specified texture '" + "sample-models/" + baseTexturePath + material[2] + "' cannot be found.");
+                JOptionPane.showMessageDialog(
+                        parent,
+                        "Specified texture '" + "sample-models/" + baseTexturePath + material[2] + "' cannot be found.", 
+                        "Texture not Found",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        
+        materials = materialOverrides;
+        return true;
+    }
 
     /**
      * Main entry point of the application.
@@ -1018,6 +1092,8 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         Scene scene = null;
         Scene tool = null;
         Scene tool2 = null;
+        Map<String, String> materials = null;
+        
         if (args.length == 0)
         {
             logger.info("No arguments. We're probably run from webstart, so load the default model");
@@ -1072,6 +1148,17 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
                         if (i + 1 < args.length)
                         {
                             groundTexture = args[++i];
+                            continue;
+                        }
+                    }
+                    if (option.equals("materials"))
+                    {
+                        if (i + 1 < args.length)
+                        {
+                            materials = new HashMap<String, String>();
+                            String[] material = args[++i].split(",");
+                            
+                            materials.put(material[0], material[1]);
                             continue;
                         }
                     }
@@ -1137,9 +1224,15 @@ public final class ModelDisplayer extends SingleThreadedGlCanvas implements Mous
         frame1.setSize(200, 500);
         frame1.add(new JScrollPane(new TemplateTree(scene.root)));
         frame1.setVisible(true);       
-        // Set up a JFrame for a ModelDisplayer, and start the modeldisplayer
+        // Set up a JFrame for a ModelDisplayer, and start the ModelDisplayer
         final JFrame frame = new ModelDisplayerFrame("Model Display", scene.models);
-        final ModelDisplayer canvas = new ModelDisplayer(scene);
+        final ModelDisplayer canvas;
+        
+        if (materials != null)
+            canvas = new ModelDisplayer(scene, materials);
+        else
+            canvas = new ModelDisplayer(scene);
+        
         canvas.tool = tool;
         canvas.tool2 = tool2;
         canvas.groundTexture = groundTexture;
